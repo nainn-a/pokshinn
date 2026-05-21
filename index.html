@@ -42,8 +42,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .hero-group-item,.hero-bottom-postype{font-family:'Cormorant Garamond',Georgia,serif !important}
 
 /* 트럼프 카드 인덱스 */
-.group-grid-wrap{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;min-height:100vh;padding:2rem 1.25rem}
-.group-grid{display:flex;flex-direction:row;gap:10px;width:100%;max-width:900px;margin-bottom:1.5rem;justify-content:flex-start;flex-wrap:nowrap}
+.group-grid-wrap{display:block;max-width:865px;margin:0 auto;width:100%;padding:2rem 1.25rem;min-height:100vh}
+.group-grid{display:flex;flex-direction:row;gap:10px;width:100%;margin-bottom:1.5rem;justify-content:center;flex-wrap:nowrap}
 .group-card{
   width:165px;height:243px;
   border-radius:8px;
@@ -56,26 +56,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
   padding:8px 9px;
 }
 .group-card:hover{transform:translateY(-4px)}
-.group-card-top{display:flex;align-items:baseline;gap:3px}
+.group-card-top{display:flex;align-items:baseline;gap:2px}
 .group-card-abbr{font-family:'Noto Serif KR',Georgia,serif;font-size:13px;font-weight:700;letter-spacing:-0.05em;color:#1a2a4a}
-.group-card-suit{font-size:11px;color:#1a2a4a}
+.group-card-suit{font-size:11px;color:#1a2a4a;margin-left:2px}
 .group-card-center{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px}
 .group-card-suit-big{font-size:44px;line-height:1;color:rgba(26,42,74,0.1)}
-.group-card-name{font-family:'Noto Serif KR',Georgia,serif;font-size:8px;letter-spacing:-0.05em;color:#7090b8;text-transform:uppercase;margin-top:4px}
-.group-card-sub{font-family:'Noto Serif KR',Georgia,serif;font-size:7px;color:#aabbcc;letter-spacing:-0.04em;margin-top:2px}
+.group-card-name{font-family:'Noto Serif KR',Georgia,serif;font-size:15px;letter-spacing:-0.05em;color:#7090b8;text-transform:uppercase;margin-top:4px}
+.group-card-sub{font-family:'Noto Serif KR',Georgia,serif;font-size:10px;color:#aabbcc;letter-spacing:-0.04em;margin-top:2px}
 .group-card-bottom{display:flex;justify-content:flex-end}
 .group-card-suit-bot{font-size:11px;color:#1a2a4a;transform:rotate(180deg);display:inline-block}
-.edit-entry{text-align:right;width:100%;max-width:700px}
+.edit-entry{text-align:right;width:100%}
 .edit-entry button{font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer}
 .edit-entry button:hover{color:var(--text2)}
 
 /* 뒤로가기 */
-.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);cursor:pointer;margin-bottom:1.5rem;padding:4px 0;background:none;border:none;letter-spacing:-0.04em}
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);cursor:pointer;margin-bottom:1.5rem;padding:4px 0;background:none;border:none;letter-spacing:-0.04em;align-self:flex-start}
 .back-btn:hover{color:var(--text)}
 .back-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* 상세 페이지 */
-.group-wrap{max-width:820px;margin:0 auto;padding:2rem 1.25rem;letter-spacing:-0.05em}
+.group-wrap{max-width:865px;margin:0 auto;padding:2rem 1.25rem;letter-spacing:-0.05em}
 .group-page-header{margin-bottom:1.25rem;display:flex;align-items:baseline;gap:10px}
 .group-page-title{font-family:'Noto Serif KR',Georgia,serif;font-size:20px;font-weight:700;letter-spacing:-0.05em;color:var(--text)}
 .group-page-count{font-size:13px;color:var(--text3)}
@@ -84,12 +84,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .toolbar{margin-bottom:1rem;display:flex;flex-direction:column;gap:10px}
 .toolbar-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .toolbar-label{font-size:12px;color:var(--text3);white-space:nowrap}
-/* 정렬 — 토글 버튼 하나 */
 .sort-toggle{font-size:12px;padding:5px 12px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.5);backdrop-filter:blur(6px);color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:5px;min-width:80px;justify-content:space-between}
 .sort-toggle:hover{background:rgba(255,255,255,0.8)}
 .sort-arrow{font-size:10px;transition:transform .2s}
 .sort-arrow.asc{transform:rotate(180deg)}
-/* CP 태그 — 테두리 없는 네모 */
 .cp-tag{font-size:12px;padding:5px 10px;border-radius:0;border:none;background:rgba(200,220,255,0.3);color:var(--text2);cursor:pointer;transition:background .15s;letter-spacing:-0.04em}
 .cp-tag:hover{background:rgba(200,220,255,0.55)}
 .cp-tag.active{background:var(--accent);color:#fff}
@@ -128,7 +126,7 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
 .btn.danger:hover{background:rgba(226,75,74,0.08)}
 
 /* 에디터 */
-.editor-wrap{max-width:820px;margin:0 auto;padding:2rem 1.25rem;letter-spacing:-0.05em}
+.editor-wrap{max-width:865px;margin:0 auto;padding:2rem 1.25rem;letter-spacing:-0.05em}
 .editor-header{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap}
 .editor-header h2{font-size:18px;font-weight:500;flex:1;color:var(--text)}
 .logout-btn{font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer}
@@ -468,7 +466,6 @@ function renderHome(){
 document.getElementById("hero-title-btn").onclick=()=>showPage("page-cards");
 document.getElementById("back-to-hero").onclick=()=>showPage("page-home");
 
-// 정렬 토글 버튼
 document.getElementById("sort-toggle-btn").onclick=()=>{
   currentSort=currentSort==="date-desc"?"date-asc":"date-desc";
   document.getElementById("sort-label").textContent=currentSort==="date-desc"?"최신순":"오래된순";
