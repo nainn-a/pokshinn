@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>팬픽 아카이브</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fff;--bg2:#EEF3F0;--bg3:#E4EDE8;
+  --text:#1a1a1a;--text2:#3D6B54;--text3:#94B8A3;
+  --border:rgba(61,107,84,0.12);--border2:rgba(61,107,84,0.25);
+  --accent:#3D6B54;--accent-mid:#94B8A3;--accent-light:#EEF3F0;
+  --radius:10px;--radius-lg:14px;--red:#e24b4a;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#1a2420;--bg2:#22302b;--bg3:#151e1b;--text:#e8f0ec;--text2:#94B8A3;--text3:#3D6B54;--border:rgba(148,184,163,0.12);--border2:rgba(148,184,163,0.25)}
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;background-color:var(--bg3);background-image:radial-gradient(circle,#94B8A3 1px,transparent 1px);background-size:22px 22px;color:var(--text);min-height:100vh}
+.page{display:none}.page.active{display:block}
+
+/* 홈 */
+.home-wrap{max-width:600px;margin:0 auto;padding:3rem 1.25rem 2rem}
+.home-wrap h1{font-size:22px;font-weight:500;margin-bottom:4px}
+.home-wrap .sub{font-size:13px;color:var(--text2);margin-bottom:2rem}
+.group-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:1.5rem}
+.group-card{background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:1.5rem 1.25rem;cursor:pointer;transition:background .15s}
+.group-card:hover{background:var(--bg2)}
+.group-card-name{font-size:16px;font-weight:500;margin-bottom:4px}
+.group-card-sub{font-size:12px;color:var(--text3)}
+.edit-entry{text-align:right}
+.edit-entry button{font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer;padding:4px 0}
+.edit-entry button:hover{color:var(--text2)}
+
+/* 그룹 페이지 */
+.group-wrap{max-width:820px;margin:0 auto;padding:2rem 1.25rem}
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);cursor:pointer;margin-bottom:1.5rem;padding:4px 0;background:none;border:none}
+.back-btn:hover{color:var(--text)}
+.back-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.group-page-header{margin-bottom:1.25rem;display:flex;align-items:baseline;gap:10px}
+.group-page-title{font-size:20px;font-weight:500}
+.group-page-count{font-size:13px;color:var(--text3)}
+.toolbar{margin-bottom:1rem;display:flex;flex-direction:column;gap:10px}
+.toolbar-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.toolbar-label{font-size:12px;color:var(--text3);white-space:nowrap}
+.sort-btn,.cp-tag{font-size:12px;padding:5px 12px;border-radius:20px;border:0.5px solid var(--border2);background:var(--bg);color:var(--text2);cursor:pointer;transition:background .15s,color .15s}
+.sort-btn:hover,.cp-tag:hover{background:var(--bg2)}
+.sort-btn.active,.cp-tag.active{background:#3D6B54;color:#fff;border-color:#3D6B54}
+.table-wrap{background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius-lg);overflow:hidden}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+thead tr{border-bottom:0.5px solid var(--border2)}
+th{font-size:11px;font-weight:500;color:var(--text3);padding:10px 12px;text-align:left;background:var(--bg2)}
+td{font-size:13px;padding:10px 12px;border-bottom:0.5px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg2)}
+col.col-no{width:36px}col.col-date{width:92px}col.col-title{width:auto}col.col-genre{width:150px}
+.no{color:var(--text3);font-size:12px}
+.date-cell{font-size:12px;color:var(--text3);white-space:nowrap}
+.title-cell{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.title-text{font-size:13px;font-weight:500}
+.adult-dot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0}
+.collab-badge{font-size:10px;padding:2px 7px;border-radius:20px;background:#EEEDFE;border:0.5px solid #CECBF6;color:#3C3489;white-space:nowrap}
+@media(prefers-color-scheme:dark){.collab-badge{background:#26215C;border-color:#534AB7;color:#CECBF6}}
+.genre-cell{font-size:12px;color:var(--text2)}
+
+/* 모달 */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:100}
+.modal-bg.hidden{display:none}
+.modal{background:var(--bg);border-radius:var(--radius-lg);padding:2rem;width:320px;max-width:90vw}
+.modal h2{font-size:16px;font-weight:500;margin-bottom:1rem}
+.modal input{width:100%;padding:8px 12px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg2);color:var(--text);font-size:14px;outline:none;margin-bottom:8px}
+.modal input:focus{border-color:var(--text2)}
+.modal-err{font-size:12px;color:var(--red);min-height:16px;margin-bottom:8px}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end}
+.btn{font-size:13px;padding:7px 16px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg);color:var(--text);cursor:pointer}
+.btn:hover{background:var(--bg2)}
+.btn.primary{background:#3D6B54;color:#fff;border-color:#3D6B54}
+.btn.primary:hover{opacity:0.85}
+.btn.danger{color:var(--red);border-color:rgba(226,75,74,0.3)}
+.btn.danger:hover{background:rgba(226,75,74,0.08)}
+
+/* 에디터 */
+.editor-wrap{max-width:820px;margin:0 auto;padding:2rem 1.25rem}
+.editor-header{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap}
+.editor-header h2{font-size:18px;font-weight:500;flex:1}
+.editor-header .logout-btn{font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer}
+.editor-header .logout-btn:hover{color:var(--text2)}
+.tabs{display:flex;gap:0;margin-bottom:1.5rem;border-bottom:0.5px solid var(--border2)}
+.tab{font-size:13px;padding:8px 16px;background:none;border:none;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-0.5px}
+.tab:hover{color:var(--text)}
+.tab.active{color:#3D6B54;border-bottom-color:#3D6B54}
+
+/* 작품 관리 */
+.work-editor-toolbar{display:flex;gap:8px;margin-bottom:1rem;align-items:center;flex-wrap:wrap}
+.work-editor-toolbar select{font-size:13px;padding:6px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg);color:var(--text);outline:none}
+.works-edit-table{background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius-lg);overflow:hidden}
+.works-edit-table table{table-layout:auto}
+col.ecol-no{width:32px}col.ecol-cp{width:60px}col.ecol-title{width:auto}col.ecol-date{width:92px}col.ecol-act{width:80px}
+.act-btns{display:flex;gap:6px}
+.act-btns button{font-size:11px;padding:3px 9px;border-radius:6px;border:0.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer}
+.act-btns button:hover{color:var(--text)}
+.act-btns button.del:hover{color:var(--red)}
+.work-form{background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.25rem}
+.work-form h3{font-size:14px;font-weight:500;margin-bottom:1rem}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.form-field{display:flex;flex-direction:column;gap:4px}
+.form-field label{font-size:11px;color:var(--text3)}
+.form-field input,.form-field select{padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg2);color:var(--text);font-size:13px;outline:none}
+.form-field input:focus,.form-field select:focus{border-color:var(--text2)}
+/* CP 입력 콤보 */
+.cp-combo{position:relative}
+.cp-combo input{width:100%}
+.cp-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius);z-index:10;max-height:160px;overflow-y:auto;display:none}
+.cp-dropdown.show{display:block}
+.cp-option{padding:7px 10px;font-size:13px;cursor:pointer}
+.cp-option:hover{background:var(--bg2)}
+.form-checks{display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+.form-checks label{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer}
+.form-actions{display:flex;gap:8px;justify-content:flex-end}
+
+/* 본문 에디터 */
+.prose-selector{display:flex;gap:8px;margin-bottom:1rem;align-items:center;flex-wrap:wrap}
+.prose-selector select{font-size:13px;padding:6px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg);color:var(--text);outline:none;flex:1;max-width:300px}
+.prose-area{width:100%;min-height:400px;padding:14px;border:0.5px solid var(--border2);border-radius:var(--radius-lg);background:var(--bg);color:var(--text);font-size:14px;line-height:1.8;resize:vertical;outline:none;font-family:inherit}
+.prose-area:focus{border-color:var(--text2)}
+.prose-save-row{display:flex;gap:8px;justify-content:flex-end;margin-top:10px;align-items:center;flex-wrap:wrap}
+.prose-saved{font-size:12px;color:var(--text3)}
+
+@media(max-width:520px){
+  .form-grid{grid-template-columns:1fr}
+  col.col-date,th.col-date,td.col-date{display:none}
+  col.col-genre{width:90px}
+}
+</style>
+</head>
+<body>
+
+<!-- 비밀번호 모달 -->
+<div class="modal-bg hidden" id="pw-modal">
+  <div class="modal">
+    <h2 id="pw-modal-title">에디터 잠금 해제</h2>
+    <input type="password" id="pw-input" placeholder="비밀번호" autocomplete="current-password">
+    <div class="modal-err" id="pw-err"></div>
+    <div class="modal-btns">
+      <button class="btn" id="pw-cancel">취소</button>
+      <button class="btn primary" id="pw-confirm">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- 홈 -->
+<div class="page active" id="page-home">
+  <div class="home-wrap">
+    <h1>폭신폭신 프로젝트</h1>
+    <p class="sub">팬픽 아카이브 BY NAINN</p>
+    <div class="group-grid" id="group-grid"></div>
+    <div class="edit-entry"><button onclick="requirePw('editor')">✎ 편집</button></div>
+  </div>
+</div>
+
+<!-- 그룹 목록 -->
+<div class="page" id="page-group">
+  <div class="group-wrap">
+    <button class="back-btn" id="back-btn">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      목록으로
+    </button>
+    <div class="group-page-header">
+      <span class="group-page-title" id="gp-title"></span>
+      <span class="group-page-count" id="gp-count"></span>
+    </div>
+    <div class="toolbar">
+      <div class="toolbar-row">
+        <span class="toolbar-label">정렬</span>
+        <button class="sort-btn active" data-sort="date-desc">최신순</button>
+        <button class="sort-btn" data-sort="date-asc">오래된순</button>
+      </div>
+      <div class="toolbar-row" id="cp-tags"></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <colgroup><col class="col-no"><col class="col-date"><col class="col-title"><col class="col-genre"></colgroup>
+        <thead><tr><th>#</th><th class="col-date">작성일</th><th>제목</th><th>장르</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 에디터 -->
+<div class="page" id="page-editor">
+  <div class="editor-wrap">
+    <div class="editor-header">
+      <h2>에디터</h2>
+      <button class="btn" onclick="requirePw('download')">↓ TXT 다운로드</button>
+      <button class="logout-btn" onclick="logout()">잠금</button>
+      <button class="btn" onclick="showPage('page-home')">← 홈</button>
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-tab="tab-works">작품 관리</button>
+      <button class="tab" data-tab="tab-prose">본문 편집</button>
+    </div>
+
+    <!-- 작품 관리 -->
+    <div id="tab-works">
+      <div class="work-form" id="work-form">
+        <h3 id="form-title">새 작품 추가</h3>
+        <div class="form-grid">
+          <div class="form-field"><label>제목</label><input id="f-title" placeholder="제목"></div>
+          <div class="form-field"><label>그룹</label>
+            <select id="f-group" onchange="updateCpDropdown()">
+              <option>ONEUS</option><option>ONF</option><option>VERIVERY</option><option>P1HARMONY</option><option>82MAJOR</option>
+            </select>
+          </div>
+          <div class="form-field"><label>CP</label>
+            <div class="cp-combo">
+              <input id="f-cp" placeholder="직접 입력 또는 선택" autocomplete="off" oninput="filterCpDropdown()" onfocus="showCpDropdown()" onblur="hideCpDropdown()">
+              <div class="cp-dropdown" id="cp-dropdown"></div>
+            </div>
+          </div>
+          <div class="form-field"><label>작성일</label><input id="f-date" type="date"></div>
+          <div class="form-field"><label>장르</label><input id="f-genre" placeholder="일상, 판타지"></div>
+          <div class="form-field"><label>합작 이름 (없으면 빈칸)</label><input id="f-collabname" placeholder="합작 프로젝트명"></div>
+        </div>
+        <div class="form-checks">
+          <label><input type="checkbox" id="f-adult"> 성인물</label>
+          <label><input type="checkbox" id="f-collab"> 합작</label>
+        </div>
+        <div class="form-actions">
+          <button class="btn" id="form-cancel-btn" style="display:none" onclick="resetForm()">취소</button>
+          <button class="btn primary" onclick="submitForm()">저장</button>
+        </div>
+      </div>
+      <div class="work-editor-toolbar">
+        <select id="edit-group-filter" onchange="renderEditTable()">
+          <option value="">그룹 전체</option>
+          <option>ONEUS</option><option>ONF</option><option>VERIVERY</option><option>P1HARMONY</option><option>82MAJOR</option>
+        </select>
+      </div>
+      <div class="works-edit-table table-wrap">
+        <table>
+          <colgroup><col class="ecol-no"><col class="ecol-cp"><col class="ecol-title"><col class="ecol-date"><col class="ecol-act"></colgroup>
+          <thead><tr><th>#</th><th>CP</th><th>제목</th><th>작성일</th><th></th></tr></thead>
+          <tbody id="edit-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 본문 편집 -->
+    <div id="tab-prose" style="display:none">
+      <div class="prose-selector">
+        <select id="prose-work-sel"><option value="">작품 선택...</option></select>
+        <button class="btn danger" id="prose-del-btn" style="display:none" onclick="deleteProse()">본문 삭제</button>
+      </div>
+      <textarea class="prose-area" id="prose-area" placeholder="본문을 입력하세요..." disabled></textarea>
+      <div class="prose-save-row">
+        <span class="prose-saved" id="prose-saved"></span>
+        <button class="btn primary" id="prose-save-btn" disabled onclick="saveProse()">저장</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let DATA=[
+  {id:1,title:"bunny the Veronica",group:"ONEUS",cp:"섷건",date:"2021-06-01",genre:"일상, 판타지",adult:false,collab:false,collabName:""},
+  {id:2,title:"D-Day",group:"ONEUS",cp:"섷숀",date:"2021-06-04",genre:"일상",adult:true,collab:false,collabName:""},
+  {id:3,title:"하지 이야기",group:"ONEUS",cp:"호학",date:"2021-06-21",genre:"판타지, 신화",adult:false,collab:false,collabName:""},
+  {id:4,title:"Genie",group:"ONEUS",cp:"호학",date:"2021-07-20",genre:"일상",adult:true,collab:false,collabName:""},
+  {id:5,title:"shh-sha",group:"ONEUS",cp:"섷숀",date:"2021-08-01",genre:"일상",adult:false,collab:false,collabName:""},
+  {id:6,title:"you make me",group:"ONEUS",cp:"섷숀",date:"2021-09-26",genre:"일상",adult:false,collab:false,collabName:""},
+  {id:7,title:"단 하루의 휴가",group:"ONF",cp:"션윹",date:"2021-10-09",genre:"일상",adult:false,collab:false,collabName:""},
+  {id:8,title:"Get fizzy with it",group:"ONF",cp:"션윹",date:"2021-10-13",genre:"일상",adult:true,collab:false,collabName:""},
+  {id:9,title:"대설주의보",group:"ONEUS",cp:"섷숀",date:"2022-01-10",genre:"재난물",adult:false,collab:true,collabName:"계간섷숀 겨울 창간호"},
+  {id:10,title:"입춘대길",group:"ONEUS",cp:"호학",date:"2022-02-20",genre:"일상, 판타지",adult:false,collab:true,collabName:"계간호학 창간호"},
+  {id:11,title:"다정도 병인 양하여",group:"ONEUS",cp:"섷숀",date:"2022-04-05",genre:"시대물",adult:false,collab:true,collabName:"계간섷숀 봄호"},
+  {id:12,title:"이게 사랑이 아니면",group:"VERIVERY",cp:"묭헌",date:"2022-06-19",genre:"일상",adult:false,collab:true,collabName:"묭헌합작"},
+  {id:13,title:"노트 온 벨로시티",group:"VERIVERY",cp:"묭헌",date:"2022-07-19",genre:"일상",adult:true,collab:false,collabName:""},
+  {id:14,title:"-196°C",group:"VERIVERY",cp:"묭헌",date:"2022-08-14",genre:"일상",adult:false,collab:true,collabName:"묳터디"},
+  {id:15,title:"오늘부터 신령님이 아이돌(1/5)",group:"VERIVERY",cp:"묭헌",date:"2022-08-25",genre:"일상, 판타지",adult:false,collab:true,collabName:"묳터디"},
+  {id:16,title:"pop-up!",group:"VERIVERY",cp:"묭헌",date:"2022-09-03",genre:"일상, 판타지",adult:false,collab:true,collabName:"묳터디"},
+  {id:17,title:"불장난",group:"VERIVERY",cp:"묭깡",date:"2024-05-26",genre:"일상",adult:false,collab:false,collabName:""},
+  {id:18,title:"Oh! Shall I tell you, Mama",group:"P1HARMONY",cp:"쫑테",date:"2024-10-17",genre:"일상",adult:false,collab:false,collabName:""},
+  {id:19,title:"고스트 트윈스",group:"P1HARMONY",cp:"종쏠섭",date:"2024-11-07",genre:"일상",adult:false,collab:false,collabName:""},
+  {id:20,title:"소원의 아이러니",group:"P1HARMONY",cp:"웅양",date:"2024-12-26",genre:"일상, 판타지",adult:false,collab:false,collabName:""},
+  {id:21,title:"풍선껌",group:"P1HARMONY",cp:"쫑테",date:"2025-05-01",genre:"일상",adult:false,collab:false,collabName:""},
+  {id:22,title:"서울 시티 러브",group:"P1HARMONY",cp:"탁테",date:"2025-05-05",genre:"일상",adult:true,collab:false,collabName:""},
+  {id:23,title:"아날렘마",group:"P1HARMONY",cp:"웅양",date:"2025-05-19",genre:"일상",adult:false,collab:false,collabName:""},
+  {id:24,title:"호기심이 사람을 살림",group:"82MAJOR",cp:"멜닙",date:"",genre:"",adult:false,collab:false,collabName:""},
+  {id:25,title:"Heat Between Pages",group:"82MAJOR",cp:"멜닙",date:"",genre:"",adult:false,collab:false,collabName:""},
+  {id:26,title:"2등",group:"82MAJOR",cp:"멜닙",date:"",genre:"",adult:false,collab:false,collabName:""},
+];
+
+const GROUPS=["ONEUS","ONF","VERIVERY","P1HARMONY","82MAJOR"];
+let currentGroup=null,currentCp=null,currentSort="date-desc";
+let editingId=null,unlocked=false,nextId=100;
+let pwPurpose='editor';
+
+function loadStorage(){
+  try{const d=localStorage.getItem("archive_data");if(d)DATA=JSON.parse(d);const n=localStorage.getItem("archive_nextid");if(n)nextId=parseInt(n);}catch(e){}
+}
+function saveStorage(){
+  try{localStorage.setItem("archive_data",JSON.stringify(DATA));localStorage.setItem("archive_nextid",String(nextId));}catch(e){}
+}
+function getProseKey(id){return"prose_"+id}
+
+async function sha256(msg){
+  const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+// 비밀번호 모달
+function requirePw(purpose){
+  pwPurpose=purpose;
+  if(purpose==='editor'&&unlocked){showPage('page-editor');renderEditTable();renderProseSelector();return;}
+  document.getElementById("pw-modal-title").textContent=purpose==='download'?'다운로드 확인':'에디터 잠금 해제';
+  document.getElementById("pw-modal").classList.remove("hidden");
+  document.getElementById("pw-input").value="";
+  document.getElementById("pw-err").textContent="";
+  setTimeout(()=>document.getElementById("pw-input").focus(),50);
+}
+document.getElementById("pw-cancel").onclick=()=>document.getElementById("pw-modal").classList.add("hidden");
+document.getElementById("pw-confirm").onclick=async()=>{
+  const val=document.getElementById("pw-input").value;
+  const h=await sha256(val);
+  const stored=localStorage.getItem("archive_pwhash");
+  const target=stored||(await sha256("7690"));
+  if(!stored)localStorage.setItem("archive_pwhash",target);
+  if(h===target){
+    document.getElementById("pw-modal").classList.add("hidden");
+    if(pwPurpose==='download'){downloadTxt();}
+    else{unlocked=true;showPage("page-editor");renderEditTable();renderProseSelector();}
+  } else {
+    document.getElementById("pw-err").textContent="비밀번호가 틀렸습니다.";
+  }
+};
+document.getElementById("pw-input").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("pw-confirm").click()});
+function logout(){unlocked=false;showPage("page-home");}
+
+// TXT 다운로드
+function downloadTxt(){
+  const lines=[];
+  lines.push("폭신폭신 프로젝트 — 팬픽 아카이브 BY NAINN");
+  lines.push("=".repeat(50));
+  lines.push(`총 ${DATA.length}편`);
+  lines.push("");
+  GROUPS.forEach(g=>{
+    const works=DATA.filter(w=>w.group===g);
+    if(!works.length)return;
+    lines.push(`▶ ${g} (${works.length}편)`);
+    lines.push("-".repeat(40));
+    const sorted=[...works].sort((a,b)=>b.date.localeCompare(a.date));
+    sorted.forEach((w,i)=>{
+      lines.push(`${i+1}. [${w.cp}] ${w.title}${w.adult?" ●":""}`);
+      lines.push(`   작성일: ${w.date||"미정"}  장르: ${w.genre||"미정"}${w.collab?`  합작: ${w.collabName}`:""}`);
+    });
+    lines.push("");
+  });
+  lines.push("");
+  lines.push("--- 본문 ---");
+  DATA.forEach(w=>{
+    const prose=localStorage.getItem(getProseKey(w.id));
+    if(prose){
+      lines.push("");
+      lines.push(`■ ${w.title} [${w.group} / ${w.cp}]`);
+      lines.push("=".repeat(40));
+      lines.push(prose);
+    }
+  });
+  const blob=new Blob([lines.join("\n")],{type:"text/plain;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`팬픽아카이브_${new Date().toISOString().slice(0,10)}.txt`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// 탭
+document.querySelectorAll(".tab").forEach(t=>{
+  t.onclick=()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    t.classList.add("active");
+    document.getElementById("tab-works").style.display=t.dataset.tab==="tab-works"?"block":"none";
+    document.getElementById("tab-prose").style.display=t.dataset.tab==="tab-prose"?"block":"none";
+  };
+});
+
+// 홈
+function renderHome(){
+  const grid=document.getElementById("group-grid");
+  grid.innerHTML="";
+  GROUPS.forEach(g=>{
+    const works=DATA.filter(w=>w.group===g);
+    const cps=[...new Set(works.map(w=>w.cp))];
+    const card=document.createElement("div");
+    card.className="group-card";
+    card.innerHTML=`<div class="group-card-name">${g}</div><div class="group-card-sub">${works.length}편 · CP ${cps.length}종</div>`;
+    card.onclick=()=>openGroup(g);
+    grid.appendChild(card);
+  });
+}
+
+// 그룹 페이지
+function openGroup(g){
+  currentGroup=g;currentCp=null;currentSort="date-desc";
+  showPage("page-group");
+  document.getElementById("gp-title").textContent=g;
+  const works=DATA.filter(w=>w.group===g);
+  const cps=[...new Set(works.map(w=>w.cp))];
+  const cpRow=document.getElementById("cp-tags");
+  cpRow.innerHTML=`<span class="toolbar-label">CP</span>`;
+  const allTag=document.createElement("button");
+  allTag.className="cp-tag active";allTag.textContent="전체";
+  allTag.onclick=()=>setCp(null);
+  cpRow.appendChild(allTag);
+  cps.forEach(cp=>{
+    const t=document.createElement("button");
+    t.className="cp-tag";t.textContent=cp;
+    t.onclick=()=>setCp(cp);
+    cpRow.appendChild(t);
+  });
+  document.querySelectorAll(".sort-btn").forEach(b=>b.classList.toggle("active",b.dataset.sort==="date-desc"));
+  renderTable();
+}
+function setCp(cp){
+  currentCp=cp;
+  document.querySelectorAll(".cp-tag").forEach(t=>t.classList.toggle("active",cp===null?t.textContent==="전체":t.textContent===cp));
+  renderTable();
+}
+document.querySelectorAll(".sort-btn").forEach(b=>{
+  b.onclick=()=>{
+    currentSort=b.dataset.sort;
+    document.querySelectorAll(".sort-btn").forEach(x=>x.classList.toggle("active",x===b));
+    renderTable();
+  };
+});
+function renderTable(){
+  let list=DATA.filter(w=>w.group===currentGroup);
+  if(currentCp)list=list.filter(w=>w.cp===currentCp);
+  list=currentSort==="date-desc"?list.sort((a,b)=>b.date.localeCompare(a.date)):list.sort((a,b)=>a.date.localeCompare(b.date));
+  document.getElementById("gp-count").textContent=`${list.length}편`;
+  const tbody=document.getElementById("tbody");
+  tbody.innerHTML="";
+  list.forEach((w,i)=>{
+    const tr=document.createElement("tr");
+    const collab=w.collab?`<span class="collab-badge" title="${w.collabName}">합작</span>`:"";
+    const dot=w.adult?`<span class="adult-dot" title="성인"></span>`:"";
+    tr.innerHTML=`<td class="no">${i+1}</td><td class="date-cell col-date">${w.date||""}</td><td><div class="title-cell"><span class="title-text">${w.title}</span>${dot}${collab}</div></td><td class="genre-cell">${w.genre||""}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+document.getElementById("back-btn").onclick=()=>{showPage("page-home");renderHome()};
+
+// CP 드롭다운
+function getCpsForGroup(g){
+  return [...new Set(DATA.filter(w=>w.group===g).map(w=>w.cp))].filter(Boolean);
+}
+function updateCpDropdown(){
+  document.getElementById("f-cp").value="";
+  renderCpOptions("");
+}
+function renderCpOptions(query){
+  const g=document.getElementById("f-group").value;
+  const cps=getCpsForGroup(g);
+  const q=query.toLowerCase();
+  const filtered=q?cps.filter(c=>c.toLowerCase().includes(q)):cps;
+  const dd=document.getElementById("cp-dropdown");
+  dd.innerHTML="";
+  if(!filtered.length){dd.classList.remove("show");return;}
+  filtered.forEach(cp=>{
+    const d=document.createElement("div");
+    d.className="cp-option";d.textContent=cp;
+    d.onmousedown=()=>{document.getElementById("f-cp").value=cp;dd.classList.remove("show");};
+    dd.appendChild(d);
+  });
+  dd.classList.add("show");
+}
+function filterCpDropdown(){renderCpOptions(document.getElementById("f-cp").value);}
+function showCpDropdown(){renderCpOptions(document.getElementById("f-cp").value);}
+function hideCpDropdown(){setTimeout(()=>document.getElementById("cp-dropdown").classList.remove("show"),150);}
+
+// 에디터 작품 목록
+function renderEditTable(){
+  const gf=document.getElementById("edit-group-filter").value;
+  let list=gf?DATA.filter(w=>w.group===gf):[...DATA];
+  list.sort((a,b)=>b.date.localeCompare(a.date));
+  const tbody=document.getElementById("edit-tbody");
+  tbody.innerHTML="";
+  list.forEach((w,i)=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px">${w.cp}</td><td style="font-size:13px;font-weight:500">${w.title}${w.adult?` <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);vertical-align:2px"></span>`:""}</td><td class="date-cell">${w.date||""}</td><td><div class="act-btns"><button onclick="editWork(${w.id})">수정</button><button class="del" onclick="deleteWork(${w.id})">삭제</button></div></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// 폼
+function resetForm(){
+  editingId=null;
+  document.getElementById("form-title").textContent="새 작품 추가";
+  document.getElementById("form-cancel-btn").style.display="none";
+  ["f-title","f-cp","f-date","f-genre","f-collabname"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("f-group").value="ONEUS";
+  document.getElementById("f-adult").checked=false;
+  document.getElementById("f-collab").checked=false;
+}
+function editWork(id){
+  const w=DATA.find(x=>x.id===id);if(!w)return;
+  editingId=id;
+  document.getElementById("form-title").textContent="작품 수정";
+  document.getElementById("form-cancel-btn").style.display="";
+  document.getElementById("f-title").value=w.title;
+  document.getElementById("f-group").value=w.group;
+  document.getElementById("f-cp").value=w.cp;
+  document.getElementById("f-date").value=w.date;
+  document.getElementById("f-genre").value=w.genre;
+  document.getElementById("f-collabname").value=w.collabName||"";
+  document.getElementById("f-adult").checked=w.adult;
+  document.getElementById("f-collab").checked=w.collab;
+  document.getElementById("work-form").scrollIntoView({behavior:"smooth"});
+}
+function deleteWork(id){
+  if(!confirm("이 작품을 삭제할까요?"))return;
+  DATA=DATA.filter(w=>w.id!==id);
+  saveStorage();renderEditTable();renderHome();
+}
+function submitForm(){
+  const title=document.getElementById("f-title").value.trim();
+  const cp=document.getElementById("f-cp").value.trim();
+  const date=document.getElementById("f-date").value;
+  const genre=document.getElementById("f-genre").value.trim();
+  if(!title||!cp){alert("제목과 CP는 필수입니다.");return;}
+  const obj={
+    id:editingId||nextId++,title,
+    group:document.getElementById("f-group").value,
+    cp,date,genre,
+    adult:document.getElementById("f-adult").checked,
+    collab:document.getElementById("f-collab").checked,
+    collabName:document.getElementById("f-collabname").value.trim()
+  };
+  if(editingId){DATA=DATA.map(w=>w.id===editingId?obj:w);}
+  else{DATA.push(obj);}
+  saveStorage();renderEditTable();renderHome();resetForm();
+}
+
+// 본문
+function renderProseSelector(){
+  const sel=document.getElementById("prose-work-sel");
+  const cur=sel.value;
+  sel.innerHTML='<option value="">작품 선택...</option>';
+  [...DATA].sort((a,b)=>b.date.localeCompare(a.date)).forEach(w=>{
+    const o=document.createElement("option");
+    o.value=w.id;o.textContent=`[${w.group}] ${w.title}`;
+    sel.appendChild(o);
+  });
+  if(cur)sel.value=cur;
+}
+document.getElementById("prose-work-sel").onchange=function(){
+  const id=this.value;
+  const area=document.getElementById("prose-area");
+  const saveBtn=document.getElementById("prose-save-btn");
+  const delBtn=document.getElementById("prose-del-btn");
+  if(!id){area.value="";area.disabled=true;saveBtn.disabled=true;delBtn.style.display="none";return;}
+  const stored=localStorage.getItem(getProseKey(id));
+  area.value=stored||"";area.disabled=false;saveBtn.disabled=false;
+  delBtn.style.display=stored?"":"none";
+};
+function saveProse(){
+  const sel=document.getElementById("prose-work-sel").value;
+  if(!sel)return;
+  localStorage.setItem(getProseKey(sel),document.getElementById("prose-area").value);
+  document.getElementById("prose-del-btn").style.display="";
+  const s=document.getElementById("prose-saved");
+  s.textContent="저장됨 "+new Date().toLocaleTimeString();
+  setTimeout(()=>{s.textContent=""},3000);
+}
+function deleteProse(){
+  const sel=document.getElementById("prose-work-sel").value;
+  if(!sel)return;
+  if(!confirm("본문을 삭제할까요?"))return;
+  localStorage.removeItem(getProseKey(sel));
+  document.getElementById("prose-area").value="";
+  document.getElementById("prose-del-btn").style.display="none";
+  document.getElementById("prose-saved").textContent="삭제됨";
+}
+
+loadStorage();
+renderHome();
+</script>
+</body>
+</html>
