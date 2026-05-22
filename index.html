@@ -180,6 +180,8 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
 }
 @font-face{font-family:"SunBatang";src:url("https://cdn.jsdelivr.net/gh/nainn-a/pokshinn@main/SunBatang-Light.ttf") format("truetype");font-weight:300;font-style:normal}
 @font-face{font-family:"SunBatang";src:url("https://cdn.jsdelivr.net/gh/nainn-a/pokshinn@main/SunBatang-Bold.ttf") format("truetype");font-weight:700;font-style:normal}
+@font-face{font-family:"BookkMyungjo";src:url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/BookkMyungjo-Lt.woff2") format("woff2");font-weight:300;font-style:normal}
+@font-face{font-family:"BookkMyungjo";src:url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/BookkMyungjo-Bd.woff2") format("woff2");font-weight:700;font-style:normal}
 </style>
 </head>
 <body>
@@ -299,6 +301,10 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
       </button>
       <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
         <span class="prose-saved" id="prose-page-saved"></span>
+        <div id="font-selector" style="display:flex;gap:4px">
+          <button class="prose-mode-btn active" id="font-btn-sun" onclick="setProseFont('SunBatang')" style="font-size:11px;padding:4px 9px">순바탕</button>
+          <button class="prose-mode-btn" id="font-btn-bookk" onclick="setProseFont('BookkMyungjo')" style="font-size:11px;padding:4px 9px">부크크</button>
+        </div>
         <button class="btn" onclick="downloadSingleProse()">↓ TXT</button>
         <button class="prose-mode-btn" id="prose-edit-btn">편집</button>
         <button class="btn primary" id="prose-page-save-btn" style="display:none" onclick="saveProseContent()">저장</button>
@@ -657,10 +663,28 @@ function saveProseContent(){
   localStorage.setItem(getProseKey(currentProseId),content);
   renderMarkdown(content);
   setProseMode("view");
+  _saveFrom='prose';
   document.getElementById("save-modal").classList.remove("hidden");
 }
+let _saveFrom=null; // 'editor' or 'prose'
 function closeSaveModal(){
   document.getElementById("save-modal").classList.add("hidden");
+  if(_saveFrom==='editor'&&editingId){
+    openProse(editingId);
+  }
+  _saveFrom=null;
+}
+
+/* ── 서체 선택 ── */
+let currentProseFont='SunBatang';
+function setProseFont(font){
+  currentProseFont=font;
+  const rendered=document.getElementById("prose-rendered");
+  const editArea=document.getElementById("prose-page-area");
+  rendered.style.fontFamily=`'${font}','Noto Serif KR',Georgia,serif`;
+  editArea.style.fontFamily=`'${font}','Noto Serif KR',serif`;
+  document.getElementById("font-btn-sun").classList.toggle("active",font==="SunBatang");
+  document.getElementById("font-btn-bookk").classList.toggle("active",font==="BookkMyungjo");
 }
 
 /* ── 이미지 삽입 ── */
@@ -833,6 +857,7 @@ function submitAll(){
   document.getElementById("form-title").textContent="작품 수정";
   document.getElementById("form-cancel-btn").style.display="";
   document.getElementById("editor-del-work-btn").style.display="";
+  _saveFrom='editor';
   document.getElementById("save-modal").classList.remove("hidden");
 }
 function insertEditorMd(before,after){
