@@ -67,7 +67,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 /* 상세 페이지 */
 .group-wrap{max-width:865px;margin:0 auto;padding:2rem 1.25rem;letter-spacing:-0.05em}
 .group-page-header{margin-bottom:1.25rem;display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.group-page-title{font-family:'SunBatang','Noto Serif KR',Georgia,serif;font-size:20px;font-weight:700;letter-spacing:-0.05em;color:var(--text)}
+.group-page-title{font-family:'BookkMyungjo','Noto Serif KR',Georgia,serif;font-size:20px;font-weight:700;letter-spacing:-0.05em;color:var(--text)}
 .group-page-count{font-size:13px;color:var(--text3)}
 .toolbar{margin-bottom:1rem;display:flex;flex-direction:column;gap:10px}
 .toolbar-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -121,9 +121,9 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
 /* 본문 페이지 */
 .prose-page-wrap{max-width:865px;margin:0 auto;padding:2rem 1.25rem;letter-spacing:-0.05em}
 .prose-page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;gap:12px;flex-wrap:wrap}
-.prose-page-title{font-family:'SunBatang','Noto Serif KR',Georgia,serif;font-size:20px;font-weight:700;letter-spacing:-0.05em;color:var(--text)}
+.prose-page-title{font-family:'BookkMyungjo','Noto Serif KR',Georgia,serif;font-size:20px;font-weight:700;letter-spacing:-0.05em;color:var(--text)}
 .prose-page-meta{font-size:12px;color:var(--text3);margin-top:4px;letter-spacing:-0.03em}
-.prose-view{background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:2rem;min-height:200px;font-size:16px;line-height:2;color:var(--text);font-family:'SunBatang','Noto Serif KR',Georgia,serif;font-weight:300}
+.prose-view{background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:2rem;min-height:200px;font-size:16px;line-height:2;color:var(--text);font-family:'BookkMyungjo','Noto Serif KR',Georgia,serif;font-weight:300}
 .prose-view p{margin-bottom:1em}
 .prose-view h1{font-size:1.4em;font-weight:700;margin:1.2em 0 0.5em}
 .prose-view h2{font-size:1.2em;font-weight:700;margin:1em 0 0.4em}
@@ -133,7 +133,7 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
 .prose-view hr{border:none;border-top:0.5px solid var(--border2);margin:1.5em 0}
 .prose-view blockquote{border-left:2px solid var(--border2);padding-left:1em;color:var(--text2);margin:1em 0}
 .prose-view-empty{color:var(--text3);font-style:italic;font-size:13px}
-.prose-edit-area{width:100%;min-height:400px;padding:1.5rem;border:0.5px solid var(--border2);border-radius:var(--radius-lg);background:rgba(255,255,255,0.6);color:var(--text);font-size:16px;line-height:2;resize:vertical;outline:none;font-family:'SunBatang','Noto Serif KR',Georgia,serif;font-weight:300;letter-spacing:-0.05em}
+.prose-edit-area{width:100%;min-height:400px;padding:1.5rem;border:0.5px solid var(--border2);border-radius:var(--radius-lg);background:rgba(255,255,255,0.6);color:var(--text);font-size:16px;line-height:2;resize:vertical;outline:none;font-family:'BookkMyungjo','Noto Serif KR',Georgia,serif;font-weight:300;letter-spacing:-0.05em}
 .prose-edit-area:focus{border-color:var(--accent)}
 .prose-toolbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
 .prose-tool-btn{font-size:12px;padding:4px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text2);cursor:pointer}
@@ -178,8 +178,6 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
   .group-card-suit-big{font-size:28px}
   .group-card-bottom{display:none}
 }
-@font-face{font-family:"SunBatang";src:url("https://cdn.jsdelivr.net/gh/nainn-a/pokshinn@main/SunBatang-Light.ttf") format("truetype");font-weight:300;font-style:normal}
-@font-face{font-family:"SunBatang";src:url("https://cdn.jsdelivr.net/gh/nainn-a/pokshinn@main/SunBatang-Bold.ttf") format("truetype");font-weight:700;font-style:normal}
 @font-face{font-family:"BookkMyungjo";src:url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/BookkMyungjo-Lt.woff2") format("woff2");font-weight:300;font-style:normal}
 @font-face{font-family:"BookkMyungjo";src:url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/BookkMyungjo-Bd.woff2") format("woff2");font-weight:700;font-style:normal}
 </style>
@@ -302,11 +300,11 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
       <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
         <span class="prose-saved" id="prose-page-saved"></span>
         <div id="font-selector" style="display:flex;gap:4px">
-          <button class="prose-mode-btn active" id="font-btn-sun" onclick="setProseFont('SunBatang')" style="font-size:11px;padding:4px 9px">순바탕</button>
-          <button class="prose-mode-btn" id="font-btn-bookk" onclick="setProseFont('BookkMyungjo')" style="font-size:11px;padding:4px 9px">부크크</button>
+          <button class="prose-mode-btn active" id="font-btn-bookk" onclick="setProseFont('BookkMyungjo')" style="font-size:11px;padding:4px 9px">부크크</button>
         </div>
         <button class="btn" onclick="downloadSingleProse()">↓ TXT</button>
         <button class="prose-mode-btn" id="prose-edit-btn">편집</button>
+        <button class="btn danger" id="prose-del-btn" style="display:none" onclick="deleteCurrentProse()">삭제</button>
         <button class="btn primary" id="prose-page-save-btn" style="display:none" onclick="saveProseContent()">저장</button>
       </div>
     </div>
@@ -336,7 +334,7 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
         <input type="file" id="img-upload" accept="image/*" style="display:none" onchange="handleImgUpload(event)">
         <button class="prose-tool-btn" onclick="insertVideo()" title="동영상 삽입">▶</button>
       </div>
-      <div class="prose-edit-area" id="prose-page-area" contenteditable="true" spellcheck="false" style="font-family:'SunBatang','Noto Serif KR',serif;font-weight:300;letter-spacing:-0.05em;min-height:400px;padding:1.5rem;line-height:2.1;font-size:16px"></div>
+      <div class="prose-edit-area" id="prose-page-area" contenteditable="true" spellcheck="false" style="font-family:'BookkMyungjo','Noto Serif KR',serif;font-weight:300;letter-spacing:-0.05em;min-height:400px;padding:1.5rem;line-height:2.1;font-size:16px"></div>
     </div>
   </div>
 </div>
@@ -404,6 +402,11 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
         <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
         <button class="prose-tool-btn" onclick="document.getElementById('txt-upload').click()" title="TXT 파일 불러오기">↑ TXT</button>
         <input type="file" id="txt-upload" accept=".txt,text/plain" style="display:none" onchange="handleTxtUpload(event)">
+        <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
+        <select id="editor-font-sel" onchange="setEditorFont(this.value)" style="font-size:12px;padding:3px 7px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text);outline:none;cursor:pointer">
+          <option value="BookkMyungjo">부크크 명조</option>
+          <option value="inherit">시스템 고딕</option>
+        </select>
       </div>
       <textarea class="prose-area" id="prose-area" placeholder="본문을 입력하세요..."></textarea>
       <div class="prose-save-row">
@@ -646,8 +649,16 @@ function openProse(id){
   const stored=localStorage.getItem(getProseKey(id))||"";
   document.getElementById("prose-page-area").innerHTML=stored;
   document.getElementById("prose-rendered").innerHTML=stored||`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
+  document.getElementById("prose-del-btn").style.display=unlocked?"":"none";
   setProseMode("view");
   showPage("page-prose");
+}
+function deleteCurrentProse(){
+  if(!currentProseId||!confirm("이 작품을 삭제할까요?"))return;
+  DATA=DATA.filter(w=>w.id!==currentProseId);
+  localStorage.removeItem(getProseKey(currentProseId));
+  saveStorage();renderHome();
+  showPage("page-group");
 }
 function openNewProse(){
   if(!unlocked){requirePw('prose-new');return;}
@@ -676,14 +687,13 @@ function closeSaveModal(){
 }
 
 /* ── 서체 선택 ── */
-let currentProseFont='SunBatang';
+let currentProseFont='BookkMyungjo';
 function setProseFont(font){
   currentProseFont=font;
   const rendered=document.getElementById("prose-rendered");
   const editArea=document.getElementById("prose-page-area");
   rendered.style.fontFamily=`'${font}','Noto Serif KR',Georgia,serif`;
   editArea.style.fontFamily=`'${font}','Noto Serif KR',serif`;
-  document.getElementById("font-btn-sun").classList.toggle("active",font==="SunBatang");
   document.getElementById("font-btn-bookk").classList.toggle("active",font==="BookkMyungjo");
 }
 
@@ -860,6 +870,12 @@ function submitAll(){
   _saveFrom='editor';
   document.getElementById("save-modal").classList.remove("hidden");
 }
+function setEditorFont(font){
+  const ta=document.getElementById("prose-area");
+  ta.style.fontFamily=font==="inherit"?"inherit":`'${font}','Noto Serif KR',Georgia,serif`;
+  ta.style.fontWeight=font==="BookkMyungjo"?"300":"";
+}
+
 function insertEditorMd(before,after){
   const ta=document.getElementById("prose-area");
   const s=ta.selectionStart,e=ta.selectionEnd;
