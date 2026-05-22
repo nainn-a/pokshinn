@@ -450,34 +450,7 @@ const SUITS={"ONEUS":"♥","ONF":"♠","VERIVERY":"♦","P1HARMONY":"♣","82MAJ
 const ABBR={"ONEUS":"1US","ONF":"ONF","VERIVERY":"VR","P1HARMONY":"P1","82MAJOR":"82"};
 const GROUPS=["ONEUS","ONF","VERIVERY","P1HARMONY","82MAJOR"];
 
-let DATA=[
-  {id:1,title:"bunny the Veronica",group:"ONEUS",cp:"섷건",date:"2021-06-01",genre:"일상, 판타지",adult:false,collab:false,collabName:""},
-  {id:2,title:"D-Day",group:"ONEUS",cp:"섷숀",date:"2021-06-04",genre:"일상",adult:true,collab:false,collabName:""},
-  {id:3,title:"하지 이야기",group:"ONEUS",cp:"호학",date:"2021-06-21",genre:"판타지, 신화",adult:false,collab:false,collabName:""},
-  {id:4,title:"Genie",group:"ONEUS",cp:"호학",date:"2021-07-20",genre:"일상",adult:true,collab:false,collabName:""},
-  {id:5,title:"shh-sha",group:"ONEUS",cp:"섷숀",date:"2021-08-01",genre:"일상",adult:false,collab:false,collabName:""},
-  {id:6,title:"you make me",group:"ONEUS",cp:"섷숀",date:"2021-09-26",genre:"일상",adult:false,collab:false,collabName:""},
-  {id:7,title:"단 하루의 휴가",group:"ONF",cp:"션윹",date:"2021-10-09",genre:"일상",adult:false,collab:false,collabName:""},
-  {id:8,title:"Get fizzy with it",group:"ONF",cp:"션윹",date:"2021-10-13",genre:"일상",adult:true,collab:false,collabName:""},
-  {id:9,title:"대설주의보",group:"ONEUS",cp:"섷숀",date:"2022-01-10",genre:"재난물",adult:false,collab:true,collabName:"계간섷숀 겨울 창간호"},
-  {id:10,title:"입춘대길",group:"ONEUS",cp:"호학",date:"2022-02-20",genre:"일상, 판타지",adult:false,collab:true,collabName:"계간호학 창간호"},
-  {id:11,title:"다정도 병인 양하여",group:"ONEUS",cp:"섷숀",date:"2022-04-05",genre:"시대물",adult:false,collab:true,collabName:"계간섷숀 봄호"},
-  {id:12,title:"이게 사랑이 아니면",group:"VERIVERY",cp:"묭헌",date:"2022-06-19",genre:"일상",adult:false,collab:true,collabName:"묭헌합작"},
-  {id:13,title:"노트 온 벨로시티",group:"VERIVERY",cp:"묭헌",date:"2022-07-19",genre:"일상",adult:true,collab:false,collabName:""},
-  {id:14,title:"-196°C",group:"VERIVERY",cp:"묭헌",date:"2022-08-14",genre:"일상",adult:false,collab:true,collabName:"묳터디"},
-  {id:15,title:"오늘부터 신령님이 아이돌(1/5)",group:"VERIVERY",cp:"묭헌",date:"2022-08-25",genre:"일상, 판타지",adult:false,collab:true,collabName:"묳터디"},
-  {id:16,title:"pop-up!",group:"VERIVERY",cp:"묭헌",date:"2022-09-03",genre:"일상, 판타지",adult:false,collab:true,collabName:"묳터디"},
-  {id:17,title:"불장난",group:"VERIVERY",cp:"묭깡",date:"2024-05-26",genre:"일상",adult:false,collab:false,collabName:""},
-  {id:18,title:"Oh! Shall I tell you, Mama",group:"P1HARMONY",cp:"쫑테",date:"2024-10-17",genre:"일상",adult:false,collab:false,collabName:""},
-  {id:19,title:"고스트 트윈스",group:"P1HARMONY",cp:"종쏠섭",date:"2024-11-07",genre:"일상",adult:false,collab:false,collabName:""},
-  {id:20,title:"소원의 아이러니",group:"P1HARMONY",cp:"웅양",date:"2024-12-26",genre:"일상, 판타지",adult:false,collab:false,collabName:""},
-  {id:21,title:"풍선껌",group:"P1HARMONY",cp:"쫑테",date:"2025-05-01",genre:"일상",adult:false,collab:false,collabName:""},
-  {id:22,title:"서울 시티 러브",group:"P1HARMONY",cp:"탁테",date:"2025-05-05",genre:"일상",adult:true,collab:false,collabName:""},
-  {id:23,title:"아날렘마",group:"P1HARMONY",cp:"웅양",date:"2025-05-19",genre:"일상",adult:false,collab:false,collabName:""},
-  {id:24,title:"호기심이 사람을 살림",group:"82MAJOR",cp:"멜닙",date:"",genre:"",adult:false,collab:false,collabName:""},
-  {id:25,title:"Heat Between Pages",group:"82MAJOR",cp:"멜닙",date:"",genre:"",adult:false,collab:false,collabName:""},
-  {id:26,title:"2등",group:"82MAJOR",cp:"멜닙",date:"",genre:"",adult:false,collab:false,collabName:""},
-];
+let DATA=[];
 
 let currentGroup=null,currentCp=null,currentSort="date-desc";
 let editingId=null,unlocked=false,nextId=100,pwPurpose='editor';
@@ -902,6 +875,12 @@ function showCpDropdown(){renderCpOptions(document.getElementById("f-cp").value)
 function hideCpDropdown(){setTimeout(()=>document.getElementById("cp-dropdown").classList.remove("show"),150);}
 
 /* ── 초기화 ── */
+// v166: 데이터 초기화 (한 번만 실행)
+if(!localStorage.getItem("archive_cleared_v166")){
+  localStorage.removeItem("archive_data");
+  localStorage.removeItem("archive_nextid");
+  localStorage.setItem("archive_cleared_v166","1");
+}
 loadStorage();
 renderHome();
 </script>
