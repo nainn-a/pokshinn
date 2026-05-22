@@ -115,8 +115,7 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
 .btn:hover{background:rgba(255,255,255,0.9)}
 .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .btn.primary:hover{opacity:0.85}
-.btn.danger{color:var(--red);border-color:rgba(226,75,74,0.3)}
-.btn.danger:hover{background:rgba(226,75,74,0.08)}
+.btn.danger{color:var(--red);border-color:rgba(226,75,74,0.3)}.btn.danger:hover{background:rgba(226,75,74,0.08)}
 
 /* 본문 페이지 */
 .prose-page-wrap{max-width:865px;margin:0 auto;padding:2rem 1.25rem;letter-spacing:-0.05em}
@@ -164,8 +163,9 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
 .form-actions{display:flex;gap:8px;justify-content:flex-end}
 .prose-selector{display:flex;gap:8px;margin-bottom:0.75rem;align-items:center;flex-wrap:wrap}
 .prose-selector select{font-size:13px;padding:6px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text);outline:none;flex:1;max-width:300px}
-.prose-area{width:100%;min-height:400px;padding:14px;border:0.5px solid var(--border2);border-radius:var(--radius-lg);background:rgba(255,255,255,0.6);color:var(--text);font-size:14px;line-height:1.8;resize:vertical;outline:none;font-family:inherit;letter-spacing:-0.05em}
+.prose-area{width:100%;min-height:400px;padding:14px;border:0.5px solid var(--border2);border-radius:var(--radius-lg);background:rgba(255,255,255,0.6);color:var(--text);font-size:14px;line-height:1.8;outline:none;font-family:inherit;letter-spacing:-0.05em;cursor:text}
 .prose-area:focus{border-color:var(--accent)}
+.prose-area:empty:before{content:attr(data-placeholder);color:var(--text3);pointer-events:none;font-style:italic}
 .prose-save-row{display:flex;gap:8px;justify-content:flex-end;margin-top:10px;align-items:center}
 .prose-saved{font-size:12px;color:var(--text3)}
 
@@ -173,13 +173,19 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
   .form-grid{grid-template-columns:1fr}
   col.col-date,th.col-date,td.col-date{display:none}
   .group-grid{flex-direction:column;align-items:center;flex-wrap:wrap}
-  .group-card{width:100%;max-width:320px;height:auto;flex-direction:row;gap:16px;justify-content:flex-start;padding:14px 16px}
-  .group-card-center{flex-direction:row;gap:10px;justify-content:flex-start;align-items:center}
-  .group-card-suit-big{font-size:28px}
-  .group-card-bottom{display:none}
+  .group-card{width:100%;max-width:380px;height:auto;min-height:64px;flex-direction:row;gap:0;justify-content:flex-start;padding:10px 12px;align-items:center;position:relative}
+  .group-card-top{flex-direction:row;align-items:baseline;gap:2px;position:absolute;top:8px;left:10px}
+  .group-card-abbr{font-size:11px}
+  .group-card-suit{font-size:10px;margin-left:1px}
+  .group-card-center{flex-direction:row;gap:10px;justify-content:flex-start;align-items:center;flex:1;padding-left:48px;margin-top:0}
+  .group-card-suit-big{font-size:26px;line-height:1;flex-shrink:0}
+  .group-card-name{font-size:17px;margin-top:0}
+  .group-card-sub{font-size:13px;margin-top:0}
+  .group-card-bottom{display:flex;position:absolute;bottom:8px;right:10px}
+  .group-card-suit-bot{font-size:10px;transform:none}
 }
-@font-face{font-family:"BookkMyungjo";src:url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/BookkMyungjo-Lt.woff2") format("woff2");font-weight:300;font-style:normal}
-@font-face{font-family:"BookkMyungjo";src:url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/BookkMyungjo-Bd.woff2") format("woff2");font-weight:700;font-style:normal}
+@font-face{font-family:"BookkMyungjo";src:url("https://cdn.jsdelivr.net/gh/nainn-a/pokshinn@main/BOOKKMYUNGJO_LIGHT.TTF") format("truetype");font-weight:300;font-style:normal}
+@font-face{font-family:"BookkMyungjo";src:url("https://cdn.jsdelivr.net/gh/nainn-a/pokshinn@main/BOOKKMYUNGJO_BOLD.TTF") format("truetype");font-weight:700;font-style:normal}
 </style>
 </head>
 <body>
@@ -283,7 +289,7 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
     <div class="table-wrap">
       <table>
         <colgroup><col class="col-no"><col class="col-date"><col class="col-title"><col class="col-genre"></colgroup>
-        <thead><tr><th>#</th><th class="col-date">작성일</th><th>제목</th><th>장르</th></tr></thead>
+        <thead><tr><th>#</th><th class="col-date">업로드일</th><th>제목</th><th>장르</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
@@ -299,11 +305,8 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
       </button>
       <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
         <span class="prose-saved" id="prose-page-saved"></span>
-        <div id="font-selector" style="display:flex;gap:4px">
-          <button class="prose-mode-btn active" id="font-btn-bookk" onclick="setProseFont('BookkMyungjo')" style="font-size:11px;padding:4px 9px">부크크</button>
-        </div>
-        <button class="btn" onclick="downloadSingleProse()">↓ TXT</button>
-        <button class="prose-mode-btn" id="prose-edit-btn">편집</button>
+        <button class="btn" onclick="downloadSingleProse()" style="background:rgba(58,90,138,0.12);border-color:rgba(58,90,138,0.45);color:var(--accent);font-weight:500">다운로드</button>
+        <button class="btn" id="prose-edit-btn">편집</button>
         <button class="btn danger" id="prose-del-btn" style="display:none" onclick="deleteCurrentProse()">삭제</button>
         <button class="btn primary" id="prose-page-save-btn" style="display:none" onclick="saveProseContent()">저장</button>
       </div>
@@ -317,6 +320,7 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
     <!-- 보기 -->
     <div id="prose-view-mode">
       <div class="prose-view" id="prose-rendered"></div>
+      <div id="prose-modified-display" style="font-size:11px;color:var(--text3);text-align:right;margin-top:8px;letter-spacing:-0.03em"></div>
     </div>
     <!-- 편집 -->
     <div id="prose-edit-mode" style="display:none">
@@ -371,7 +375,7 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
             <div class="cp-dropdown" id="cp-dropdown"></div>
           </div>
         </div>
-        <div class="form-field"><label>작성일</label><input id="f-date" type="date"></div>
+        <div class="form-field"><label>업로드일</label><input id="f-date" type="date"></div>
         <div class="form-field"><label>장르</label>
           <div class="genre-tag-wrap" id="genre-tag-wrap" onclick="document.getElementById('genre-tag-input').focus()">
             <input class="genre-tag-input" id="genre-tag-input" placeholder="입력 후 엔터" onkeydown="handleGenreKey(event)" autocomplete="off">
@@ -388,17 +392,17 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
     <!-- 본문 편집 -->
     <div style="margin-top:1rem">
       <div class="prose-toolbar">
-        <button class="prose-tool-btn" onclick="insertEditorMd('**','**')"><b>B</b></button>
-        <button class="prose-tool-btn" onclick="insertEditorMd('*','*')"><i>I</i></button>
-        <button class="prose-tool-btn" onclick="insertEditorMd('\n# ','')">H1</button>
-        <button class="prose-tool-btn" onclick="insertEditorMd('\n## ','')">H2</button>
-        <button class="prose-tool-btn" onclick="insertEditorMd('\n> ','')">❝</button>
-        <button class="prose-tool-btn" onclick="insertEditorMd('\n---\n','')">—</button>
+        <button class="prose-tool-btn" onclick="edCmd('bold')" title="굵게"><b>B</b></button>
+        <button class="prose-tool-btn" onclick="edCmd('italic')" title="기울임"><i>I</i></button>
+        <button class="prose-tool-btn" onclick="edCmd('underline')" title="밑줄" style="text-decoration:underline">U</button>
+        <button class="prose-tool-btn" onclick="edCmd('strikeThrough')" title="취소선" style="text-decoration:line-through">S</button>
         <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
-        <button class="prose-tool-btn" style="color:#c0392b;font-weight:700" onclick="applyColor('prose-area','#c0392b')">A</button>
-        <button class="prose-tool-btn" style="color:#2c5fa8;font-weight:700" onclick="applyColor('prose-area','#2c5fa8')">A</button>
-        <button class="prose-tool-btn" style="color:#888;font-weight:700" onclick="applyColor('prose-area','#888888')">A</button>
-        <input type="color" id="editor-color-pick" value="#e24b4a" title="다른 색" style="width:26px;height:26px;padding:1px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;vertical-align:middle" onchange="applyColor('prose-area',this.value)">
+        <button class="prose-tool-btn" onclick="edInsertHr()" title="구분선">—</button>
+        <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
+        <button class="prose-tool-btn" style="color:#c0392b;font-weight:700" onclick="edColor('#c0392b')" title="빨강">A</button>
+        <button class="prose-tool-btn" style="color:#2c5fa8;font-weight:700" onclick="edColor('#2c5fa8')" title="파랑">A</button>
+        <button class="prose-tool-btn" style="color:#888;font-weight:700" onclick="edColor('#888888')" title="회색">A</button>
+        <input type="color" id="editor-color-pick" value="#e24b4a" title="다른 색" style="width:26px;height:26px;padding:1px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;vertical-align:middle" oninput="edColor(this.value)">
         <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
         <button class="prose-tool-btn" onclick="document.getElementById('txt-upload').click()" title="TXT 파일 불러오기">↑ TXT</button>
         <input type="file" id="txt-upload" accept=".txt,text/plain" style="display:none" onchange="handleTxtUpload(event)">
@@ -408,7 +412,7 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
           <option value="inherit">시스템 고딕</option>
         </select>
       </div>
-      <textarea class="prose-area" id="prose-area" placeholder="본문을 입력하세요..."></textarea>
+      <div class="prose-area" id="prose-area" contenteditable="true" spellcheck="false" style="font-family:'BookkMyungjo','Noto Serif KR',Georgia,serif;font-weight:300;min-height:400px;line-height:2;font-size:16px;letter-spacing:-0.05em" data-placeholder="본문을 입력하세요..."></div>
       <div class="prose-save-row">
         <button class="btn" id="form-cancel-btn" style="display:none" onclick="resetEditorForm()">새 작품으로</button>
         <button class="btn primary" onclick="submitAll()">저장</button>
@@ -539,7 +543,7 @@ function downloadTxt(){
     lines.push(`▶ ${g} (${works.length}편)`);lines.push("-".repeat(40));
     [...works].sort((a,b)=>(b.date||"").localeCompare(a.date||"")).forEach((w,i)=>{
       lines.push(`${i+1}. [${w.cp}] ${w.title}${w.adult?" ●":""}`);
-      lines.push(`   작성일: ${w.date||"미정"}  장르: ${w.genre||"미정"}${w.collab?`  합작: ${w.collabName}`:""}`);
+      lines.push(`   업로드일: ${w.date||"미정"}  장르: ${w.genre||"미정"}${w.collab?`  합작: ${w.collabName}`:""}`);
     });lines.push("");
   });
   DATA.forEach(w=>{const p=localStorage.getItem(getProseKey(w.id));if(p){lines.push("");lines.push(`■ ${w.title}`);lines.push("=".repeat(40));lines.push(p);}});
@@ -635,7 +639,9 @@ function setProseMode(mode){
   document.getElementById("prose-view-mode").style.display=isEdit?"none":"block";
   document.getElementById("prose-edit-mode").style.display=isEdit?"block":"none";
   document.getElementById("prose-page-save-btn").style.display=isEdit?"":"none";
-  document.getElementById("prose-edit-btn").classList.toggle("active",isEdit);
+  const editBtn=document.getElementById("prose-edit-btn");
+  if(isEdit){editBtn.style.background="var(--accent)";editBtn.style.color="#fff";editBtn.style.borderColor="var(--accent)";}
+  else{editBtn.style.background="";editBtn.style.color="";editBtn.style.borderColor="";}
   if(!isEdit){
     const content=document.getElementById("prose-page-area").innerHTML;
     document.getElementById("prose-rendered").innerHTML=content||`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
@@ -650,6 +656,8 @@ function openProse(id){
   document.getElementById("prose-page-area").innerHTML=stored;
   document.getElementById("prose-rendered").innerHTML=stored||`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
   document.getElementById("prose-del-btn").style.display=unlocked?"":"none";
+  const mod=localStorage.getItem(getProseKey(id)+"_modified");
+  document.getElementById("prose-modified-display").textContent=mod?"최종 수정: "+mod:"";
   setProseMode("view");
   showPage("page-prose");
 }
@@ -657,6 +665,7 @@ function deleteCurrentProse(){
   if(!currentProseId||!confirm("이 작품을 삭제할까요?"))return;
   DATA=DATA.filter(w=>w.id!==currentProseId);
   localStorage.removeItem(getProseKey(currentProseId));
+  localStorage.removeItem(getProseKey(currentProseId)+"_modified");
   saveStorage();renderHome();
   showPage("page-group");
 }
@@ -672,7 +681,10 @@ function saveProseContent(){
   if(!currentProseId)return;
   const content=document.getElementById("prose-page-area").innerHTML;
   localStorage.setItem(getProseKey(currentProseId),content);
-  renderMarkdown(content);
+  const now=new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
+  localStorage.setItem(getProseKey(currentProseId)+"_modified",now);
+  document.getElementById("prose-modified-display").textContent="최종 수정: "+now;
+  document.getElementById("prose-rendered").innerHTML=content||`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
   setProseMode("view");
   _saveFrom='prose';
   document.getElementById("save-modal").classList.remove("hidden");
@@ -821,7 +833,7 @@ function onEditorWorkChange(){
   document.getElementById("f-collabname").value=w.collabName||"";
   document.getElementById("f-adult").checked=w.adult;
   document.getElementById("f-collab").checked=w.collab;
-  document.getElementById("prose-area").value=localStorage.getItem(getProseKey(w.id))||"";
+  document.getElementById("prose-area").innerHTML=localStorage.getItem(getProseKey(w.id))||"";
 }
 function resetEditorForm(){
   editingId=null;
@@ -833,7 +845,7 @@ function resetEditorForm(){
   document.getElementById("f-group").value="ONEUS";
   document.getElementById("f-adult").checked=false;
   document.getElementById("f-collab").checked=false;
-  document.getElementById("prose-area").value="";
+  document.getElementById("prose-area").innerHTML="";
   setGenreFromString("");
 }
 document.getElementById("form-cancel-btn").onclick=resetEditorForm;
@@ -846,7 +858,6 @@ function submitAll(){
   const title=document.getElementById("f-title").value.trim();
   const cp=document.getElementById("f-cp").value.trim();
   if(!title||!cp){alert("제목과 CP는 필수입니다.");return;}
-  // 입력 중인 태그도 반영
   const pending=document.getElementById("genre-tag-input").value.trim();
   if(pending&&!genreTags.includes(pending)){genreTags.push(pending);document.getElementById("genre-tag-input").value="";}
   const id=editingId||nextId++;
@@ -860,7 +871,10 @@ function submitAll(){
     collabName:document.getElementById("f-collabname").value.trim()
   };
   if(editingId)DATA=DATA.map(w=>w.id===editingId?obj:w);else DATA.push(obj);
-  localStorage.setItem(getProseKey(id),document.getElementById("prose-area").value);
+  const proseContent=document.getElementById("prose-area").innerHTML;
+  localStorage.setItem(getProseKey(id),proseContent);
+  const now=new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
+  localStorage.setItem(getProseKey(id)+"_modified",now);
   saveStorage();renderHome();renderEditorWorkSel();
   editingId=id;
   document.getElementById("editor-work-sel").value=id;
@@ -876,25 +890,24 @@ function setEditorFont(font){
   ta.style.fontWeight=font==="BookkMyungjo"?"300":"";
 }
 
-function insertEditorMd(before,after){
-  const ta=document.getElementById("prose-area");
-  const s=ta.selectionStart,e=ta.selectionEnd;
-  const sel=ta.value.substring(s,e);
-  ta.value=ta.value.substring(0,s)+before+sel+after+ta.value.substring(e);
-  ta.focus();ta.selectionStart=s+before.length;ta.selectionEnd=s+before.length+sel.length;
-}
+/* ── 에디터 WYSIWYG 명령 ── */
+function edCmd(cmd){document.getElementById("prose-area").focus();document.execCommand(cmd,false,null);}
+function edColor(color){document.getElementById("prose-area").focus();document.execCommand("foreColor",false,color);}
+function edInsertHr(){document.getElementById("prose-area").focus();document.execCommand("insertHTML",false,"<hr>");}
+
 function handleTxtUpload(e){
   const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=function(ev){
-    const ta=document.getElementById("prose-area");
+    const area=document.getElementById("prose-area");
     const text=ev.target.result;
-    if(ta.value.trim()){
+    const html=text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
+    if(area.innerHTML.trim()&&area.innerHTML!=="<br>"){
       if(!confirm("현재 본문이 있습니다. 파일 내용으로 교체할까요?\n(취소하면 현재 내용 뒤에 이어 붙입니다)"))
-        {ta.value+="\n\n"+text;ta.focus();e.target.value="";return;}
+        {area.innerHTML+=`<br><br>${html}`;area.focus();e.target.value="";return;}
     }
-    ta.value=text;
-    ta.focus();
+    area.innerHTML=html;
+    area.focus();
   };
   reader.readAsText(file,"UTF-8");
   e.target.value="";
