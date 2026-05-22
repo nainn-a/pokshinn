@@ -31,68 +31,54 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .hero-nav-logo{font-family:'Playfair Display',Georgia,serif;font-size:12px;font-weight:700;letter-spacing:-0.03em;color:var(--text)}
 .hero-nav-right{font-size:14px;color:var(--text3);background:none;border:none;cursor:pointer}
 .hero-nav-right:hover{color:var(--text2)}
-.hero-center{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 28px 32px;gap:0}
+.hero-center{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 28px 32px}
 .hero-main-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,7vw,88px);font-weight:700;letter-spacing:-0.06em;color:#1a2a4a;line-height:1.0;cursor:pointer;margin-bottom:20px}
 .hero-main-title:hover{opacity:0.7}
 .hero-main-sub1{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:14px;color:#3a5080;letter-spacing:0.02em;line-height:1.8;margin-bottom:4px}
 .hero-main-sub2{font-family:'Playfair Display',Georgia,serif;font-size:12px;color:#7090b8;letter-spacing:0.04em}
 .hero-groups-row{position:relative;z-index:2;display:flex;gap:24px;padding:20px 28px;justify-content:center;flex-wrap:wrap;border-top:0.5px solid var(--border)}
-.hero-bottom-postype{font-size:9px;letter-spacing:-0.03em;color:#7090b8;text-transform:uppercase}
 .hero-bottom-bar{position:relative;z-index:2;padding:10px 28px;border-top:0.5px solid var(--border)}
 .hero-group-item,.hero-bottom-postype{font-family:'Cormorant Garamond',Georgia,serif !important}
+.hero-group-item{font-size:11px;letter-spacing:-0.05em;color:#3a5080}
+.hero-bottom-postype{font-size:9px;letter-spacing:-0.03em;color:#7090b8;text-transform:uppercase}
 
 /* 트럼프 카드 인덱스 */
 .group-grid-wrap{display:block;max-width:865px;margin:0 auto;width:100%;padding:2rem 1.25rem;min-height:100vh}
 .group-grid{display:flex;flex-direction:row;gap:10px;width:100%;margin-bottom:1.5rem;justify-content:center;flex-wrap:nowrap}
-.group-card{
-  width:165px;height:243px;
-  border-radius:8px;
-  background:#eef3fa;
-  border:0.5px solid rgba(80,130,200,0.22);
-  box-shadow:0 4px 16px rgba(40,80,160,0.1),0 1px 4px rgba(40,80,160,0.07);
-  position:relative;cursor:pointer;
-  transition:transform .15s;
-  display:flex;flex-direction:column;
-  padding:8px 9px;
-}
+.group-card{width:165px;height:243px;border-radius:8px;background:#eef3fa;border:0.5px solid rgba(80,130,200,0.22);box-shadow:0 4px 16px rgba(40,80,160,0.1),0 1px 4px rgba(40,80,160,0.07);position:relative;cursor:pointer;transition:transform .15s;display:flex;flex-direction:column;padding:8px 9px}
 .group-card:hover{transform:translateY(-4px)}
 .group-card-top{display:flex;align-items:baseline;gap:2px}
 .group-card-abbr{font-family:'Noto Serif KR',Georgia,serif;font-size:13px;font-weight:700;letter-spacing:-0.05em;color:#1a2a4a}
 .group-card-suit{font-size:11px;color:#1a2a4a;margin-left:2px}
 .group-card-center{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px}
 .group-card-suit-big{font-size:44px;line-height:1;color:rgba(26,42,74,0.1)}
-.group-card-name{font-family:'Noto Serif KR',Georgia,serif;font-size:15px;letter-spacing:-0.05em;color:#7090b8;text-transform:uppercase;margin-top:4px}
-.group-card-sub{font-family:'Noto Serif KR',Georgia,serif;font-size:10px;color:#aabbcc;letter-spacing:-0.04em;margin-top:2px}
+.group-card-name{font-family:'Noto Serif KR',Georgia,serif;font-size:20px;letter-spacing:-0.05em;color:#7090b8;text-transform:uppercase;margin-top:4px}
+.group-card-sub{font-family:'Noto Serif KR',Georgia,serif;font-size:15px;color:#aabbcc;letter-spacing:-0.04em;margin-top:2px}
 .group-card-bottom{display:flex;justify-content:flex-end}
 .group-card-suit-bot{font-size:11px;color:#1a2a4a;transform:rotate(180deg);display:inline-block}
 .edit-entry{text-align:right;width:100%}
 .edit-entry button{font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer}
-.edit-entry button:hover{color:var(--text2)}
 
 /* 뒤로가기 */
-.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);cursor:pointer;margin-bottom:1.5rem;padding:4px 0;background:none;border:none;letter-spacing:-0.04em;align-self:flex-start}
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);cursor:pointer;margin-bottom:1.5rem;padding:4px 0;background:none;border:none;letter-spacing:-0.04em}
 .back-btn:hover{color:var(--text)}
 .back-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* 상세 페이지 */
 .group-wrap{max-width:865px;margin:0 auto;padding:2rem 1.25rem;letter-spacing:-0.05em}
-.group-page-header{margin-bottom:1.25rem;display:flex;align-items:baseline;gap:10px}
+.group-page-header{margin-bottom:1.25rem;display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .group-page-title{font-family:'Noto Serif KR',Georgia,serif;font-size:20px;font-weight:700;letter-spacing:-0.05em;color:var(--text)}
 .group-page-count{font-size:13px;color:var(--text3)}
-
-/* 툴바 */
 .toolbar{margin-bottom:1rem;display:flex;flex-direction:column;gap:10px}
 .toolbar-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .toolbar-label{font-size:12px;color:var(--text3);white-space:nowrap}
-.sort-toggle{font-size:12px;padding:5px 12px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.5);backdrop-filter:blur(6px);color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:5px;min-width:80px;justify-content:space-between}
+.sort-toggle{font-size:12px;padding:5px 12px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.5);color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:5px;min-width:80px;justify-content:space-between}
 .sort-toggle:hover{background:rgba(255,255,255,0.8)}
 .sort-arrow{font-size:10px;transition:transform .2s}
 .sort-arrow.asc{transform:rotate(180deg)}
 .cp-tag{font-size:12px;padding:5px 10px;border-radius:0;border:none;background:rgba(200,220,255,0.3);color:var(--text2);cursor:pointer;transition:background .15s;letter-spacing:-0.04em}
 .cp-tag:hover{background:rgba(200,220,255,0.55)}
 .cp-tag.active{background:var(--accent);color:#fff}
-
-/* 테이블 */
 .table-wrap{background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);border:0.5px solid var(--border2);border-radius:var(--radius-lg);overflow:hidden}
 table{width:100%;border-collapse:collapse;table-layout:fixed}
 thead tr{border-bottom:0.5px solid var(--border2)}
@@ -104,7 +90,8 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
 .no{color:var(--text3);font-size:12px}
 .date-cell{font-size:12px;color:var(--text3);white-space:nowrap}
 .title-cell{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.title-text{font-size:13px;font-weight:500}
+.title-text{font-size:13px;font-weight:500;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.title-text:hover{opacity:0.7}
 .adult-dot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0}
 .collab-badge{font-size:10px;padding:2px 7px;border-radius:2px;background:rgba(180,210,255,0.3);border:0.5px solid rgba(100,150,230,0.3);color:var(--text2);white-space:nowrap;letter-spacing:0}
 .genre-cell{font-size:12px;color:var(--text2)}
@@ -125,23 +112,35 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
 .btn.danger{color:var(--red);border-color:rgba(226,75,74,0.3)}
 .btn.danger:hover{background:rgba(226,75,74,0.08)}
 
+/* 본문 페이지 */
+.prose-page-wrap{max-width:865px;margin:0 auto;padding:2rem 1.25rem;letter-spacing:-0.05em}
+.prose-page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;gap:12px;flex-wrap:wrap}
+.prose-page-title{font-family:'Noto Serif KR',Georgia,serif;font-size:20px;font-weight:700;letter-spacing:-0.05em;color:var(--text)}
+.prose-page-meta{font-size:12px;color:var(--text3);margin-top:4px;letter-spacing:-0.03em}
+.prose-view{background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:2rem;min-height:200px;font-size:14px;line-height:2;color:var(--text);font-family:'MapoGoldenPier','Noto Serif KR',Georgia,serif}
+.prose-view p{margin-bottom:1em}
+.prose-view h1{font-size:1.4em;font-weight:700;margin:1.2em 0 0.5em}
+.prose-view h2{font-size:1.2em;font-weight:700;margin:1em 0 0.4em}
+.prose-view h3{font-size:1.05em;font-weight:700;margin:.8em 0 .3em}
+.prose-view em{font-style:italic}
+.prose-view strong{font-weight:700}
+.prose-view hr{border:none;border-top:0.5px solid var(--border2);margin:1.5em 0}
+.prose-view blockquote{border-left:2px solid var(--border2);padding-left:1em;color:var(--text2);margin:1em 0}
+.prose-view-empty{color:var(--text3);font-style:italic;font-size:13px}
+.prose-edit-area{width:100%;min-height:400px;padding:1.5rem;border:0.5px solid var(--border2);border-radius:var(--radius-lg);background:rgba(255,255,255,0.6);color:var(--text);font-size:14px;line-height:2;resize:vertical;outline:none;font-family:'MapoGoldenPier','Noto Serif KR',Georgia,serif;letter-spacing:-0.1em}
+.prose-edit-area:focus{border-color:var(--accent)}
+.prose-toolbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.prose-tool-btn{font-size:12px;padding:4px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text2);cursor:pointer}
+.prose-tool-btn:hover{background:rgba(255,255,255,0.9)}
+.prose-mode-btn{font-size:12px;padding:5px 12px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.5);color:var(--text2);cursor:pointer}
+.prose-mode-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
 /* 에디터 */
 .editor-wrap{max-width:865px;margin:0 auto;padding:2rem 1.25rem;letter-spacing:-0.05em}
 .editor-header{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap}
 .editor-header h2{font-size:18px;font-weight:500;flex:1;color:var(--text)}
 .logout-btn{font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer}
-.tabs{display:flex;margin-bottom:1.5rem;border-bottom:0.5px solid var(--border2)}
-.tab{font-size:13px;padding:8px 16px;background:none;border:none;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-0.5px}
-.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-.work-editor-toolbar{display:flex;gap:8px;margin-bottom:1rem}
-.work-editor-toolbar select{font-size:13px;padding:6px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text);outline:none}
-.works-edit-table{background:rgba(255,255,255,0.55);backdrop-filter:blur(10px);border:0.5px solid var(--border2);border-radius:var(--radius-lg);overflow:hidden}
-.works-edit-table table{table-layout:auto}
-col.ecol-no{width:32px}col.ecol-cp{width:60px}col.ecol-title{width:auto}col.ecol-date{width:92px}col.ecol-act{width:80px}
-.act-btns{display:flex;gap:6px}
-.act-btns button{font-size:11px;padding:3px 9px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text2);cursor:pointer}
-.act-btns button.del:hover{color:var(--red)}
-.work-form{background:rgba(255,255,255,0.55);backdrop-filter:blur(10px);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.25rem}
+.work-form{background:rgba(255,255,255,0.55);backdrop-filter:blur(10px);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.5rem}
 .work-form h3{font-size:14px;font-weight:500;margin-bottom:1rem;color:var(--text)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
 .form-field{display:flex;flex-direction:column;gap:4px}
@@ -157,27 +156,29 @@ col.ecol-no{width:32px}col.ecol-cp{width:60px}col.ecol-title{width:auto}col.ecol
 .form-checks{display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap}
 .form-checks label{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer}
 .form-actions{display:flex;gap:8px;justify-content:flex-end}
-.prose-selector{display:flex;gap:8px;margin-bottom:1rem;align-items:center;flex-wrap:wrap}
+.prose-selector{display:flex;gap:8px;margin-bottom:0.75rem;align-items:center;flex-wrap:wrap}
 .prose-selector select{font-size:13px;padding:6px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text);outline:none;flex:1;max-width:300px}
 .prose-area{width:100%;min-height:400px;padding:14px;border:0.5px solid var(--border2);border-radius:var(--radius-lg);background:rgba(255,255,255,0.6);color:var(--text);font-size:14px;line-height:1.8;resize:vertical;outline:none;font-family:inherit;letter-spacing:-0.05em}
 .prose-area:focus{border-color:var(--accent)}
 .prose-save-row{display:flex;gap:8px;justify-content:flex-end;margin-top:10px;align-items:center}
 .prose-saved{font-size:12px;color:var(--text3)}
 
-@media(max-width:520px){
+@media(max-width:600px){
   .form-grid{grid-template-columns:1fr}
   col.col-date,th.col-date,td.col-date{display:none}
-  .group-grid{flex-direction:column;align-items:center}
-  .group-card{width:100%;max-width:320px;height:auto;flex-direction:row;gap:16px;justify-content:flex-start;padding:14px 16px;aspect-ratio:unset}
+  .group-grid{flex-direction:column;align-items:center;flex-wrap:wrap}
+  .group-card{width:100%;max-width:320px;height:auto;flex-direction:row;gap:16px;justify-content:flex-start;padding:14px 16px}
   .group-card-center{flex-direction:row;gap:10px;justify-content:flex-start;align-items:center}
   .group-card-suit-big{font-size:28px}
   .group-card-bottom{display:none}
 }
+@font-face{font-family:"MapoGoldenPier";src:url("MAPO_FONT_URL_HERE") format("opentype");font-weight:normal;font-style:normal}
 </style>
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
 
+<!-- 모달 -->
 <div class="modal-bg hidden" id="pw-modal">
   <div class="modal">
     <h2 id="pw-modal-title">에디터 잠금 해제</h2>
@@ -209,7 +210,7 @@ col.ecol-no{width:32px}col.ecol-cp{width:60px}col.ecol-title{width:auto}col.ecol
   </div>
 </div>
 
-<!-- 인덱스 (카드) -->
+<!-- 인덱스 -->
 <div class="page" id="page-cards">
   <div class="group-grid-wrap">
     <button class="back-btn" id="back-to-hero">
@@ -227,8 +228,11 @@ col.ecol-no{width:32px}col.ecol-cp{width:60px}col.ecol-title{width:auto}col.ecol
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>목록으로
     </button>
     <div class="group-page-header">
-      <span class="group-page-title" id="gp-title"></span>
-      <span class="group-page-count" id="gp-count"></span>
+      <div>
+        <span class="group-page-title" id="gp-title"></span>
+        <span class="group-page-count" id="gp-count" style="margin-left:8px"></span>
+      </div>
+      <button class="btn" onclick="openNewProse()">+ 글 추가</button>
     </div>
     <div class="toolbar">
       <div class="toolbar-row">
@@ -249,77 +253,125 @@ col.ecol-no{width:32px}col.ecol-cp{width:60px}col.ecol-title{width:auto}col.ecol
   </div>
 </div>
 
+<!-- 본문 뷰어/에디터 -->
+<div class="page" id="page-prose">
+  <div class="prose-page-wrap">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap">
+      <button class="back-btn" id="back-to-group">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>목록으로
+      </button>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <span class="prose-saved" id="prose-page-saved"></span>
+        <button class="btn" onclick="downloadSingleProse()">↓ TXT</button>
+        <button class="prose-mode-btn" id="prose-edit-btn">편집</button>
+        <button class="btn primary" id="prose-page-save-btn" style="display:none" onclick="saveProseContent()">저장</button>
+      </div>
+    </div>
+    <div class="prose-page-header">
+      <div>
+        <div class="prose-page-title" id="prose-page-title"></div>
+        <div class="prose-page-meta" id="prose-page-meta"></div>
+      </div>
+    </div>
+    <!-- 보기 -->
+    <div id="prose-view-mode">
+      <div class="prose-view" id="prose-rendered"></div>
+    </div>
+    <!-- 편집 -->
+    <div id="prose-edit-mode" style="display:none">
+      <div class="prose-toolbar">
+        <button class="prose-tool-btn" onclick="execCmd('bold')"><b>B</b></button>
+        <button class="prose-tool-btn" onclick="execCmd('italic')"><i>I</i></button>
+        <button class="prose-tool-btn" onclick="insertHr()">—</button>
+        <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
+        <button class="prose-tool-btn" style="color:#c0392b;font-weight:700" onclick="applyColorCE('#c0392b')">A</button>
+        <button class="prose-tool-btn" style="color:#2c5fa8;font-weight:700" onclick="applyColorCE('#2c5fa8')">A</button>
+        <button class="prose-tool-btn" style="color:#888;font-weight:700" onclick="applyColorCE('#888888')">A</button>
+        <input type="color" id="prose-color-pick" value="#e24b4a" title="다른 색" style="width:26px;height:26px;padding:1px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;vertical-align:middle" oninput="applyColorCE(this.value)">
+      </div>
+      <div class="prose-edit-area" id="prose-page-area" contenteditable="true" spellcheck="false" style="font-family:'MapoGoldenPier','Noto Serif KR',serif;letter-spacing:-0.1em;min-height:400px;padding:1.5rem;line-height:2.1;font-size:15px"></div>
+    </div>
+  </div>
+</div>
+
 <!-- 에디터 -->
 <div class="page" id="page-editor">
   <div class="editor-wrap">
+    <button class="back-btn" id="back-from-editor">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>이전으로
+    </button>
     <div class="editor-header">
       <h2>에디터</h2>
-      <button class="btn" onclick="requirePw('download')">↓ TXT</button>
       <button class="logout-btn" onclick="logout()">잠금</button>
-      <button class="btn" onclick="showPage('page-home')">← 홈</button>
     </div>
-    <div class="tabs">
-      <button class="tab active" data-tab="tab-works">작품 관리</button>
-      <button class="tab" data-tab="tab-prose">본문 편집</button>
-    </div>
-    <div id="tab-works">
-      <div class="work-form" id="work-form">
-        <h3 id="form-title">새 작품 추가</h3>
-        <div class="form-grid">
-          <div class="form-field"><label>제목</label><input id="f-title" placeholder="제목"></div>
-          <div class="form-field"><label>그룹</label>
-            <select id="f-group" onchange="updateCpDropdown()">
-              <option>ONEUS</option><option>ONF</option><option>VERIVERY</option><option>P1HARMONY</option><option>82MAJOR</option>
-            </select>
-          </div>
-          <div class="form-field"><label>CP</label>
-            <div class="cp-combo">
-              <input id="f-cp" placeholder="직접 입력 또는 선택" autocomplete="off" oninput="filterCpDropdown()" onfocus="showCpDropdown()" onblur="hideCpDropdown()">
-              <div class="cp-dropdown" id="cp-dropdown"></div>
-            </div>
-          </div>
-          <div class="form-field"><label>작성일</label><input id="f-date" type="date"></div>
-          <div class="form-field"><label>장르</label><input id="f-genre" placeholder="일상, 판타지"></div>
-          <div class="form-field"><label>합작 이름</label><input id="f-collabname" placeholder="합작 프로젝트명"></div>
-        </div>
-        <div class="form-checks">
-          <label><input type="checkbox" id="f-adult"> 성인물</label>
-          <label><input type="checkbox" id="f-collab"> 합작</label>
-        </div>
-        <div class="form-actions">
-          <button class="btn" id="form-cancel-btn" style="display:none" onclick="resetForm()">취소</button>
-          <button class="btn primary" onclick="submitForm()">저장</button>
-        </div>
-      </div>
-      <div class="work-editor-toolbar">
-        <select id="edit-group-filter" onchange="renderEditTable()">
-          <option value="">그룹 전체</option>
-          <option>ONEUS</option><option>ONF</option><option>VERIVERY</option><option>P1HARMONY</option><option>82MAJOR</option>
-        </select>
-      </div>
-      <div class="works-edit-table table-wrap">
-        <table>
-          <colgroup><col class="ecol-no"><col class="ecol-cp"><col class="ecol-title"><col class="ecol-date"><col class="ecol-act"></colgroup>
-          <thead><tr><th>#</th><th>CP</th><th>제목</th><th>작성일</th><th></th></tr></thead>
-          <tbody id="edit-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-    <div id="tab-prose" style="display:none">
+
+    <!-- 작품 선택 -->
+    <div style="margin-bottom:1rem">
       <div class="prose-selector">
-        <select id="prose-work-sel"><option value="">작품 선택...</option></select>
-        <button class="btn danger" id="prose-del-btn" style="display:none" onclick="deleteProse()">본문 삭제</button>
+        <select id="editor-work-sel" onchange="onEditorWorkChange()">
+          <option value="">— 새 작품 추가 —</option>
+        </select>
+        <button class="btn danger" id="editor-del-work-btn" style="display:none" onclick="deleteCurrentWork()">작품 삭제</button>
       </div>
-      <textarea class="prose-area" id="prose-area" placeholder="본문을 입력하세요..." disabled></textarea>
+    </div>
+
+    <!-- 작품 정보 폼 -->
+    <div class="work-form" id="work-form">
+      <h3 id="form-title">새 작품 추가</h3>
+      <div class="form-grid">
+        <div class="form-field"><label>제목</label><input id="f-title" placeholder="제목"></div>
+        <div class="form-field"><label>그룹</label>
+          <select id="f-group" onchange="updateCpDropdown()">
+            <option>ONEUS</option><option>ONF</option><option>VERIVERY</option><option>P1HARMONY</option><option>82MAJOR</option>
+          </select>
+        </div>
+        <div class="form-field"><label>CP</label>
+          <div class="cp-combo">
+            <input id="f-cp" placeholder="직접 입력 또는 선택" autocomplete="off" oninput="filterCpDropdown()" onfocus="showCpDropdown()" onblur="hideCpDropdown()">
+            <div class="cp-dropdown" id="cp-dropdown"></div>
+          </div>
+        </div>
+        <div class="form-field"><label>작성일</label><input id="f-date" type="date"></div>
+        <div class="form-field"><label>장르</label><input id="f-genre" placeholder="일상, 판타지"></div>
+        <div class="form-field"><label>합작 이름</label><input id="f-collabname" placeholder="합작 프로젝트명"></div>
+      </div>
+      <div class="form-checks">
+        <label><input type="checkbox" id="f-adult"> 성인물</label>
+        <label><input type="checkbox" id="f-collab"> 합작</label>
+      </div>
+      <div class="form-actions">
+        <button class="btn" id="form-cancel-btn" style="display:none" onclick="resetEditorForm()">새 작품으로</button>
+        <button class="btn primary" onclick="submitForm()">작품 저장</button>
+      </div>
+    </div>
+
+    <!-- 본문 편집 -->
+    <div>
+      <h3 style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:0.75rem">본문</h3>
+      <div class="prose-toolbar">
+        <button class="prose-tool-btn" onclick="insertEditorMd('**','**')"><b>B</b></button>
+        <button class="prose-tool-btn" onclick="insertEditorMd('*','*')"><i>I</i></button>
+        <button class="prose-tool-btn" onclick="insertEditorMd('\n# ','')">H1</button>
+        <button class="prose-tool-btn" onclick="insertEditorMd('\n## ','')">H2</button>
+        <button class="prose-tool-btn" onclick="insertEditorMd('\n> ','')">❝</button>
+        <button class="prose-tool-btn" onclick="insertEditorMd('\n---\n','')">—</button>
+        <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
+        <button class="prose-tool-btn" style="color:#c0392b;font-weight:700" onclick="applyColor('prose-area','#c0392b')">A</button>
+        <button class="prose-tool-btn" style="color:#2c5fa8;font-weight:700" onclick="applyColor('prose-area','#2c5fa8')">A</button>
+        <button class="prose-tool-btn" style="color:#888;font-weight:700" onclick="applyColor('prose-area','#888888')">A</button>
+        <input type="color" id="editor-color-pick" value="#e24b4a" title="다른 색" style="width:26px;height:26px;padding:1px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;vertical-align:middle" onchange="applyColor('prose-area',this.value)">
+      </div>
+      <textarea class="prose-area" id="prose-area" placeholder="마크다운으로 본문을 입력하세요..."></textarea>
       <div class="prose-save-row">
         <span class="prose-saved" id="prose-saved"></span>
-        <button class="btn primary" id="prose-save-btn" disabled onclick="saveProse()">저장</button>
+        <button class="btn primary" onclick="saveProse()">본문 저장</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
+/* ── 배경 ── */
 function drawBg(){
   const c=document.getElementById("bg-canvas");
   const W=window.innerWidth,H=window.innerHeight;
@@ -353,10 +405,13 @@ function drawBg(){
   vig.addColorStop(0,"rgba(200,220,255,0)");vig.addColorStop(.6,"rgba(150,185,230,0.05)");vig.addColorStop(1,"rgba(100,145,210,0.18)");
   ctx.fillStyle=vig;ctx.fillRect(0,0,W,H);
 }
-window.addEventListener("resize",drawBg);drawBg();
+window.addEventListener("resize",drawBg);
+drawBg();
 
+/* ── 데이터 ── */
 const SUITS={"ONEUS":"♥","ONF":"♠","VERIVERY":"♦","P1HARMONY":"♣","82MAJOR":"★"};
 const ABBR={"ONEUS":"1US","ONF":"ONF","VERIVERY":"VR","P1HARMONY":"P1","82MAJOR":"82"};
+const GROUPS=["ONEUS","ONF","VERIVERY","P1HARMONY","82MAJOR"];
 
 let DATA=[
   {id:1,title:"bunny the Veronica",group:"ONEUS",cp:"섷건",date:"2021-06-01",genre:"일상, 판타지",adult:false,collab:false,collabName:""},
@@ -387,44 +442,82 @@ let DATA=[
   {id:26,title:"2등",group:"82MAJOR",cp:"멜닙",date:"",genre:"",adult:false,collab:false,collabName:""},
 ];
 
-const GROUPS=["ONEUS","ONF","VERIVERY","P1HARMONY","82MAJOR"];
 let currentGroup=null,currentCp=null,currentSort="date-desc";
 let editingId=null,unlocked=false,nextId=100,pwPurpose='editor';
+let currentProseId=null;
 
 function loadStorage(){try{const d=localStorage.getItem("archive_data");if(d)DATA=JSON.parse(d);const n=localStorage.getItem("archive_nextid");if(n)nextId=parseInt(n);}catch(e){}}
 function saveStorage(){try{localStorage.setItem("archive_data",JSON.stringify(DATA));localStorage.setItem("archive_nextid",String(nextId));}catch(e){}}
-function getProseKey(id){return"prose_"+id}
-async function sha256(msg){const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(msg));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");}
-function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");}
+function getProseKey(id){return"prose_"+id;}
 
+/* ── 유틸 ── */
+async function sha256(msg){
+  const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+/* ── 비밀번호 ── */
 function requirePw(purpose){
   pwPurpose=purpose;
-  if(purpose==='editor'&&unlocked){showPage('page-editor');renderEditTable();renderProseSelector();return;}
-  document.getElementById("pw-modal-title").textContent=purpose==='download'?'다운로드 확인':'에디터 잠금 해제';
+  if(purpose==='editor'&&unlocked){openEditor();return;}
+  document.getElementById("pw-modal-title").textContent=purpose==='dl'?'다운로드 확인':'에디터 잠금 해제';
   document.getElementById("pw-modal").classList.remove("hidden");
-  document.getElementById("pw-input").value="";document.getElementById("pw-err").textContent="";
+  document.getElementById("pw-input").value="";
+  document.getElementById("pw-err").textContent="";
   setTimeout(()=>document.getElementById("pw-input").focus(),50);
 }
 document.getElementById("pw-cancel").onclick=()=>document.getElementById("pw-modal").classList.add("hidden");
 document.getElementById("pw-confirm").onclick=async()=>{
-  const val=document.getElementById("pw-input").value,h=await sha256(val);
-  const stored=localStorage.getItem("archive_pwhash"),target=stored||(await sha256("7690"));
+  const val=document.getElementById("pw-input").value;
+  const h=await sha256(val);
+  if(pwPurpose==='dl'){
+    const stored=localStorage.getItem("archive_dlhash");
+    const target=stored||(await sha256("theo71"));
+    if(!stored)localStorage.setItem("archive_dlhash",target);
+    if(h===target){document.getElementById("pw-modal").classList.add("hidden");downloadTxt();}
+    else document.getElementById("pw-err").textContent="비밀번호가 틀렸습니다.";
+    return;
+  }
+  const stored=localStorage.getItem("archive_pwhash");
+  const target=stored||(await sha256("7690"));
   if(!stored)localStorage.setItem("archive_pwhash",target);
   if(h===target){
     document.getElementById("pw-modal").classList.add("hidden");
-    if(pwPurpose==='download')downloadTxt();
-    else{unlocked=true;showPage("page-editor");renderEditTable();renderProseSelector();}
-  }else{document.getElementById("pw-err").textContent="비밀번호가 틀렸습니다.";}
+    unlocked=true;
+    if(pwPurpose==='prose-new'){openProseEditorNew();}
+    else if(pwPurpose==='prose-edit'){setProseMode("edit");}
+    else{openEditor();}
+  }else{
+    document.getElementById("pw-err").textContent="비밀번호가 틀렸습니다.";
+  }
 };
-document.getElementById("pw-input").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("pw-confirm").click()});
+document.getElementById("pw-input").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("pw-confirm").click();});
 function logout(){unlocked=false;showPage("page-home");}
 
+/* ── TXT ── */
+document.getElementById("dl-btn")?.remove();
+document.getElementById("back-from-editor").onclick=()=>{
+  if(currentGroup)showPage("page-group");
+  else showPage("page-cards");
+};
+
+function downloadSingleProse(){
+  const w=DATA.find(x=>x.id===currentProseId);if(!w)return;
+  const prose=localStorage.getItem(getProseKey(currentProseId))||"";
+  const lines=[`■ ${w.title}`,"=".repeat(40),`${w.group} · ${w.cp}${w.date?" · "+w.date:""}`,`장르: ${w.genre||"미정"}`,"",prose];
+  const blob=new Blob([lines.join("\n")],{type:"text/plain;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`${w.title}.txt`;a.click();URL.revokeObjectURL(a.href);
+}
 function downloadTxt(){
   const lines=["POKSHINN Project","=".repeat(50),`총 ${DATA.length}편`,""];
   GROUPS.forEach(g=>{
     const works=DATA.filter(w=>w.group===g);if(!works.length)return;
     lines.push(`▶ ${g} (${works.length}편)`);lines.push("-".repeat(40));
-    [...works].sort((a,b)=>b.date.localeCompare(a.date)).forEach((w,i)=>{
+    [...works].sort((a,b)=>(b.date||"").localeCompare(a.date||"")).forEach((w,i)=>{
       lines.push(`${i+1}. [${w.cp}] ${w.title}${w.adult?" ●":""}`);
       lines.push(`   작성일: ${w.date||"미정"}  장르: ${w.genre||"미정"}${w.collab?`  합작: ${w.collabName}`:""}`);
     });lines.push("");
@@ -434,14 +527,7 @@ function downloadTxt(){
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`pokshinn_${new Date().toISOString().slice(0,10)}.txt`;a.click();URL.revokeObjectURL(a.href);
 }
 
-document.querySelectorAll(".tab").forEach(t=>{
-  t.onclick=()=>{
-    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));t.classList.add("active");
-    document.getElementById("tab-works").style.display=t.dataset.tab==="tab-works"?"block":"none";
-    document.getElementById("tab-prose").style.display=t.dataset.tab==="tab-prose"?"block":"none";
-  };
-});
-
+/* ── 홈 렌더 ── */
 function renderHome(){
   const grid=document.getElementById("group-grid");grid.innerHTML="";
   const heroGroups=document.getElementById("hero-groups");heroGroups.innerHTML="";
@@ -449,14 +535,7 @@ function renderHome(){
     const works=DATA.filter(w=>w.group===g);
     const abbr=ABBR[g]||g,suit=SUITS[g]||"♦";
     const card=document.createElement("div");card.className="group-card";
-    card.innerHTML=`
-      <div class="group-card-top"><span class="group-card-abbr">${abbr}</span><span class="group-card-suit">${suit}</span></div>
-      <div class="group-card-center">
-        <div class="group-card-suit-big">${suit}</div>
-        <div class="group-card-name">${g}</div>
-        <div class="group-card-sub">${works.length}편</div>
-      </div>
-      <div class="group-card-bottom"><span class="group-card-suit-bot">${suit}</span></div>`;
+    card.innerHTML=`<div class="group-card-top"><span class="group-card-abbr">${abbr}</span><span class="group-card-suit">${suit}</span></div><div class="group-card-center"><div class="group-card-suit-big">${suit}</div><div class="group-card-name">${g}</div><div class="group-card-sub">${works.length}편</div></div><div class="group-card-bottom"><span class="group-card-suit-bot">${suit}</span></div>`;
     card.onclick=()=>openGroup(g);grid.appendChild(card);
     const item=document.createElement("div");item.className="hero-group-item";item.textContent=g;
     heroGroups.appendChild(item);
@@ -466,6 +545,7 @@ function renderHome(){
 document.getElementById("hero-title-btn").onclick=()=>showPage("page-cards");
 document.getElementById("back-to-hero").onclick=()=>showPage("page-home");
 
+/* ── 그룹 상세 ── */
 document.getElementById("sort-toggle-btn").onclick=()=>{
   currentSort=currentSort==="date-desc"?"date-asc":"date-desc";
   document.getElementById("sort-label").textContent=currentSort==="date-desc"?"최신순":"오래된순";
@@ -479,8 +559,7 @@ function openGroup(g){
   document.getElementById("gp-title").textContent=g;
   document.getElementById("sort-label").textContent="최신순";
   document.getElementById("sort-arrow").className="sort-arrow";
-  const works=DATA.filter(w=>w.group===g);
-  const cps=[...new Set(works.map(w=>w.cp))];
+  const cps=[...new Set(DATA.filter(w=>w.group===g).map(w=>w.cp))];
   const cpRow=document.getElementById("cp-tags");cpRow.innerHTML=`<span class="toolbar-label">CP</span>`;
   const allTag=document.createElement("button");allTag.className="cp-tag active";allTag.textContent="전체";allTag.onclick=()=>setCp(null);cpRow.appendChild(allTag);
   cps.forEach(cp=>{const t=document.createElement("button");t.className="cp-tag";t.textContent=cp;t.onclick=()=>setCp(cp);cpRow.appendChild(t);});
@@ -494,20 +573,201 @@ function setCp(cp){
 function renderTable(){
   let list=DATA.filter(w=>w.group===currentGroup);
   if(currentCp)list=list.filter(w=>w.cp===currentCp);
-  list=currentSort==="date-desc"?list.sort((a,b)=>b.date.localeCompare(a.date)):list.sort((a,b)=>a.date.localeCompare(b.date));
+  list=currentSort==="date-desc"?list.sort((a,b)=>(b.date||"").localeCompare(a.date||"")):list.sort((a,b)=>(a.date||"").localeCompare(b.date||""));
   document.getElementById("gp-count").textContent=`${list.length}편`;
   const tbody=document.getElementById("tbody");tbody.innerHTML="";
   list.forEach((w,i)=>{
     const tr=document.createElement("tr");
     const collab=w.collab?`<span class="collab-badge" title="${w.collabName}">합작</span>`:"";
     const dot=w.adult?`<span class="adult-dot"></span>`:"";
-    tr.innerHTML=`<td class="no">${i+1}</td><td class="date-cell col-date">${w.date||""}</td><td><div class="title-cell"><span class="title-text">${w.title}</span>${dot}${collab}</div></td><td class="genre-cell">${w.genre||""}</td>`;
+    tr.innerHTML=`<td class="no">${i+1}</td><td class="date-cell col-date">${w.date||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${collab}</div></td><td class="genre-cell">${w.genre||""}</td>`;
     tbody.appendChild(tr);
   });
 }
 document.getElementById("back-btn").onclick=()=>showPage("page-cards");
 
-function getCpsForGroup(g){return[...new Set(DATA.filter(w=>w.group===g).map(w=>w.cp))].filter(Boolean)}
+/* ── 본문 뷰어 ── */
+function renderMarkdown(md){
+  if(!md||!md.trim()){
+    document.getElementById("prose-rendered").innerHTML=`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
+    return;
+  }
+  // span 태그 보존을 위해 먼저 추출
+  const spans=[];
+  let safe=md.replace(/<span([^>]*)>([\s\S]*?)<\/span>/g,(m)=>{spans.push(m);return`\x00${spans.length-1}\x00`;});
+  let h=safe
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/^### (.+)$/gm,"<h3>$1</h3>")
+    .replace(/^## (.+)$/gm,"<h2>$1</h2>")
+    .replace(/^# (.+)$/gm,"<h1>$1</h1>")
+    .replace(/^> (.+)$/gm,"<blockquote>$1</blockquote>")
+    .replace(/^---$/gm,"<hr>")
+    .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g,"<em>$1</em>")
+    .replace(/\n\n/g,"</p><p>")
+    .replace(/\n/g,"<br>");
+  // span 복원
+  h=h.replace(/\x00(\d+)\x00/g,(_,i)=>spans[+i]);
+  document.getElementById("prose-rendered").innerHTML=`<p>${h}</p>`;
+}
+function setProseMode(mode){
+  const isEdit=mode==="edit";
+  document.getElementById("prose-view-mode").style.display=isEdit?"none":"block";
+  document.getElementById("prose-edit-mode").style.display=isEdit?"block":"none";
+  document.getElementById("prose-page-save-btn").style.display=isEdit?"":"none";
+  document.getElementById("prose-edit-btn").classList.toggle("active",isEdit);
+  if(!isEdit)renderMarkdown(document.getElementById("prose-page-area").value);
+}
+function openProse(id){
+  const w=DATA.find(x=>x.id===id);if(!w)return;
+  currentProseId=id;
+  document.getElementById("prose-page-title").textContent=w.title;
+  document.getElementById("prose-page-meta").textContent=`${w.group} · ${w.cp}${w.date?" · "+w.date:""}`;
+  const stored=localStorage.getItem(getProseKey(id))||"";
+  document.getElementById("prose-page-area").value=stored;
+  renderMarkdown(stored);
+  setProseMode("view");
+  showPage("page-prose");
+}
+function openNewProse(){
+  if(!unlocked){requirePw('prose-new');return;}
+  openProseEditorNew();
+}
+function openProseEditorNew(){
+  openEditor();
+  resetEditorForm();
+}
+function saveProseContent(){
+  if(!currentProseId)return;
+  localStorage.setItem(getProseKey(currentProseId),document.getElementById("prose-page-area").value);
+  renderMarkdown(document.getElementById("prose-page-area").value);
+  const s=document.getElementById("prose-page-saved");
+  s.textContent="저장됨 "+new Date().toLocaleTimeString();
+  setTimeout(()=>{s.textContent=""},3000);
+}
+document.getElementById("prose-edit-btn").onclick=()=>{
+  if(!unlocked){requirePw('prose-edit');return;}
+  setProseMode("edit");
+};
+document.getElementById("back-to-group").onclick=()=>showPage("page-group");
+
+/* ── contenteditable 유틸 ── */
+function execCmd(cmd){document.execCommand(cmd,false,null);}
+function execEditorCmd(cmd){document.execCommand(cmd,false,null);}
+function applyColorCE(color){document.execCommand('foreColor',false,color);}
+function applyEditorColor(color){document.execCommand('foreColor',false,color);}
+function insertHr(){document.execCommand('insertHTML',false,'<hr>');}
+function insertEditorHr(){document.execCommand('insertHTML',false,'<hr>');}
+
+function getProseHTML(id){return document.getElementById(id).innerHTML;}
+function setProseHTML(id,html){document.getElementById(id).innerHTML=html||'';}
+
+function applyColor(taId,color){
+  const ta=document.getElementById(taId);
+  const s=ta.selectionStart,e=ta.selectionEnd;
+  const sel=ta.value.substring(s,e);if(!sel)return;
+  const tag=`<span style="color:${color}">${sel}</span>`;
+  ta.value=ta.value.substring(0,s)+tag+ta.value.substring(e);
+  ta.focus();
+}
+
+function insertMd(before,after){
+  const ta=document.getElementById("prose-page-area");
+  const s=ta.selectionStart,e=ta.selectionEnd;
+  const sel=ta.value.substring(s,e);
+  ta.value=ta.value.substring(0,s)+before+sel+after+ta.value.substring(e);
+  ta.focus();ta.selectionStart=s+before.length;ta.selectionEnd=s+before.length+sel.length;
+}
+
+/* ── 에디터 ── */
+function openEditor(){
+  showPage("page-editor");
+  renderEditorWorkSel();
+}
+function renderEditorWorkSel(){
+  const sel=document.getElementById("editor-work-sel");
+  const cur=sel.value;
+  sel.innerHTML='<option value="">— 새 작품 추가 —</option>';
+  [...DATA].sort((a,b)=>(b.date||"").localeCompare(a.date||"")).forEach(w=>{
+    const o=document.createElement("option");o.value=w.id;o.textContent=`[${w.group}] ${w.title}`;sel.appendChild(o);
+  });
+  if(cur)sel.value=cur;
+}
+function onEditorWorkChange(){
+  const id=document.getElementById("editor-work-sel").value;
+  if(!id){resetEditorForm();return;}
+  const w=DATA.find(x=>x.id==id);if(!w)return;
+  editingId=w.id;
+  document.getElementById("form-title").textContent="작품 수정";
+  document.getElementById("form-cancel-btn").style.display="";
+  document.getElementById("editor-del-work-btn").style.display="";
+  document.getElementById("f-title").value=w.title;
+  document.getElementById("f-group").value=w.group;
+  document.getElementById("f-cp").value=w.cp;
+  document.getElementById("f-date").value=w.date||"";
+  document.getElementById("f-genre").value=w.genre||"";
+  document.getElementById("f-collabname").value=w.collabName||"";
+  document.getElementById("f-adult").checked=w.adult;
+  document.getElementById("f-collab").checked=w.collab;
+  document.getElementById("prose-area").value=localStorage.getItem(getProseKey(w.id))||"";
+}
+function resetEditorForm(){
+  editingId=null;
+  document.getElementById("form-title").textContent="새 작품 추가";
+  document.getElementById("form-cancel-btn").style.display="none";
+  document.getElementById("editor-del-work-btn").style.display="none";
+  document.getElementById("editor-work-sel").value="";
+  ["f-title","f-cp","f-date","f-genre","f-collabname"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("f-group").value="ONEUS";
+  document.getElementById("f-adult").checked=false;
+  document.getElementById("f-collab").checked=false;
+  document.getElementById("prose-area").value="";
+}
+document.getElementById("form-cancel-btn").onclick=resetEditorForm;
+function deleteCurrentWork(){
+  if(!editingId||!confirm("이 작품을 삭제할까요?"))return;
+  DATA=DATA.filter(w=>w.id!==editingId);
+  saveStorage();renderHome();renderEditorWorkSel();resetEditorForm();
+}
+function submitForm(){
+  const title=document.getElementById("f-title").value.trim();
+  const cp=document.getElementById("f-cp").value.trim();
+  if(!title||!cp){alert("제목과 CP는 필수입니다.");return;}
+  const obj={
+    id:editingId||nextId++,title,
+    group:document.getElementById("f-group").value,cp,
+    date:document.getElementById("f-date").value,
+    genre:document.getElementById("f-genre").value.trim(),
+    adult:document.getElementById("f-adult").checked,
+    collab:document.getElementById("f-collab").checked,
+    collabName:document.getElementById("f-collabname").value.trim()
+  };
+  if(editingId)DATA=DATA.map(w=>w.id===editingId?obj:w);else DATA.push(obj);
+  saveStorage();renderHome();renderEditorWorkSel();
+  editingId=obj.id;
+  document.getElementById("editor-work-sel").value=obj.id;
+  document.getElementById("form-title").textContent="작품 수정";
+  document.getElementById("form-cancel-btn").style.display="";
+  document.getElementById("editor-del-work-btn").style.display="";
+}
+function saveProse(){
+  const id=editingId;
+  if(!id){alert("먼저 작품을 저장하거나 선택하세요.");return;}
+  localStorage.setItem(getProseKey(id),document.getElementById("prose-area").value);
+  const s=document.getElementById("prose-saved");
+  s.textContent="저장됨 "+new Date().toLocaleTimeString();
+  setTimeout(()=>{s.textContent=""},3000);
+}
+function insertEditorMd(before,after){
+  const ta=document.getElementById("prose-area");
+  const s=ta.selectionStart,e=ta.selectionEnd;
+  const sel=ta.value.substring(s,e);
+  ta.value=ta.value.substring(0,s)+before+sel+after+ta.value.substring(e);
+  ta.focus();ta.selectionStart=s+before.length;ta.selectionEnd=s+before.length+sel.length;
+}
+
+/* ── CP 드롭다운 ── */
+function getCpsForGroup(g){return[...new Set(DATA.filter(w=>w.group===g).map(w=>w.cp))].filter(Boolean);}
 function updateCpDropdown(){document.getElementById("f-cp").value="";renderCpOptions("");}
 function renderCpOptions(q){
   const cps=getCpsForGroup(document.getElementById("f-group").value);
@@ -521,58 +781,9 @@ function filterCpDropdown(){renderCpOptions(document.getElementById("f-cp").valu
 function showCpDropdown(){renderCpOptions(document.getElementById("f-cp").value);}
 function hideCpDropdown(){setTimeout(()=>document.getElementById("cp-dropdown").classList.remove("show"),150);}
 
-function renderEditTable(){
-  const gf=document.getElementById("edit-group-filter").value;
-  let list=gf?DATA.filter(w=>w.group===gf):[...DATA];list.sort((a,b)=>b.date.localeCompare(a.date));
-  const tbody=document.getElementById("edit-tbody");tbody.innerHTML="";
-  list.forEach((w,i)=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px">${w.cp}</td><td style="font-size:13px;font-weight:500">${w.title}${w.adult?` <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);vertical-align:2px"></span>`:""}</td><td class="date-cell">${w.date||""}</td><td><div class="act-btns"><button onclick="editWork(${w.id})">수정</button><button class="del" onclick="deleteWork(${w.id})">삭제</button></div></td>`;
-    tbody.appendChild(tr);
-  });
-}
-function resetForm(){
-  editingId=null;document.getElementById("form-title").textContent="새 작품 추가";document.getElementById("form-cancel-btn").style.display="none";
-  ["f-title","f-cp","f-date","f-genre","f-collabname"].forEach(id=>document.getElementById(id).value="");
-  document.getElementById("f-group").value="ONEUS";document.getElementById("f-adult").checked=false;document.getElementById("f-collab").checked=false;
-}
-function editWork(id){
-  const w=DATA.find(x=>x.id===id);if(!w)return;editingId=id;
-  document.getElementById("form-title").textContent="작품 수정";document.getElementById("form-cancel-btn").style.display="";
-  document.getElementById("f-title").value=w.title;document.getElementById("f-group").value=w.group;document.getElementById("f-cp").value=w.cp;
-  document.getElementById("f-date").value=w.date;document.getElementById("f-genre").value=w.genre;document.getElementById("f-collabname").value=w.collabName||"";
-  document.getElementById("f-adult").checked=w.adult;document.getElementById("f-collab").checked=w.collab;
-  document.getElementById("work-form").scrollIntoView({behavior:"smooth"});
-}
-function deleteWork(id){if(!confirm("이 작품을 삭제할까요?"))return;DATA=DATA.filter(w=>w.id!==id);saveStorage();renderEditTable();renderHome();}
-function submitForm(){
-  const title=document.getElementById("f-title").value.trim(),cp=document.getElementById("f-cp").value.trim();
-  if(!title||!cp){alert("제목과 CP는 필수입니다.");return;}
-  const obj={id:editingId||nextId++,title,group:document.getElementById("f-group").value,cp,date:document.getElementById("f-date").value,genre:document.getElementById("f-genre").value.trim(),adult:document.getElementById("f-adult").checked,collab:document.getElementById("f-collab").checked,collabName:document.getElementById("f-collabname").value.trim()};
-  if(editingId)DATA=DATA.map(w=>w.id===editingId?obj:w);else DATA.push(obj);
-  saveStorage();renderEditTable();renderHome();resetForm();
-}
-function renderProseSelector(){
-  const sel=document.getElementById("prose-work-sel"),cur=sel.value;sel.innerHTML='<option value="">작품 선택...</option>';
-  [...DATA].sort((a,b)=>b.date.localeCompare(a.date)).forEach(w=>{const o=document.createElement("option");o.value=w.id;o.textContent=`[${w.group}] ${w.title}`;sel.appendChild(o);});
-  if(cur)sel.value=cur;
-}
-document.getElementById("prose-work-sel").onchange=function(){
-  const id=this.value,area=document.getElementById("prose-area"),saveBtn=document.getElementById("prose-save-btn"),delBtn=document.getElementById("prose-del-btn");
-  if(!id){area.value="";area.disabled=true;saveBtn.disabled=true;delBtn.style.display="none";return;}
-  const stored=localStorage.getItem(getProseKey(id));area.value=stored||"";area.disabled=false;saveBtn.disabled=false;delBtn.style.display=stored?"":"none";
-};
-function saveProse(){
-  const sel=document.getElementById("prose-work-sel").value;if(!sel)return;
-  localStorage.setItem(getProseKey(sel),document.getElementById("prose-area").value);
-  document.getElementById("prose-del-btn").style.display="";
-  const s=document.getElementById("prose-saved");s.textContent="저장됨 "+new Date().toLocaleTimeString();setTimeout(()=>{s.textContent=""},3000);
-}
-function deleteProse(){
-  const sel=document.getElementById("prose-work-sel").value;if(!sel)return;if(!confirm("본문을 삭제할까요?"))return;
-  localStorage.removeItem(getProseKey(sel));document.getElementById("prose-area").value="";document.getElementById("prose-del-btn").style.display="none";document.getElementById("prose-saved").textContent="삭제됨";
-}
-loadStorage();renderHome();
+/* ── 초기화 ── */
+loadStorage();
+renderHome();
 </script>
 </body>
 </html>
