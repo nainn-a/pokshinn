@@ -90,8 +90,8 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
 .no{color:var(--text3);font-size:12px}
 .date-cell{font-size:12px;color:var(--text3);white-space:nowrap}
 .title-cell{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.title-text{font-size:13px;font-weight:500;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
-.title-text:hover{opacity:0.7}
+.title-text{font-size:13px;font-weight:500;cursor:pointer;text-decoration:none}
+.title-text:hover{text-decoration:underline;text-underline-offset:3px;opacity:0.7}
 .adult-dot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0}
 .collab-badge{font-size:10px;padding:2px 7px;border-radius:2px;background:rgba(180,210,255,0.3);border:0.5px solid rgba(100,150,230,0.3);color:var(--text2);white-space:nowrap;letter-spacing:0}
 .genre-cell{font-size:12px;color:var(--text2)}
@@ -394,6 +394,9 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
         <button class="prose-tool-btn" style="color:#2c5fa8;font-weight:700" onclick="applyColor('prose-area','#2c5fa8')">A</button>
         <button class="prose-tool-btn" style="color:#888;font-weight:700" onclick="applyColor('prose-area','#888888')">A</button>
         <input type="color" id="editor-color-pick" value="#e24b4a" title="다른 색" style="width:26px;height:26px;padding:1px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;vertical-align:middle" onchange="applyColor('prose-area',this.value)">
+        <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
+        <button class="prose-tool-btn" onclick="document.getElementById('txt-upload').click()" title="TXT 파일 불러오기">↑ TXT</button>
+        <input type="file" id="txt-upload" accept=".txt,text/plain" style="display:none" onchange="handleTxtUpload(event)">
       </div>
       <textarea class="prose-area" id="prose-area" placeholder="마크다운으로 본문을 입력하세요..."></textarea>
       <div class="prose-save-row">
@@ -865,6 +868,22 @@ function insertEditorMd(before,after){
   const sel=ta.value.substring(s,e);
   ta.value=ta.value.substring(0,s)+before+sel+after+ta.value.substring(e);
   ta.focus();ta.selectionStart=s+before.length;ta.selectionEnd=s+before.length+sel.length;
+}
+function handleTxtUpload(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    const ta=document.getElementById("prose-area");
+    const text=ev.target.result;
+    if(ta.value.trim()){
+      if(!confirm("현재 본문이 있습니다. 파일 내용으로 교체할까요?\n(취소하면 현재 내용 뒤에 이어 붙입니다)"))
+        {ta.value+="\n\n"+text;ta.focus();e.target.value="";return;}
+    }
+    ta.value=text;
+    ta.focus();
+  };
+  reader.readAsText(file,"UTF-8");
+  e.target.value="";
 }
 
 /* ── CP 드롭다운 ── */
