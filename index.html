@@ -172,11 +172,41 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
   .group-card-suit-big{font-size:28px}
   .group-card-bottom{display:none}
 }
-@font-face{font-family:"MapoGoldenPier";src:url("https://raw.githubusercontent.com/nainn-a/pokshinn/main/MapoGoldenPier.otf") format("opentype");font-weight:normal;font-style:normal}
+@font-face{font-family:"MapoGoldenPier";src:url("https://cdn.jsdelivr.net/gh/nainn-a/pokshinn@main/MapoGoldenPier.otf") format("opentype");font-weight:normal;font-style:normal}
 </style>
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
+
+<!-- 저장 완료 모달 -->
+<div class="modal-bg hidden" id="save-modal">
+  <div class="modal" style="width:260px;text-align:center">
+    <div style="font-size:28px;margin-bottom:0.75rem">✓</div>
+    <h2 style="margin-bottom:1.25rem">저장되었습니다</h2>
+    <div class="modal-btns" style="justify-content:center">
+      <button class="btn primary" onclick="closeSaveModal()">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- 동영상 삽입 모달 -->
+<div class="modal-bg hidden" id="video-modal">
+  <div class="modal">
+    <h2 style="margin-bottom:1rem">동영상 삽입</h2>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:8px">YouTube / Vimeo URL 또는 직접 업로드</p>
+    <input id="video-url-input" placeholder="https://youtube.com/watch?v=..." style="width:100%;padding:8px 12px;border:0.5px solid var(--border2);border-radius:var(--radius);background:rgba(255,255,255,0.8);color:var(--text);font-size:13px;outline:none;margin-bottom:8px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <span style="font-size:12px;color:var(--text3)">또는</span>
+      <button class="btn" onclick="document.getElementById('video-upload').click()">파일 선택</button>
+      <span id="video-filename" style="font-size:12px;color:var(--text3)"></span>
+      <input type="file" id="video-upload" accept="video/*" style="display:none" onchange="onVideoFileSelect(event)">
+    </div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeVideoModal()">취소</button>
+      <button class="btn primary" onclick="confirmInsertVideo()">삽입</button>
+    </div>
+  </div>
+</div>
 
 <!-- 모달 -->
 <div class="modal-bg hidden" id="pw-modal">
@@ -288,6 +318,10 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
         <button class="prose-tool-btn" style="color:#2c5fa8;font-weight:700" onclick="applyColorCE('#2c5fa8')">A</button>
         <button class="prose-tool-btn" style="color:#888;font-weight:700" onclick="applyColorCE('#888888')">A</button>
         <input type="color" id="prose-color-pick" value="#e24b4a" title="다른 색" style="width:26px;height:26px;padding:1px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;vertical-align:middle" oninput="applyColorCE(this.value)">
+        <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
+        <button class="prose-tool-btn" onclick="insertImage()" title="이미지 삽입">🖼</button>
+        <input type="file" id="img-upload" accept="image/*" style="display:none" onchange="handleImgUpload(event)">
+        <button class="prose-tool-btn" onclick="insertVideo()" title="동영상 삽입">▶</button>
       </div>
       <div class="prose-edit-area" id="prose-page-area" contenteditable="true" spellcheck="false" style="font-family:'MapoGoldenPier','Noto Serif KR',serif;letter-spacing:-0.1em;min-height:400px;padding:1.5rem;line-height:2.1;font-size:15px"></div>
     </div>
@@ -616,7 +650,10 @@ function setProseMode(mode){
   document.getElementById("prose-edit-mode").style.display=isEdit?"block":"none";
   document.getElementById("prose-page-save-btn").style.display=isEdit?"":"none";
   document.getElementById("prose-edit-btn").classList.toggle("active",isEdit);
-  if(!isEdit)renderMarkdown(document.getElementById("prose-page-area").value);
+  if(!isEdit){
+    const content=document.getElementById("prose-page-area").innerHTML;
+    document.getElementById("prose-rendered").innerHTML=content||`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
+  }
 }
 function openProse(id){
   const w=DATA.find(x=>x.id===id);if(!w)return;
@@ -624,8 +661,8 @@ function openProse(id){
   document.getElementById("prose-page-title").textContent=w.title;
   document.getElementById("prose-page-meta").textContent=`${w.group} · ${w.cp}${w.date?" · "+w.date:""}`;
   const stored=localStorage.getItem(getProseKey(id))||"";
-  document.getElementById("prose-page-area").value=stored;
-  renderMarkdown(stored);
+  document.getElementById("prose-page-area").innerHTML=stored;
+  document.getElementById("prose-rendered").innerHTML=stored||`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
   setProseMode("view");
   showPage("page-prose");
 }
@@ -639,11 +676,75 @@ function openProseEditorNew(){
 }
 function saveProseContent(){
   if(!currentProseId)return;
-  localStorage.setItem(getProseKey(currentProseId),document.getElementById("prose-page-area").value);
-  renderMarkdown(document.getElementById("prose-page-area").value);
-  const s=document.getElementById("prose-page-saved");
-  s.textContent="저장됨 "+new Date().toLocaleTimeString();
-  setTimeout(()=>{s.textContent=""},3000);
+  const content=document.getElementById("prose-page-area").innerHTML;
+  localStorage.setItem(getProseKey(currentProseId),content);
+  renderMarkdown(content);
+  setProseMode("view");
+  document.getElementById("save-modal").classList.remove("hidden");
+}
+function closeSaveModal(){
+  document.getElementById("save-modal").classList.add("hidden");
+}
+
+/* ── 이미지 삽입 ── */
+function insertImage(){
+  document.getElementById("img-upload").click();
+}
+function handleImgUpload(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    const img=`<img src="${ev.target.result}" style="max-width:100%;height:auto;display:block;margin:1em auto;border-radius:4px">`;
+    document.execCommand('insertHTML',false,img);
+    document.getElementById("prose-page-area").focus();
+  };
+  reader.readAsDataURL(file);
+  e.target.value="";
+}
+
+/* ── 동영상 삽입 ── */
+let _videoFileData=null;
+function insertVideo(){
+  _videoFileData=null;
+  document.getElementById("video-url-input").value="";
+  document.getElementById("video-filename").textContent="";
+  document.getElementById("video-modal").classList.remove("hidden");
+}
+function closeVideoModal(){
+  document.getElementById("video-modal").classList.add("hidden");
+  _videoFileData=null;
+}
+function onVideoFileSelect(e){
+  const file=e.target.files[0];if(!file)return;
+  document.getElementById("video-filename").textContent=file.name;
+  const reader=new FileReader();
+  reader.onload=function(ev){_videoFileData=ev.target.result;};
+  reader.readAsDataURL(file);
+  e.target.value="";
+}
+function confirmInsertVideo(){
+  const url=document.getElementById("video-url-input").value.trim();
+  let html="";
+  if(_videoFileData){
+    html=`<video controls style="max-width:100%;display:block;margin:1em auto;border-radius:4px"><source src="${_videoFileData}">브라우저가 영상을 지원하지 않습니다.</video>`;
+  } else if(url){
+    // YouTube / Vimeo embed 변환
+    let embedUrl=url;
+    const ytMatch=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+    const vmMatch=url.match(/vimeo\.com\/(\d+)/);
+    if(ytMatch)embedUrl=`https://www.youtube.com/embed/${ytMatch[1]}`;
+    else if(vmMatch)embedUrl=`https://player.vimeo.com/video/${vmMatch[1]}`;
+    if(ytMatch||vmMatch){
+      html=`<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin:1em auto;max-width:100%"><iframe src="${embedUrl}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:4px" allowfullscreen></iframe></div>`;
+    } else {
+      html=`<video controls style="max-width:100%;display:block;margin:1em auto;border-radius:4px"><source src="${url}">브라우저가 영상을 지원하지 않습니다.</video>`;
+    }
+  }
+  if(html){
+    document.getElementById("prose-page-area").focus();
+    document.execCommand('insertHTML',false,html);
+  }
+  closeVideoModal();
 }
 document.getElementById("prose-edit-btn").onclick=()=>{
   if(!unlocked){requirePw('prose-edit');return;}
