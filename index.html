@@ -67,7 +67,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 /* 상세 페이지 */
 .group-wrap{max-width:865px;margin:0 auto;padding:2rem 1.25rem;letter-spacing:-0.05em}
 .group-page-header{margin-bottom:1.25rem;display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.group-page-title{font-family:'Noto Serif KR',Georgia,serif;font-size:20px;font-weight:700;letter-spacing:-0.05em;color:var(--text)}
+.group-page-title{font-family:'SunBatang','Noto Serif KR',Georgia,serif;font-size:20px;font-weight:700;letter-spacing:-0.05em;color:var(--text)}
 .group-page-count{font-size:13px;color:var(--text3)}
 .toolbar{margin-bottom:1rem;display:flex;flex-direction:column;gap:10px}
 .toolbar-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -94,7 +94,13 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
 .title-text:hover{text-decoration:underline;text-underline-offset:3px;opacity:0.7}
 .adult-dot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0}
 .collab-badge{font-size:10px;padding:2px 7px;border-radius:2px;background:rgba(180,210,255,0.3);border:0.5px solid rgba(100,150,230,0.3);color:var(--text2);white-space:nowrap;letter-spacing:0}
-.genre-cell{font-size:12px;color:var(--text2)}
+.genre-tag-wrap{display:flex;flex-wrap:wrap;gap:5px;align-items:center;padding:5px 8px;border:0.5px solid var(--border2);border-radius:var(--radius);background:rgba(255,255,255,0.7);min-height:34px;cursor:text}
+.genre-tag-wrap:focus-within{border-color:var(--accent)}
+.genre-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;background:rgba(80,130,200,0.12);border:0.5px solid rgba(80,130,200,0.25);font-size:12px;color:var(--text2);letter-spacing:-0.03em;white-space:nowrap}
+.genre-tag-del{cursor:pointer;font-size:11px;color:var(--text3);line-height:1;padding:0 1px}
+.genre-tag-del:hover{color:var(--red)}
+.genre-tag-input{border:none;outline:none;background:transparent;font-size:13px;color:var(--text);min-width:80px;flex:1;padding:0;letter-spacing:-0.04em}
+
 
 /* 모달 */
 .modal-bg{position:fixed;inset:0;background:rgba(50,80,150,0.2);display:flex;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(4px)}
@@ -115,9 +121,9 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
 /* 본문 페이지 */
 .prose-page-wrap{max-width:865px;margin:0 auto;padding:2rem 1.25rem;letter-spacing:-0.05em}
 .prose-page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;gap:12px;flex-wrap:wrap}
-.prose-page-title{font-family:'Noto Serif KR',Georgia,serif;font-size:20px;font-weight:700;letter-spacing:-0.05em;color:var(--text)}
+.prose-page-title{font-family:'SunBatang','Noto Serif KR',Georgia,serif;font-size:20px;font-weight:700;letter-spacing:-0.05em;color:var(--text)}
 .prose-page-meta{font-size:12px;color:var(--text3);margin-top:4px;letter-spacing:-0.03em}
-.prose-view{background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:2rem;min-height:200px;font-size:14px;line-height:2;color:var(--text);font-family:'MapoGoldenPier','Noto Serif KR',Georgia,serif}
+.prose-view{background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:2rem;min-height:200px;font-size:14px;line-height:2;color:var(--text);font-family:'SunBatang','Noto Serif KR',Georgia,serif;font-weight:300}
 .prose-view p{margin-bottom:1em}
 .prose-view h1{font-size:1.4em;font-weight:700;margin:1.2em 0 0.5em}
 .prose-view h2{font-size:1.2em;font-weight:700;margin:1em 0 0.4em}
@@ -127,7 +133,7 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
 .prose-view hr{border:none;border-top:0.5px solid var(--border2);margin:1.5em 0}
 .prose-view blockquote{border-left:2px solid var(--border2);padding-left:1em;color:var(--text2);margin:1em 0}
 .prose-view-empty{color:var(--text3);font-style:italic;font-size:13px}
-.prose-edit-area{width:100%;min-height:400px;padding:1.5rem;border:0.5px solid var(--border2);border-radius:var(--radius-lg);background:rgba(255,255,255,0.6);color:var(--text);font-size:14px;line-height:2;resize:vertical;outline:none;font-family:'MapoGoldenPier','Noto Serif KR',Georgia,serif;letter-spacing:-0.1em}
+.prose-edit-area{width:100%;min-height:400px;padding:1.5rem;border:0.5px solid var(--border2);border-radius:var(--radius-lg);background:rgba(255,255,255,0.6);color:var(--text);font-size:14px;line-height:2;resize:vertical;outline:none;font-family:'SunBatang','Noto Serif KR',Georgia,serif;font-weight:300;letter-spacing:-0.05em}
 .prose-edit-area:focus{border-color:var(--accent)}
 .prose-toolbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
 .prose-tool-btn{font-size:12px;padding:4px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text2);cursor:pointer}
@@ -172,7 +178,8 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
   .group-card-suit-big{font-size:28px}
   .group-card-bottom{display:none}
 }
-@font-face{font-family:"MapoGoldenPier";src:url("https://cdn.jsdelivr.net/gh/nainn-a/pokshinn@main/MapoGoldenPier.otf") format("opentype");font-weight:normal;font-style:normal}
+@font-face{font-family:"SunBatang";src:url("https://cdn.jsdelivr.net/gh/nainn-a/pokshinn@main/SunBatang-Light.ttf") format("truetype");font-weight:300;font-style:normal}
+@font-face{font-family:"SunBatang";src:url("https://cdn.jsdelivr.net/gh/nainn-a/pokshinn@main/SunBatang-Bold.ttf") format("truetype");font-weight:700;font-style:normal}
 </style>
 </head>
 <body>
@@ -323,7 +330,7 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
         <input type="file" id="img-upload" accept="image/*" style="display:none" onchange="handleImgUpload(event)">
         <button class="prose-tool-btn" onclick="insertVideo()" title="동영상 삽입">▶</button>
       </div>
-      <div class="prose-edit-area" id="prose-page-area" contenteditable="true" spellcheck="false" style="font-family:'MapoGoldenPier','Noto Serif KR',serif;letter-spacing:-0.1em;min-height:400px;padding:1.5rem;line-height:2.1;font-size:15px"></div>
+      <div class="prose-edit-area" id="prose-page-area" contenteditable="true" spellcheck="false" style="font-family:'SunBatang','Noto Serif KR',serif;font-weight:300;letter-spacing:-0.05em;min-height:400px;padding:1.5rem;line-height:2.1;font-size:15px"></div>
     </div>
   </div>
 </div>
@@ -331,27 +338,22 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
 <!-- 에디터 -->
 <div class="page" id="page-editor">
   <div class="editor-wrap">
-    <button class="back-btn" id="back-from-editor">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>이전으로
-    </button>
-    <div class="editor-header">
-      <h2>에디터</h2>
-      <button class="logout-btn" onclick="logout()">잠금</button>
-    </div>
-
-    <!-- 작품 선택 -->
-    <div style="margin-bottom:1rem">
-      <div class="prose-selector">
-        <select id="editor-work-sel" onchange="onEditorWorkChange()">
-          <option value="">— 새 작품 추가 —</option>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:10px">
+      <button class="back-btn" id="back-from-editor" style="margin-bottom:0">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>이전으로
+      </button>
+      <div style="display:flex;align-items:center;gap:10px">
+        <select id="editor-work-sel" onchange="onEditorWorkChange()" style="font-size:13px;padding:6px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text);outline:none;max-width:220px">
+          <option value="">새 작품 추가</option>
         </select>
-        <button class="btn danger" id="editor-del-work-btn" style="display:none" onclick="deleteCurrentWork()">작품 삭제</button>
+        <button class="btn danger" id="editor-del-work-btn" style="display:none" onclick="deleteCurrentWork()">삭제</button>
+        <button class="logout-btn" onclick="logout()">잠금</button>
       </div>
     </div>
 
-    <!-- 작품 정보 폼 -->
+    <!-- 통합 폼 -->
     <div class="work-form" id="work-form">
-      <h3 id="form-title">새 작품 추가</h3>
+      <h3 id="form-title" style="font-size:14px;font-weight:500;margin-bottom:1rem;color:var(--text)">새 작품 추가</h3>
       <div class="form-grid">
         <div class="form-field"><label>제목</label><input id="f-title" placeholder="제목"></div>
         <div class="form-field"><label>그룹</label>
@@ -366,22 +368,21 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
           </div>
         </div>
         <div class="form-field"><label>작성일</label><input id="f-date" type="date"></div>
-        <div class="form-field"><label>장르</label><input id="f-genre" placeholder="일상, 판타지"></div>
+        <div class="form-field"><label>장르</label>
+          <div class="genre-tag-wrap" id="genre-tag-wrap" onclick="document.getElementById('genre-tag-input').focus()">
+            <input class="genre-tag-input" id="genre-tag-input" placeholder="입력 후 엔터" onkeydown="handleGenreKey(event)" autocomplete="off">
+          </div>
+        </div>
         <div class="form-field"><label>합작 이름</label><input id="f-collabname" placeholder="합작 프로젝트명"></div>
       </div>
       <div class="form-checks">
         <label><input type="checkbox" id="f-adult"> 성인물</label>
         <label><input type="checkbox" id="f-collab"> 합작</label>
       </div>
-      <div class="form-actions">
-        <button class="btn" id="form-cancel-btn" style="display:none" onclick="resetEditorForm()">새 작품으로</button>
-        <button class="btn primary" onclick="submitForm()">작품 저장</button>
-      </div>
     </div>
 
     <!-- 본문 편집 -->
-    <div>
-      <h3 style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:0.75rem">본문</h3>
+    <div style="margin-top:1rem">
       <div class="prose-toolbar">
         <button class="prose-tool-btn" onclick="insertEditorMd('**','**')"><b>B</b></button>
         <button class="prose-tool-btn" onclick="insertEditorMd('*','*')"><i>I</i></button>
@@ -398,10 +399,10 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
         <button class="prose-tool-btn" onclick="document.getElementById('txt-upload').click()" title="TXT 파일 불러오기">↑ TXT</button>
         <input type="file" id="txt-upload" accept=".txt,text/plain" style="display:none" onchange="handleTxtUpload(event)">
       </div>
-      <textarea class="prose-area" id="prose-area" placeholder="마크다운으로 본문을 입력하세요..."></textarea>
+      <textarea class="prose-area" id="prose-area" placeholder="본문을 입력하세요..."></textarea>
       <div class="prose-save-row">
-        <span class="prose-saved" id="prose-saved"></span>
-        <button class="btn primary" onclick="saveProse()">본문 저장</button>
+        <button class="btn" id="form-cancel-btn" style="display:none" onclick="resetEditorForm()">새 작품으로</button>
+        <button class="btn primary" onclick="submitAll()">저장</button>
       </div>
     </div>
   </div>
@@ -764,7 +765,7 @@ function openEditor(){
 function renderEditorWorkSel(){
   const sel=document.getElementById("editor-work-sel");
   const cur=sel.value;
-  sel.innerHTML='<option value="">— 새 작품 추가 —</option>';
+  sel.innerHTML='<option value="">새 작품 추가</option>';
   [...DATA].sort((a,b)=>(b.date||"").localeCompare(a.date||"")).forEach(w=>{
     const o=document.createElement("option");o.value=w.id;o.textContent=`[${w.group}] ${w.title}`;sel.appendChild(o);
   });
@@ -782,7 +783,7 @@ function onEditorWorkChange(){
   document.getElementById("f-group").value=w.group;
   document.getElementById("f-cp").value=w.cp;
   document.getElementById("f-date").value=w.date||"";
-  document.getElementById("f-genre").value=w.genre||"";
+  setGenreFromString(w.genre||"");
   document.getElementById("f-collabname").value=w.collabName||"";
   document.getElementById("f-adult").checked=w.adult;
   document.getElementById("f-collab").checked=w.collab;
@@ -794,11 +795,12 @@ function resetEditorForm(){
   document.getElementById("form-cancel-btn").style.display="none";
   document.getElementById("editor-del-work-btn").style.display="none";
   document.getElementById("editor-work-sel").value="";
-  ["f-title","f-cp","f-date","f-genre","f-collabname"].forEach(id=>document.getElementById(id).value="");
+  ["f-title","f-cp","f-date","f-collabname"].forEach(id=>document.getElementById(id).value="");
   document.getElementById("f-group").value="ONEUS";
   document.getElementById("f-adult").checked=false;
   document.getElementById("f-collab").checked=false;
   document.getElementById("prose-area").value="";
+  setGenreFromString("");
 }
 document.getElementById("form-cancel-btn").onclick=resetEditorForm;
 function deleteCurrentWork(){
@@ -806,34 +808,32 @@ function deleteCurrentWork(){
   DATA=DATA.filter(w=>w.id!==editingId);
   saveStorage();renderHome();renderEditorWorkSel();resetEditorForm();
 }
-function submitForm(){
+function submitAll(){
   const title=document.getElementById("f-title").value.trim();
   const cp=document.getElementById("f-cp").value.trim();
   if(!title||!cp){alert("제목과 CP는 필수입니다.");return;}
+  // 입력 중인 태그도 반영
+  const pending=document.getElementById("genre-tag-input").value.trim();
+  if(pending&&!genreTags.includes(pending)){genreTags.push(pending);document.getElementById("genre-tag-input").value="";}
+  const id=editingId||nextId++;
   const obj={
-    id:editingId||nextId++,title,
+    id,title,
     group:document.getElementById("f-group").value,cp,
     date:document.getElementById("f-date").value,
-    genre:document.getElementById("f-genre").value.trim(),
+    genre:getGenreString(),
     adult:document.getElementById("f-adult").checked,
     collab:document.getElementById("f-collab").checked,
     collabName:document.getElementById("f-collabname").value.trim()
   };
   if(editingId)DATA=DATA.map(w=>w.id===editingId?obj:w);else DATA.push(obj);
+  localStorage.setItem(getProseKey(id),document.getElementById("prose-area").value);
   saveStorage();renderHome();renderEditorWorkSel();
-  editingId=obj.id;
-  document.getElementById("editor-work-sel").value=obj.id;
+  editingId=id;
+  document.getElementById("editor-work-sel").value=id;
   document.getElementById("form-title").textContent="작품 수정";
   document.getElementById("form-cancel-btn").style.display="";
   document.getElementById("editor-del-work-btn").style.display="";
-}
-function saveProse(){
-  const id=editingId;
-  if(!id){alert("먼저 작품을 저장하거나 선택하세요.");return;}
-  localStorage.setItem(getProseKey(id),document.getElementById("prose-area").value);
-  const s=document.getElementById("prose-saved");
-  s.textContent="저장됨 "+new Date().toLocaleTimeString();
-  setTimeout(()=>{s.textContent=""},3000);
+  document.getElementById("save-modal").classList.remove("hidden");
 }
 function insertEditorMd(before,after){
   const ta=document.getElementById("prose-area");
@@ -858,6 +858,36 @@ function handleTxtUpload(e){
   reader.readAsText(file,"UTF-8");
   e.target.value="";
 }
+
+/* ── 장르 태그 ── */
+let genreTags=[];
+function handleGenreKey(e){
+  if(e.key==="Enter"||e.key===","||e.key===";"){
+    e.preventDefault();
+    const v=e.target.value.replace(/,|;/g,"").trim();
+    if(v&&!genreTags.includes(v)){genreTags.push(v);renderGenreTags();}
+    e.target.value="";
+  } else if(e.key==="Backspace"&&e.target.value===""&&genreTags.length){
+    genreTags.pop();renderGenreTags();
+  }
+}
+function removeGenreTag(i){genreTags.splice(i,1);renderGenreTags();}
+function renderGenreTags(){
+  const wrap=document.getElementById("genre-tag-wrap");
+  const input=document.getElementById("genre-tag-input");
+  wrap.querySelectorAll(".genre-tag").forEach(t=>t.remove());
+  genreTags.forEach((t,i)=>{
+    const span=document.createElement("span");
+    span.className="genre-tag";
+    span.innerHTML=`${t}<span class="genre-tag-del" onmousedown="event.preventDefault();removeGenreTag(${i})">✕</span>`;
+    wrap.insertBefore(span,input);
+  });
+}
+function setGenreFromString(str){
+  genreTags=(str||"").split(",").map(s=>s.trim()).filter(Boolean);
+  renderGenreTags();
+}
+function getGenreString(){return genreTags.join(", ");}
 
 /* ── CP 드롭다운 ── */
 function getCpsForGroup(g){return[...new Set(DATA.filter(w=>w.group===g).map(w=>w.cp))].filter(Boolean);}
