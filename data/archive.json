@@ -131,7 +131,18 @@
       "adult": false,
       "collab": true,
       "collabName": "묭헌합작"
+    },
+    {
+      "id": 114,
+      "title": "노트 온 벨로시티",
+      "group": "VERIVERY",
+      "cp": "묭헌",
+      "date": "2022-07-19",
+      "genre": "일상",
+      "adult": true,
+      "collab": false,
+      "collabName": ""
     }
   ],
-  "nextId": 114
+  "nextId": 115
 }
