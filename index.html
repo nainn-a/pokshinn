@@ -585,10 +585,15 @@ async function sha256(msg){
   const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(msg));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
 }
-function showPage(id){
+function showPage(id,extra){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById(id).classList.add("active");
-  history.replaceState(null,"","#"+id);
+  const hash="#"+(extra||id);
+  if(extra&&extra.startsWith("prose-")){
+    history.pushState({hash},""  ,hash);
+  } else {
+    history.replaceState({hash},"",hash);
+  }
 }
 
 /* ── 비밀번호 ── */
@@ -780,7 +785,7 @@ async function openProse(id){
   document.getElementById("prose-page-meta").textContent=`${w.group} · ${cpDis}`;
   document.getElementById("prose-page-genre").textContent=w.genre||"";
   document.getElementById("prose-rendered").innerHTML=`<span class="prose-view-empty">열고 있어요...</span>`;
-  setProseMode("view");showPage("page-prose");
+  setProseMode("view");showPage("page-prose","prose-"+id);
   const stored=await loadProseFromGitHub(id);
   document.getElementById("prose-page-area").innerHTML=stored;
   document.getElementById("prose-rendered").innerHTML=stored||`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
@@ -1429,15 +1434,36 @@ function filterCpDropdown(){renderCpOptions(document.getElementById("cp-tag-inpu
 function showCpDropdown(){renderCpOptions(document.getElementById("cp-tag-input").value);}
 function hideCpDropdown(){setTimeout(()=>document.getElementById("cp-dropdown").classList.remove("show"),150);}
 
-/* ── 초기화 ── */
+/* ── 브라우저 뒤로가기 ── */
+window.addEventListener("popstate",function(e){
+  const hash=(e.state&&e.state.hash?e.state.hash:location.hash).replace("#","");
+  if(!hash||hash==="page-home"){
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    document.getElementById("page-home").classList.add("active");
+  } else if(hash==="page-cards"){
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    document.getElementById("page-cards").classList.add("active");
+  } else if(hash==="page-group"){
+    const g=localStorage.getItem("archive_last_group");
+    if(g){
+      document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+      document.getElementById("page-group").classList.add("active");
+      openGroup(g);
+    }
+  } else if(hash.startsWith("prose-")){
+    const id=parseInt(hash.replace("prose-",""));
+    if(id&&DATA.find(x=>x.id===id))openProse(id);
+  }
+});
 (async function(){
   await loadFromGitHub();
   renderHome();
   const hash=location.hash.replace("#","");
-  if(!hash||!document.getElementById(hash))return;
+  if(!hash)return;
   if(hash==="page-home"||hash==="page-cards"){showPage(hash);}
   else if(hash==="page-group"){const g=localStorage.getItem("archive_last_group");if(g)openGroup(g);}
   else if(hash==="page-prose"){const id=parseInt(localStorage.getItem("archive_last_prose"));if(id&&DATA.find(x=>x.id===id))openProse(id);}
+  else if(hash.startsWith("prose-")){const id=parseInt(hash.replace("prose-",""));if(id&&DATA.find(x=>x.id===id))openProse(id);}
 })();
 </script>
 </body>
