@@ -197,7 +197,18 @@
       "adult": false,
       "collab": false,
       "collabName": ""
+    },
+    {
+      "id": 120,
+      "title": "고스트 트윈스",
+      "group": "P1HARMONY",
+      "cp": "종쏠섭",
+      "date": "2024-11-07",
+      "genre": "일상",
+      "adult": false,
+      "collab": false,
+      "collabName": ""
     }
   ],
-  "nextId": 120
+  "nextId": 121
 }
