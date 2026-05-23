@@ -138,7 +138,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
 .prose-view-empty{color:var(--text3);font-style:italic;font-size:13px}
 .prose-edit-area{width:100%;min-height:400px;padding:1.5rem;border:0.5px solid var(--border2);border-radius:var(--radius-lg);background:rgba(255,255,255,0.6);color:var(--text);font-size:16px;line-height:2;resize:vertical;outline:none;font-family:'BookkMyungjo','Noto Serif KR',Georgia,serif;font-weight:300;letter-spacing:-0.05em}
 .prose-edit-area:focus{border-color:var(--accent)}
-.prose-toolbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.prose-toolbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;position:sticky;top:0;z-index:10;background:rgba(235,240,250,0.95);backdrop-filter:blur(8px);padding:8px 4px;border-radius:var(--radius);}
 .prose-tool-btn{font-size:12px;padding:4px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text2);cursor:pointer}
 .prose-tool-btn:hover{background:rgba(255,255,255,0.9)}
 .prose-mode-btn{font-size:12px;padding:5px 12px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.5);color:var(--text2);cursor:pointer}
@@ -242,6 +242,11 @@ table{width:100%;min-width:100%;table-layout:fixed}
   <div class="modal">
     <h2 id="pw-modal-title">에디터 잠금 해제</h2>
     <input type="password" id="pw-input" placeholder="비밀번호" autocomplete="current-password">
+    <div id="gh-token-row" style="margin-top:0.85rem;display:none;flex-direction:column;gap:0.4rem">
+      <label style="font-size:0.82rem;color:var(--text2);font-weight:600">GitHub Personal Access Token</label>
+      <input type="password" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off" style="font-size:0.85rem">
+      <div style="font-size:0.72rem;color:var(--text3);line-height:1.6">토큰은 메모리에만 보관됩니다.<br>필요 권한: Contents (read &amp; write)</div>
+    </div>
     <div class="modal-err" id="pw-err"></div>
     <div class="modal-btns">
       <button class="btn" id="pw-cancel">취소</button>
@@ -305,7 +310,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
     <div class="table-wrap">
       <table>
         <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-date"></colgroup>
-        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-date">업로드일</th></tr></thead>
+        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-date">게시일</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
@@ -364,7 +369,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
             </div>
             <div id="pe-cp-members-section" style="margin-top:6px;display:flex;flex-direction:column;gap:4px"></div>
           </div>
-          <div class="form-field"><label>업로드일</label><input id="pe-date" placeholder="yyyy-mm-dd" maxlength="10" oninput="handleDateInput(this)" autocomplete="off"></div>
+          <div class="form-field"><label>게시일</label><input id="pe-date" placeholder="yyyy-mm-dd" maxlength="10" oninput="handleDateInput(this)" autocomplete="off"></div>
           <div class="form-field"><label>장르</label>
             <div class="genre-tag-wrap" id="pe-genre-tag-wrap" onclick="document.getElementById('pe-genre-input').focus()" style="position:relative">
               <input class="genre-tag-input" id="pe-genre-input" placeholder="입력 후 엔터" onkeydown="handlePeGenreKey(event)" oninput="filterPeGenreHistory()" onfocus="showPeGenreHistory()" onblur="hidePeGenreHistory()" autocomplete="off">
@@ -423,6 +428,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
           <option value="">새 작품 추가</option>
         </select>
         <button class="btn danger" id="editor-del-work-btn" style="display:none" onclick="deleteCurrentWork()">삭제</button>
+        <button class="btn" id="migrate-btn" onclick="migrateLocalStorageToGitHub()" style="display:none;font-size:0.78rem;padding:0.35rem 0.75rem;opacity:.75" title="기존 localStorage 데이터를 GitHub에 업로드">↑ 데이터 마이그레이션</button>
         <button class="logout-btn" onclick="logout()">잠금</button>
       </div>
     </div>
@@ -450,7 +456,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
           </div>
           <div id="cp-members-section" style="margin-top:6px;display:flex;flex-direction:column;gap:4px"></div>
         </div>
-        <div class="form-field"><label>업로드일</label><input id="f-date" placeholder="yyyy-mm-dd" maxlength="10" oninput="handleDateInput(this)" autocomplete="off"></div>
+        <div class="form-field"><label>게시일</label><input id="f-date" placeholder="yyyy-mm-dd" maxlength="10" oninput="handleDateInput(this)" autocomplete="off"></div>
         <div class="form-field"><label>장르</label>
           <div class="genre-tag-wrap" id="genre-tag-wrap" onclick="document.getElementById('genre-tag-input').focus()">
             <input class="genre-tag-input" id="genre-tag-input" placeholder="입력 후 엔터" onkeydown="handleGenreKey(event)" oninput="filterGenreHistory(this.value)" onfocus="showGenreHistory()" onblur="hideGenreHistory()" autocomplete="off">
@@ -554,6 +560,30 @@ let editingId=null,unlocked=false,nextId=100,pwPurpose='editor';
 let currentProseId=null;
 
 function loadStorage(){try{const d=localStorage.getItem("archive_data");if(d)DATA=JSON.parse(d);const n=localStorage.getItem("archive_nextid");if(n)nextId=parseInt(n);}catch(e){}}
+/* ═══════════════════════════════════════════════════
+   GitHub API 연동  nainn-a/pokshinn  (public / main)
+   data/archive.json   - 작품 메타 + nextId
+   data/cpDesc.json    - CP 설명 맵
+   data/prose/{id}.html - 본문
+═══════════════════════════════════════════════════ */
+const GH_OWNER="nainn-a",GH_REPO="pokshinn",GH_BRANCH="main";
+let GH_TOKEN="";
+function ghHeaders(){const h={"Content-Type":"application/json","Accept":"application/vnd.github+json"};if(GH_TOKEN)h["Authorization"]="token "+GH_TOKEN;return h;}
+async function ghGet(path){const r=await fetch("https://api.github.com/repos/"+GH_OWNER+"/"+GH_REPO+"/contents/"+path+"?ref="+GH_BRANCH+"&t="+Date.now(),{headers:ghHeaders()});if(r.status===404)return null;if(!r.ok)throw new Error("GET fail:"+r.status);return await r.json();}
+async function ghPut(path,str,sha){const body={message:"update "+path,content:btoa(unescape(encodeURIComponent(str))),branch:GH_BRANCH};if(sha)body.sha=sha;const r=await fetch("https://api.github.com/repos/"+GH_OWNER+"/"+GH_REPO+"/contents/"+path,{method:"PUT",headers:ghHeaders(),body:JSON.stringify(body)});if(!r.ok){const e=await r.json();throw new Error(e.message||"PUT fail");}return await r.json();}
+async function ghDelete(path){const f=await ghGet(path);if(!f)return;const r=await fetch("https://api.github.com/repos/"+GH_OWNER+"/"+GH_REPO+"/contents/"+path,{method:"DELETE",headers:ghHeaders(),body:JSON.stringify({message:"delete "+path,sha:f.sha,branch:GH_BRANCH})});if(!r.ok){const e=await r.json();throw new Error(e.message||"DELETE fail");}}
+function showLoading(msg){msg=msg||"저장 중...";var el=document.getElementById("gh-loading");if(!el){el=document.createElement("div");el.id="gh-loading";el.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;";el.innerHTML='<div style="background:#fff;border-radius:14px;padding:2rem 3rem;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.18)"><div style="font-size:2rem;margin-bottom:.5rem">⏳</div><div id="gh-loading-msg" style="font-size:1rem;color:#1a2a4a;min-width:220px"></div></div>';document.body.appendChild(el);}document.getElementById("gh-loading-msg").textContent=msg;el.style.display="flex";}
+function hideLoading(){var el=document.getElementById("gh-loading");if(el)el.style.display="none";}
+async function loadFromGitHub(){try{const r=await fetch("https://raw.githubusercontent.com/"+GH_OWNER+"/"+GH_REPO+"/"+GH_BRANCH+"/data/archive.json?t="+Date.now());if(r.ok){const j=await r.json();DATA=j.data||[];nextId=j.nextId||100;return;}}catch(e){console.warn("GitHub load fail:",e);}loadStorage();}
+async function saveArchiveToGitHub(){saveStorage();if(!GH_TOKEN)return;const c=JSON.stringify({data:DATA,nextId:nextId},null,2);const ex=await ghGet("data/archive.json");await ghPut("data/archive.json",c,ex?ex.sha:null);}
+async function loadProseFromGitHub(id){const c=localStorage.getItem(getProseKey(id));if(c!==null)return c;try{const r=await fetch("https://raw.githubusercontent.com/"+GH_OWNER+"/"+GH_REPO+"/"+GH_BRANCH+"/data/prose/"+id+".html?t="+Date.now());if(r.ok){const t=await r.text();localStorage.setItem(getProseKey(id),t);return t;}}catch(e){}return "";}
+async function saveProseToGitHub(id,content){localStorage.setItem(getProseKey(id),content);if(!GH_TOKEN)return;const ex=await ghGet("data/prose/"+id+".html");await ghPut("data/prose/"+id+".html",content,ex?ex.sha:null);}
+async function deleteProseFromGitHub(id){localStorage.removeItem(getProseKey(id));localStorage.removeItem(getProseKey(id)+"_modified");if(!GH_TOKEN)return;try{await ghDelete("data/prose/"+id+".html");}catch(e){console.warn(e);}}
+async function saveCpDescToGitHub(map){localStorage.setItem("archive_cp_desc",JSON.stringify(map));if(!GH_TOKEN)return;try{const ex=await ghGet("data/cpDesc.json");await ghPut("data/cpDesc.json",JSON.stringify(map,null,2),ex?ex.sha:null);}catch(e){console.warn(e);}}
+async function migrateLocalStorageToGitHub(){if(!GH_TOKEN){alert("먼저 에디터를 잠금 해제하고 GitHub Token을 입력하세요.");return;}if(!confirm("localStorage 데이터를 GitHub에 업로드합니다.
+기존 GitHub 데이터를 덮어쓁니다. 계속할까요?"))return;showLoading("마이그레이션 준비...");try{const d=localStorage.getItem("archive_data");const n=localStorage.getItem("archive_nextid");const md=d?JSON.parse(d):DATA;const mn=n?parseInt(n):nextId;const ex=await ghGet("data/archive.json");await ghPut("data/archive.json",JSON.stringify({data:md,nextId:mn},null,2),ex?ex.sha:null);for(var i=0;i<md.length;i++){var w=md[i];showLoading("업로드 ("+(i+1)+"/"+md.length+"): "+w.title);var p=localStorage.getItem(getProseKey(w.id))||"";var ep=await ghGet("data/prose/"+w.id+".html");await ghPut("data/prose/"+w.id+".html",p,ep?ep.sha:null);}var cp=localStorage.getItem("archive_cp_desc");if(cp){var ec=await ghGet("data/cpDesc.json");await ghPut("data/cpDesc.json",JSON.stringify(JSON.parse(cp),null,2),ec?ec.sha:null);}DATA=md;nextId=mn;hideLoading();alert("✅ 마이그레이션 완료! 작품 "+md.length+"편
+배포 완료 후 반영됩니다.");renderHome();}catch(e){hideLoading();alert("실패: "+e.message);}}
+
 function saveStorage(){try{localStorage.setItem("archive_data",JSON.stringify(DATA));localStorage.setItem("archive_nextid",String(nextId));}catch(e){}}
 function getProseKey(id){return"prose_"+id;}
 
@@ -565,6 +595,7 @@ async function sha256(msg){
 function showPage(id){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById(id).classList.add("active");
+  history.replaceState(null,"","#"+id);
 }
 
 /* ── 비밀번호 ── */
@@ -572,6 +603,7 @@ function requirePw(purpose){
   pwPurpose=purpose;
   if(purpose==='editor'&&unlocked){openEditor();return;}
   document.getElementById("pw-modal-title").textContent=purpose==='dl'?'다운로드 확인':'에디터 잠금 해제';
+  var tRow=document.getElementById("gh-token-row");if(tRow)tRow.style.display=(purpose!=='dl')?"flex":"none";
   document.getElementById("pw-modal").classList.remove("hidden");
   document.getElementById("pw-input").value="";
   document.getElementById("pw-err").textContent="";
@@ -595,9 +627,11 @@ document.getElementById("pw-confirm").onclick=async()=>{
   if(h===target){
     document.getElementById("pw-modal").classList.add("hidden");
     unlocked=true;
-    if(pwPurpose==='prose-new'){openProseEditorNew();}
-    else if(pwPurpose==='prose-edit'){setProseMode("edit");}
-    else{openEditor();}
+    var tok=document.getElementById("gh-token-input");
+    if(tok&&tok.value.trim()){GH_TOKEN=tok.value.trim();tok.value="";}
+    if(pwPurpose==='prose-new')openProseEditorNew();
+    else if(pwPurpose==='prose-edit')setProseMode("edit");
+    else openEditor();
   }else{
     document.getElementById("pw-err").textContent="비밀번호가 틀렸습니다.";
   }
@@ -626,7 +660,7 @@ function downloadTxt(){
     lines.push(`▶ ${g} (${works.length}편)`);lines.push("-".repeat(40));
     [...works].sort((a,b)=>(b.date||"").localeCompare(a.date||"")).forEach((w,i)=>{
       lines.push(`${i+1}. [${w.cp}] ${w.title}${w.adult?" ●":""}`);
-      lines.push(`   업로드일: ${w.date||"미정"}  장르: ${w.genre||"미정"}${w.collab?`  합작: ${w.collabName}`:""}`);
+      lines.push(`   게시일: ${w.date||"미정"}  장르: ${w.genre||"미정"}${w.collab?`  합작: ${w.collabName}`:""}`);
     });lines.push("");
   });
   DATA.forEach(w=>{const p=localStorage.getItem(getProseKey(w.id));if(p){lines.push("");lines.push(`■ ${w.title}`);lines.push("=".repeat(40));lines.push(p);}});
@@ -662,6 +696,7 @@ document.getElementById("sort-toggle-btn").onclick=()=>{
 
 function openGroup(g){
   currentGroup=g;currentCp=null;currentSort="date-desc";
+  localStorage.setItem("archive_last_group",g);
   showPage("page-group");
   document.getElementById("gp-title").textContent=g;
   document.getElementById("sort-label").textContent="최신순";
@@ -744,36 +779,33 @@ function setProseMode(mode){
     document.getElementById("prose-rendered").innerHTML=content||`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
   }
 }
-function openProse(id){
+async function openProse(id){
   const w=DATA.find(x=>x.id===id);if(!w)return;
-  currentProseId=id;
+  currentProseId=id;localStorage.setItem("archive_last_prose",id);
   document.getElementById("prose-page-title").textContent=w.title;
-  const cpDesc=getCpDesc(w.cp);
-  const cpDisplay=cpDesc?`${w.cp}(${cpDesc})`:w.cp;
-  document.getElementById("prose-page-meta").textContent=`${w.group} · ${cpDisplay}`;
+  const cpD=getCpDesc(w.cp);const cpDis=cpD?(w.cp+"("+cpD+")"):w.cp;
+  document.getElementById("prose-page-meta").textContent=w.group+" · "+cpDis;
   document.getElementById("prose-page-genre").textContent=w.genre||"";
-  const stored=localStorage.getItem(getProseKey(id))||"";
+  document.getElementById("prose-rendered").innerHTML='<span class="prose-view-empty">열고 있어요...</span>';
+  setProseMode("view");showPage("page-prose");
+  const stored=await loadProseFromGitHub(id);
   document.getElementById("prose-page-area").innerHTML=stored;
-  document.getElementById("prose-rendered").innerHTML=stored||`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
+  document.getElementById("prose-rendered").innerHTML=stored||'<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>';
   document.getElementById("prose-del-btn").style.display=unlocked?"":"none";
   const mod=localStorage.getItem(getProseKey(id)+"_modified");
   document.getElementById("prose-modified-display").textContent=mod?"최종 수정: "+mod:"";
   const penname=localStorage.getItem("archive_penname")||"";
   const dateStr=w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):"";
-  const parts=[penname,dateStr].filter(Boolean);
-  document.getElementById("prose-byline").textContent=parts.join(" · ");
-  setProseMode("view");
-  showPage("page-prose");
+  document.getElementById("prose-byline").textContent=[penname,dateStr].filter(Boolean).join(" · ");
 }
-function deleteCurrentProse(){
+async function deleteCurrentProse(){
   if(!currentProseId||!confirm("이 작품을 삭제할까요?"))return;
-  const w=DATA.find(x=>x.id===currentProseId);
-  const group=w?w.group:null;
+  const w=DATA.find(x=>x.id===currentProseId);const group=w?w.group:null;const delId=currentProseId;
   DATA=DATA.filter(x=>x.id!==currentProseId);
-  localStorage.removeItem(getProseKey(currentProseId));
-  localStorage.removeItem(getProseKey(currentProseId)+"_modified");
-  saveStorage();renderHome();
-  if(group){openGroup(group);}else{showPage("page-cards");}
+  showLoading("삭제 중...");
+  try{await deleteProseFromGitHub(delId);await saveArchiveToGitHub();}catch(e){console.warn(e);}
+  hideLoading();renderHome();
+  if(group)openGroup(group);else showPage("page-cards");
 }
 function openNewProse(){
   if(!unlocked){requirePw('prose-new');return;}
@@ -783,49 +815,42 @@ function openProseEditorNew(){
   openEditor();
   resetEditorForm();
 }
-function saveProseContent(){
+async function saveProseContent(){
   if(!currentProseId)return;
-  // 메타 정보 저장
-  const pendingCp=document.getElementById("pe-cp-input").value.trim();
-  if(pendingCp&&!peCpTags.includes(pendingCp)){peCpTags.push(pendingCp);}
-  const pendingGenre=document.getElementById("pe-genre-input").value.trim();
-  if(pendingGenre&&!peGenreTags.includes(pendingGenre)){peGenreTags.push(pendingGenre);}
+  const pCp=document.getElementById("pe-cp-input").value.trim();
+  if(pCp&&!peCpTags.includes(pCp))peCpTags.push(pCp);
+  const pG=document.getElementById("pe-genre-input").value.trim();
+  if(pG&&!peGenreTags.includes(pG))peGenreTags.push(pG);
   const penname=document.getElementById("pe-penname").value.trim();
   if(penname)localStorage.setItem("archive_penname",penname);
-  const updated={
-    ...DATA.find(x=>x.id===currentProseId),
-    title:document.getElementById("pe-title").value.trim()||DATA.find(x=>x.id===currentProseId).title,
-    group:document.getElementById("pe-group").value,
-    cp:peCpTags.join("×"),
-    date:document.getElementById("pe-date").value,
-    genre:peGenreTags.join(", "),
-    adult:document.getElementById("pe-adult").checked,
-    collab:document.getElementById("pe-collab").checked,
-    collabName:document.getElementById("pe-collabname").value.trim()
-  };
+  const base=DATA.find(x=>x.id===currentProseId);
+  const updated={...base,
+    title:document.getElementById("pe-title").value.trim()||base.title,
+    group:document.getElementById("pe-group").value,cp:peCpTags.join("×"),
+    date:document.getElementById("pe-date").value,genre:peGenreTags.join(", "),
+    adult:document.getElementById("pe-adult").checked,collab:document.getElementById("pe-collab").checked,
+    collabName:document.getElementById("pe-collabname").value.trim()};
   DATA=DATA.map(w=>w.id===currentProseId?updated:w);
-  saveStorage();renderHome();
-  // 본문 저장
   const content=document.getElementById("prose-page-area").innerHTML;
-  localStorage.setItem(getProseKey(currentProseId),content);
   const now=new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
   localStorage.setItem(getProseKey(currentProseId)+"_modified",now);
-  // 뷰 업데이트
+  showLoading("GitHub에 저장 중...");
+  try{await saveProseToGitHub(currentProseId,content);await saveArchiveToGitHub();}catch(e){console.warn(e.message);}
+  hideLoading();
   document.getElementById("prose-page-title").textContent=updated.title;
-  const cpDesc2=getCpDesc(updated.cp);
-  const cpDisplay2=cpDesc2?`${updated.cp}(${cpDesc2})`:updated.cp;
-  document.getElementById("prose-page-meta").textContent=`${updated.group} · ${cpDisplay2}`;
+  const cd=getCpDesc(updated.cp);const cdis=cd?(updated.cp+"("+cd+")"):updated.cp;
+  document.getElementById("prose-page-meta").textContent=updated.group+" · "+cdis;
   document.getElementById("prose-page-genre").textContent=updated.genre||"";
   document.getElementById("prose-modified-display").textContent="최종 수정: "+now;
-  document.getElementById("prose-rendered").innerHTML=content||`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
+  document.getElementById("prose-rendered").innerHTML=content||'<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>';
   const dateStr=updated.date?updated.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):"";
   const pn=localStorage.getItem("archive_penname")||"";
   document.getElementById("prose-byline").textContent=[pn,dateStr].filter(Boolean).join(" · ");
-  setProseMode("view");
-  window.scrollTo({top:0,behavior:"smooth"});
+  setProseMode("view");window.scrollTo({top:0,behavior:"smooth"});
   _saveFrom='prose';
   document.getElementById("save-modal").classList.remove("hidden");
 }
+
 let _saveFrom=null; // 'editor' or 'prose'
 function closeSaveModal(){
   document.getElementById("save-modal").classList.add("hidden");
@@ -1000,6 +1025,7 @@ function openEditor(){
   showPage("page-editor");
   renderEditorWorkSel();
   document.getElementById("f-penname").value=loadPenName();
+  var mb=document.getElementById("migrate-btn");if(mb)mb.style.display="";
 }
 function renderEditorWorkSel(){
   const sel=document.getElementById("editor-work-sel");
@@ -1044,36 +1070,34 @@ function resetEditorForm(){
   setCpFromString("");
 }
 document.getElementById("form-cancel-btn").onclick=resetEditorForm;
-function deleteCurrentWork(){
+async function deleteCurrentWork(){
   if(!editingId||!confirm("이 작품을 삭제할까요?"))return;
-  DATA=DATA.filter(w=>w.id!==editingId);
-  saveStorage();renderHome();renderEditorWorkSel();resetEditorForm();
+  const delId=editingId;DATA=DATA.filter(w=>w.id!==delId);
+  showLoading("삭제 중...");
+  try{await deleteProseFromGitHub(delId);await saveArchiveToGitHub();}catch(e){console.warn(e);}
+  hideLoading();renderHome();renderEditorWorkSel();resetEditorForm();
 }
-function submitAll(){
+async function submitAll(){
   const title=document.getElementById("f-title").value.trim();
   const group=document.getElementById("f-group").value;
-  const pendingCp=document.getElementById("cp-tag-input").value.trim();
-  if(pendingCp&&!cpTags.includes(pendingCp)){cpTags.push(pendingCp);document.getElementById("cp-tag-input").value="";}
+  const pCp=document.getElementById("cp-tag-input").value.trim();
+  if(pCp&&!cpTags.includes(pCp)){cpTags.push(pCp);document.getElementById("cp-tag-input").value="";}
   const cp=getCpString();
   if(!title||!group||!cp){alert("제목, 그룹, CP는 필수입니다.");return;}
-  const pending=document.getElementById("genre-tag-input").value.trim();
-  if(pending&&!genreTags.includes(pending)){genreTags.push(pending);document.getElementById("genre-tag-input").value="";}
+  const pG=document.getElementById("genre-tag-input").value.trim();
+  if(pG&&!genreTags.includes(pG)){genreTags.push(pG);document.getElementById("genre-tag-input").value="";}
   const id=editingId||nextId++;
-  const obj={
-    id,title,
-    group:document.getElementById("f-group").value,cp:getCpString(),
-    date:document.getElementById("f-date").value,
-    genre:getGenreString(),
-    adult:document.getElementById("f-adult").checked,
-    collab:document.getElementById("f-collab").checked,
-    collabName:document.getElementById("f-collabname").value.trim()
-  };
+  const obj={id,title,group:document.getElementById("f-group").value,cp:getCpString(),
+    date:document.getElementById("f-date").value,genre:getGenreString(),
+    adult:document.getElementById("f-adult").checked,collab:document.getElementById("f-collab").checked,
+    collabName:document.getElementById("f-collabname").value.trim()};
   if(editingId)DATA=DATA.map(w=>w.id===editingId?obj:w);else DATA.push(obj);
   const proseContent=document.getElementById("prose-area").innerHTML;
-  localStorage.setItem(getProseKey(id),proseContent);
   const now=new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
   localStorage.setItem(getProseKey(id)+"_modified",now);
-  saveStorage();renderHome();renderEditorWorkSel();
+  showLoading("GitHub에 저장 중...");
+  try{await saveProseToGitHub(id,proseContent);await saveArchiveToGitHub();}catch(e){console.warn(e.message);}
+  hideLoading();renderHome();renderEditorWorkSel();
   editingId=id;
   document.getElementById("editor-work-sel").value=id;
   document.getElementById("form-title").textContent="작품 수정";
@@ -1082,6 +1106,7 @@ function submitAll(){
   _saveFrom='editor';
   document.getElementById("save-modal").classList.remove("hidden");
 }
+
 function setEditorFont(font){
   const ta=document.getElementById("prose-area");
   ta.style.fontFamily=font==="inherit"?"inherit":`'${font}','Noto Serif KR',Georgia,serif`;
@@ -1091,11 +1116,25 @@ function setEditorFont(font){
 /* ── 에디터 서체 굵기 ── */
 function setEditorWeight(w){
   const area=document.getElementById("prose-area");
-  area.style.fontWeight=w;
+  const sel=window.getSelection();
+  if(sel&&sel.rangeCount&&!sel.isCollapsed&&area.contains(sel.anchorNode)){
+    // 선택 영역에만 적용
+    document.execCommand('styleWithCSS',false,true);
+    document.execCommand('fontWeight',false,w==='700'?'bold':'normal');
+  } else {
+    // 선택 없으면 전체 기본값 변경
+    area.style.fontWeight=w;
+  }
 }
 function setProseWeight(w){
   const area=document.getElementById("prose-page-area");
-  area.style.fontWeight=w;
+  const sel=window.getSelection();
+  if(sel&&sel.rangeCount&&!sel.isCollapsed&&area.contains(sel.anchorNode)){
+    document.execCommand('styleWithCSS',false,true);
+    document.execCommand('fontWeight',false,w==='700'?'bold':'normal');
+  } else {
+    area.style.fontWeight=w;
+  }
 }
 
 function setEditorBaseColor(color){
@@ -1318,7 +1357,7 @@ function renderPeCpDescSection(){
 function loadCpDescMap(){
   try{return JSON.parse(localStorage.getItem("archive_cp_desc")||"{}");}catch{return{};}
 }
-function saveCpDescMap(map){localStorage.setItem("archive_cp_desc",JSON.stringify(map));}
+function saveCpDescMap(map){saveCpDescToGitHub(map);}
 function getCpDesc(cp){return loadCpDescMap()[cp]||"";}
 function setCpDesc(cp,desc){
   const map=loadCpDescMap();
@@ -1386,14 +1425,16 @@ function showCpDropdown(){renderCpOptions(document.getElementById("cp-tag-input"
 function hideCpDropdown(){setTimeout(()=>document.getElementById("cp-dropdown").classList.remove("show"),150);}
 
 /* ── 초기화 ── */
-// v166: 데이터 초기화 (한 번만 실행)
-if(!localStorage.getItem("archive_cleared_v193")){
-  localStorage.removeItem("archive_data");
-  localStorage.removeItem("archive_nextid");
-  localStorage.setItem("archive_cleared_v193","1");
-}
-loadStorage();
-renderHome();
+/* ── 초기화: GitHub에서 데이터 로드 ── */
+(async function(){
+  await loadFromGitHub();
+  renderHome();
+  const hash=location.hash.replace("#","");
+  if(!hash||!document.getElementById(hash))return;
+  if(hash==="page-home"||hash==="page-cards")showPage(hash);
+  else if(hash==="page-group"){const g=localStorage.getItem("archive_last_group");if(g)openGroup(g);}
+  else if(hash==="page-prose"){const id=parseInt(localStorage.getItem("archive_last_prose"));if(id&&DATA.find(x=>x.id===id))openProse(id);}
+})();
 </script>
 </body>
 </html>
