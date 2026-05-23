@@ -142,7 +142,18 @@
       "adult": true,
       "collab": false,
       "collabName": ""
+    },
+    {
+      "id": 115,
+      "title": "-196℃",
+      "group": "VERIVERY",
+      "cp": "묭헌",
+      "date": "2022-08-14",
+      "genre": "일상",
+      "adult": false,
+      "collab": true,
+      "collabName": "묳터디"
     }
   ],
-  "nextId": 115
+  "nextId": 116
 }
