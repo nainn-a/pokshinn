@@ -86,11 +86,12 @@ th{font-size:11px;font-weight:500;color:var(--text3);padding:10px 12px;text-alig
 td{font-size:13px;padding:10px 12px;border-bottom:0.5px solid var(--border);vertical-align:middle;color:var(--text);letter-spacing:-0.05em}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(255,255,255,0.45)}
-col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-genre{width:38%}
+col.col-no{width:32px}col.col-cp{width:80px}col.col-date{width:86px}col.col-title{width:calc(100% - 198px)}
+table{width:100%;min-width:100%;table-layout:fixed}
 .no{color:var(--text3);font-size:12px}
 .date-cell{font-size:12px;color:var(--text3);white-space:nowrap}
 .title-cell{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.title-text{font-size:13px;font-weight:500;cursor:pointer;text-decoration:none}
+.title-text{font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .title-text:hover{text-decoration:underline;text-underline-offset:3px;opacity:0.7}
 .adult-dot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0}
 .collab-badge{font-size:10px;padding:2px 7px;border-radius:2px;background:rgba(180,210,255,0.3);border:0.5px solid rgba(100,150,230,0.3);color:var(--text2);white-space:nowrap;letter-spacing:0}
@@ -145,7 +146,7 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
 .editor-header{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap}
 .editor-header h2{font-size:18px;font-weight:500;flex:1;color:var(--text)}
 .logout-btn{font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer}
-.work-form{background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.5rem}
+.work-form{background:#faf9f7;backdrop-filter:blur(10px);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.5rem}
 .work-form h3{font-size:14px;font-weight:500;margin-bottom:1rem;color:var(--text)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
 .form-field{display:flex;flex-direction:column;gap:4px}
@@ -163,7 +164,7 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
 .form-actions{display:flex;gap:8px;justify-content:flex-end}
 .prose-selector{display:flex;gap:8px;margin-bottom:0.75rem;align-items:center;flex-wrap:wrap}
 .prose-selector select{font-size:13px;padding:6px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text);outline:none;flex:1;max-width:300px}
-.prose-area{width:100%;min-height:400px;padding:14px;border:0.5px solid var(--border2);border-radius:var(--radius-lg);background:rgba(255,255,255,0.95);color:var(--text);font-size:14px;line-height:1.8;outline:none;font-family:inherit;letter-spacing:-0.05em;cursor:text}
+.prose-area{width:100%;min-height:400px;padding:14px;border:0.5px solid var(--border2);border-radius:var(--radius-lg);background:#faf9f7;color:var(--text);font-size:14px;line-height:1.8;outline:none;font-family:inherit;letter-spacing:-0.05em;cursor:text}
 .prose-area:focus{border-color:var(--accent)}
 .prose-area:empty:before{content:attr(data-placeholder);color:var(--text3);pointer-events:none;font-style:italic}
 .prose-save-row{display:flex;gap:8px;justify-content:flex-end;margin-top:10px;align-items:center}
@@ -300,8 +301,8 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
     </div>
     <div class="table-wrap">
       <table>
-        <colgroup><col class="col-no"><col class="col-date"><col class="col-title"></colgroup>
-        <thead><tr><th>#</th><th class="col-date">업로드일</th><th>제목</th></tr></thead>
+        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-date"></colgroup>
+        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-date">업로드일</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
@@ -338,24 +339,68 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
     </div>
     <!-- 편집 -->
     <div id="prose-edit-mode" style="display:none">
-      <div class="prose-toolbar">
+      <!-- 메타 정보 편집 폼 -->
+      <div class="work-form" id="prose-meta-form" style="margin-bottom:1rem">
+        <div class="form-grid">
+          <div class="form-field"><label>제목</label><input id="pe-title" placeholder="제목"></div>
+          <div class="form-field"><label>필명</label>
+            <div style="display:flex;gap:6px;align-items:center">
+              <input id="pe-penname" placeholder="필명" style="flex:1">
+              <button class="btn" onclick="applyPenNameFromEdit()" style="white-space:nowrap;flex-shrink:0">고정</button>
+            </div>
+          </div>
+          <div class="form-field"><label>그룹</label>
+            <select id="pe-group" onchange="updatePeCpDropdown()">
+              <option>ONEUS</option><option>ONF</option><option>VERIVERY</option><option>P1HARMONY</option><option>82MAJOR</option>
+            </select>
+          </div>
+          <div class="form-field"><label>CP</label>
+            <div class="genre-tag-wrap" id="pe-cp-tag-wrap" onclick="document.getElementById('pe-cp-input').focus()" style="position:relative">
+              <input class="genre-tag-input" id="pe-cp-input" placeholder="입력 후 엔터" onkeydown="handlePeCpKey(event)" oninput="filterPeCpDropdown()" onfocus="showPeCpDropdown()" onblur="hidePeCpDropdown()" autocomplete="off">
+              <div class="cp-dropdown" id="pe-cp-dropdown" style="top:100%;left:0;right:auto;min-width:160px"></div>
+            </div>
+          </div>
+          <div class="form-field"><label>업로드일</label><input id="pe-date" placeholder="yyyy-mm-dd" maxlength="10" oninput="handleDateInput(this)" autocomplete="off"></div>
+          <div class="form-field"><label>장르</label>
+            <div class="genre-tag-wrap" id="pe-genre-tag-wrap" onclick="document.getElementById('pe-genre-input').focus()" style="position:relative">
+              <input class="genre-tag-input" id="pe-genre-input" placeholder="입력 후 엔터" onkeydown="handlePeGenreKey(event)" oninput="filterPeGenreHistory()" onfocus="showPeGenreHistory()" onblur="hidePeGenreHistory()" autocomplete="off">
+              <div class="cp-dropdown" id="pe-genre-dropdown" style="top:100%;left:0;right:auto;min-width:160px"></div>
+            </div>
+          </div>
+          <div class="form-field"><label>합작 이름</label><input id="pe-collabname" placeholder="합작 프로젝트명"></div>
+        </div>
+        <div class="form-checks">
+          <label><input type="checkbox" id="pe-adult"> 성인물</label>
+          <label><input type="checkbox" id="pe-collab"> 합작</label>
+        </div>
+      </div>
+      <div class="prose-toolbar" id="prose-edit-toolbar">
         <select id="prose-weight-sel" onchange="setProseWeight(this.value)" style="font-size:12px;padding:3px 7px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text);outline:none;cursor:pointer">
           <option value="300">부크크 Light</option>
           <option value="700">부크크 Bold</option>
         </select>
-        <button class="prose-tool-btn" onclick="execCmd('italic')"><i>I</i></button>
-        <button class="prose-tool-btn" onclick="insertHr()">—</button>
+        <button class="prose-tool-btn" onclick="execCmd('italic')" title="기울임"><i>I</i></button>
+        <button class="prose-tool-btn" onclick="execCmd('underline')" title="밑줄" style="text-decoration:underline">U</button>
+        <button class="prose-tool-btn" onclick="execCmd('strikeThrough')" title="취소선" style="text-decoration:line-through">S</button>
         <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
-        <button class="prose-tool-btn" style="color:#c0392b;font-weight:700" onclick="applyColorCE('#c0392b')">A</button>
-        <button class="prose-tool-btn" style="color:#2c5fa8;font-weight:700" onclick="applyColorCE('#2c5fa8')">A</button>
-        <button class="prose-tool-btn" style="color:#888;font-weight:700" onclick="applyColorCE('#888888')">A</button>
+        <button class="prose-tool-btn" onclick="insertHr()" title="구분선">—</button>
+        <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
+        <button class="prose-tool-btn" style="color:#2d3a4a;font-weight:700" onclick="applyColorCE('#2d3a4a')" title="기본색">A</button>
+        <button class="prose-tool-btn" style="color:#c0392b;font-weight:700" onclick="applyColorCE('#c0392b')" title="빨강">A</button>
+        <button class="prose-tool-btn" style="color:#2c5fa8;font-weight:700" onclick="applyColorCE('#2c5fa8')" title="파랑">A</button>
+        <button class="prose-tool-btn" style="color:#888;font-weight:700" onclick="applyColorCE('#888888')" title="회색">A</button>
         <input type="color" id="prose-color-pick" value="#e24b4a" title="다른 색" style="width:26px;height:26px;padding:1px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;vertical-align:middle" oninput="applyColorCE(this.value)">
         <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
         <button class="prose-tool-btn" onclick="insertImage()" title="이미지 삽입">🖼</button>
         <input type="file" id="img-upload" accept="image/*" style="display:none" onchange="handleImgUpload(event)">
         <button class="prose-tool-btn" onclick="insertVideo()" title="동영상 삽입">▶</button>
+        <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
+        <select id="prose-font-sel" onchange="setProseEditFont(this.value)" style="font-size:12px;padding:3px 7px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text);outline:none;cursor:pointer">
+          <option value="BookkMyungjo">부크크 명조</option>
+          <option value="inherit">시스템 고딕</option>
+        </select>
       </div>
-      <div class="prose-edit-area" id="prose-page-area" contenteditable="true" spellcheck="false" style="font-family:'BookkMyungjo','Noto Serif KR',serif;font-weight:300;letter-spacing:-0.05em;min-height:400px;padding:1.5rem;line-height:2.1;font-size:16px"></div>
+      <div class="prose-edit-area" id="prose-page-area" contenteditable="true" spellcheck="false" style="font-family:'BookkMyungjo','Noto Serif KR',serif;font-weight:300;letter-spacing:-0.05em;min-height:400px;padding:1.5rem;line-height:2.1;font-size:16px;background:#faf9f7"></div>
     </div>
   </div>
 </div>
@@ -398,7 +443,7 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
             <div class="cp-dropdown" id="cp-dropdown" style="top:100%;left:0;right:auto;min-width:160px"></div>
           </div>
         </div>
-        <div class="form-field"><label>업로드일</label><input id="f-date" type="date"></div>
+        <div class="form-field"><label>업로드일</label><input id="f-date" placeholder="yyyy-mm-dd" maxlength="10" oninput="handleDateInput(this)" autocomplete="off"></div>
         <div class="form-field"><label>장르</label>
           <div class="genre-tag-wrap" id="genre-tag-wrap" onclick="document.getElementById('genre-tag-input').focus()">
             <input class="genre-tag-input" id="genre-tag-input" placeholder="입력 후 엔터" onkeydown="handleGenreKey(event)" oninput="filterGenreHistory(this.value)" onfocus="showGenreHistory()" onblur="hideGenreHistory()" autocomplete="off">
@@ -426,13 +471,11 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
         <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
         <button class="prose-tool-btn" onclick="edInsertHr()" title="구분선">—</button>
         <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
+        <button class="prose-tool-btn" style="color:#2d3a4a;font-weight:700" onclick="setEditorBaseColor('#2d3a4a')" title="기본색">A</button>
         <button class="prose-tool-btn" style="color:#c0392b;font-weight:700" onclick="edColor('#c0392b')" title="빨강">A</button>
         <button class="prose-tool-btn" style="color:#2c5fa8;font-weight:700" onclick="edColor('#2c5fa8')" title="파랑">A</button>
         <button class="prose-tool-btn" style="color:#888;font-weight:700" onclick="edColor('#888888')" title="회색">A</button>
         <input type="color" id="editor-color-pick" value="#e24b4a" title="다른 색" style="width:26px;height:26px;padding:1px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;vertical-align:middle" oninput="edColor(this.value)">
-        <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
-        <label style="font-size:11px;color:var(--text3);margin-right:2px">기본색</label>
-        <input type="color" id="editor-base-color" value="#2d3a4a" title="기본 텍스트 색" style="width:26px;height:26px;padding:1px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;vertical-align:middle" oninput="setEditorBaseColor(this.value)">
         <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
         <button class="prose-tool-btn" onclick="document.getElementById('txt-upload').click()" title="TXT 파일 불러오기">↑ TXT</button>
         <input type="file" id="txt-upload" accept=".txt,text/plain" style="display:none" onchange="handleTxtUpload(event)">
@@ -634,7 +677,7 @@ function renderTable(){
     const tr=document.createElement("tr");
     const collab=w.collab?`<span class="collab-badge" title="${w.collabName}">합작</span>`:"";
     const dot=w.adult?`<span class="adult-dot"></span>`:"";
-    tr.innerHTML=`<td class="no">${i+1}</td><td class="date-cell col-date">${w.date||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${collab}</div></td>`;
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${collab}</div></td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
     tbody.appendChild(tr);
   });
 }
@@ -670,9 +713,23 @@ function setProseMode(mode){
   document.getElementById("prose-edit-mode").style.display=isEdit?"block":"none";
   document.getElementById("prose-page-save-btn").style.display=isEdit?"":"none";
   const editBtn=document.getElementById("prose-edit-btn");
-  if(isEdit){editBtn.style.background="var(--accent)";editBtn.style.color="#fff";editBtn.style.borderColor="var(--accent)";}
-  else{editBtn.style.background="";editBtn.style.color="";editBtn.style.borderColor="";}
-  if(!isEdit){
+  if(isEdit){
+    editBtn.style.background="var(--accent)";editBtn.style.color="#fff";editBtn.style.borderColor="var(--accent)";
+    // 현재 작품 데이터로 메타 폼 채우기
+    const w=DATA.find(x=>x.id===currentProseId);
+    if(w){
+      document.getElementById("pe-title").value=w.title||"";
+      document.getElementById("pe-penname").value=loadPenName();
+      document.getElementById("pe-group").value=w.group||"ONEUS";
+      setPeCpFromString(w.cp||"");
+      document.getElementById("pe-date").value=w.date||"";
+      setPeGenreFromString(w.genre||"");
+      document.getElementById("pe-collabname").value=w.collabName||"";
+      document.getElementById("pe-adult").checked=!!w.adult;
+      document.getElementById("pe-collab").checked=!!w.collab;
+    }
+  } else {
+    editBtn.style.background="";editBtn.style.color="";editBtn.style.borderColor="";
     const content=document.getElementById("prose-page-area").innerHTML;
     document.getElementById("prose-rendered").innerHTML=content||`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
   }
@@ -689,9 +746,8 @@ function openProse(id){
   document.getElementById("prose-del-btn").style.display=unlocked?"":"none";
   const mod=localStorage.getItem(getProseKey(id)+"_modified");
   document.getElementById("prose-modified-display").textContent=mod?"최종 수정: "+mod:"";
-  // 필명 · 업로드일 byline
   const penname=localStorage.getItem("archive_penname")||"";
-  const dateStr=w.date?w.date.replace(/-/g,". ").replace(/(\d{4})\. (\d{2})\. (\d{2})/,"$1. $2. $3"):"";
+  const dateStr=w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):"";
   const parts=[penname,dateStr].filter(Boolean);
   document.getElementById("prose-byline").textContent=parts.join(" · ");
   setProseMode("view");
@@ -717,13 +773,42 @@ function openProseEditorNew(){
 }
 function saveProseContent(){
   if(!currentProseId)return;
+  // 메타 정보 저장
+  const pendingCp=document.getElementById("pe-cp-input").value.trim();
+  if(pendingCp&&!peCpTags.includes(pendingCp)){peCpTags.push(pendingCp);}
+  const pendingGenre=document.getElementById("pe-genre-input").value.trim();
+  if(pendingGenre&&!peGenreTags.includes(pendingGenre)){peGenreTags.push(pendingGenre);}
+  const penname=document.getElementById("pe-penname").value.trim();
+  if(penname)localStorage.setItem("archive_penname",penname);
+  const updated={
+    ...DATA.find(x=>x.id===currentProseId),
+    title:document.getElementById("pe-title").value.trim()||DATA.find(x=>x.id===currentProseId).title,
+    group:document.getElementById("pe-group").value,
+    cp:peCpTags.join("×"),
+    date:document.getElementById("pe-date").value,
+    genre:peGenreTags.join(", "),
+    adult:document.getElementById("pe-adult").checked,
+    collab:document.getElementById("pe-collab").checked,
+    collabName:document.getElementById("pe-collabname").value.trim()
+  };
+  DATA=DATA.map(w=>w.id===currentProseId?updated:w);
+  saveStorage();renderHome();
+  // 본문 저장
   const content=document.getElementById("prose-page-area").innerHTML;
   localStorage.setItem(getProseKey(currentProseId),content);
   const now=new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
   localStorage.setItem(getProseKey(currentProseId)+"_modified",now);
+  // 뷰 업데이트
+  document.getElementById("prose-page-title").textContent=updated.title;
+  document.getElementById("prose-page-meta").textContent=`${updated.group} · ${updated.cp}`;
+  document.getElementById("prose-page-genre").textContent=updated.genre||"";
   document.getElementById("prose-modified-display").textContent="최종 수정: "+now;
   document.getElementById("prose-rendered").innerHTML=content||`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
+  const dateStr=updated.date?updated.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):"";
+  const pn=localStorage.getItem("archive_penname")||"";
+  document.getElementById("prose-byline").textContent=[pn,dateStr].filter(Boolean).join(" · ");
   setProseMode("view");
+  window.scrollTo({top:0,behavior:"smooth"});
   _saveFrom='prose';
   document.getElementById("save-modal").classList.remove("hidden");
 }
@@ -748,6 +833,11 @@ function applyPenName(){
 function openPenNameModal(){}
 function closePenNameModal(){}
 function savePenName(){}
+
+function setProseEditFont(font){
+  const area=document.getElementById("prose-page-area");
+  area.style.fontFamily=font==="inherit"?"inherit":`'${font}','Noto Serif KR',serif`;
+}
 
 /* ── 서체 선택 ── */
 let currentProseFont='BookkMyungjo';
@@ -1041,6 +1131,106 @@ function renderGenreDropdown(q){
   dd.classList.add("show");
 }
 
+/* ── 날짜 자동 포맷 ── */
+function handleDateInput(el){
+  let v=el.value.replace(/[^0-9]/g,"");
+  if(v.length>4)v=v.slice(0,4)+"-"+v.slice(4);
+  if(v.length>7)v=v.slice(0,7)+"-"+v.slice(7);
+  el.value=v.slice(0,10);
+}
+
+/* ── 본문 편집 메타 - CP 태그 ── */
+let peCpTags=[];
+function handlePeCpKey(e){
+  if(e.key==="Enter"||e.key===","||e.key===";"){
+    e.preventDefault();
+    const v=e.target.value.replace(/,|;/g,"").trim();
+    if(v&&!peCpTags.includes(v)){peCpTags.push(v);renderPeCpTags();}
+    e.target.value="";
+    document.getElementById("pe-cp-dropdown").classList.remove("show");
+  } else if(e.key==="Backspace"&&e.target.value===""&&peCpTags.length){
+    peCpTags.pop();renderPeCpTags();
+  }
+}
+function removePeCpTag(i){peCpTags.splice(i,1);renderPeCpTags();}
+function renderPeCpTags(){
+  const wrap=document.getElementById("pe-cp-tag-wrap");
+  const input=document.getElementById("pe-cp-input");
+  wrap.querySelectorAll(".genre-tag").forEach(t=>t.remove());
+  peCpTags.forEach((t,i)=>{
+    const span=document.createElement("span");span.className="genre-tag";
+    span.innerHTML=`${t}<span class="genre-tag-del" onmousedown="event.preventDefault();removePeCpTag(${i})">✕</span>`;
+    wrap.insertBefore(span,input);
+  });
+}
+function setPeCpFromString(str){
+  peCpTags=(str||"").split(/[,×x]/).map(s=>s.trim()).filter(Boolean);
+  renderPeCpTags();
+}
+function updatePeCpDropdown(){document.getElementById("pe-cp-input").value="";renderPeCpOptions("");}
+function renderPeCpOptions(q){
+  const cps=getCpsForGroup(document.getElementById("pe-group").value);
+  const filtered=q?cps.filter(c=>c.toLowerCase().includes(q.toLowerCase())):cps;
+  const dd=document.getElementById("pe-cp-dropdown");dd.innerHTML="";
+  if(!filtered.length){dd.classList.remove("show");return;}
+  filtered.forEach(cp=>{
+    const d=document.createElement("div");d.className="cp-option";d.textContent=cp;
+    d.onmousedown=()=>{if(!peCpTags.includes(cp)){peCpTags.push(cp);renderPeCpTags();}document.getElementById("pe-cp-input").value="";dd.classList.remove("show");};
+    dd.appendChild(d);
+  });
+  dd.classList.add("show");
+}
+function filterPeCpDropdown(){renderPeCpOptions(document.getElementById("pe-cp-input").value);}
+function showPeCpDropdown(){renderPeCpOptions(document.getElementById("pe-cp-input").value);}
+function hidePeCpDropdown(){setTimeout(()=>document.getElementById("pe-cp-dropdown").classList.remove("show"),150);}
+
+/* ── 본문 편집 메타 - 장르 태그 ── */
+let peGenreTags=[];
+function handlePeGenreKey(e){
+  if(e.key==="Enter"||e.key===","||e.key===";"){
+    e.preventDefault();
+    const v=e.target.value.replace(/,|;/g,"").trim();
+    if(v&&!peGenreTags.includes(v)){peGenreTags.push(v);renderPeGenreTags();}
+    e.target.value="";
+  } else if(e.key==="Backspace"&&e.target.value===""&&peGenreTags.length){
+    peGenreTags.pop();renderPeGenreTags();
+  }
+}
+function removePeGenreTag(i){peGenreTags.splice(i,1);renderPeGenreTags();}
+function renderPeGenreTags(){
+  const wrap=document.getElementById("pe-genre-tag-wrap");
+  const input=document.getElementById("pe-genre-input");
+  wrap.querySelectorAll(".genre-tag").forEach(t=>t.remove());
+  peGenreTags.forEach((t,i)=>{
+    const span=document.createElement("span");span.className="genre-tag";
+    span.innerHTML=`${t}<span class="genre-tag-del" onmousedown="event.preventDefault();removePeGenreTag(${i})">✕</span>`;
+    wrap.insertBefore(span,input);
+  });
+}
+function setPeGenreFromString(str){
+  peGenreTags=(str||"").split(",").map(s=>s.trim()).filter(Boolean);
+  renderPeGenreTags();
+}
+function showPeGenreHistory(){renderPeGenreDropdown("");}
+function filterPeGenreHistory(){renderPeGenreDropdown(document.getElementById("pe-genre-input").value);}
+function hidePeGenreHistory(){setTimeout(()=>document.getElementById("pe-genre-dropdown").classList.remove("show"),150);}
+function renderPeGenreDropdown(q){
+  const all=getAllGenres();
+  const filtered=q?all.filter(g=>g.includes(q)):all;
+  const dd=document.getElementById("pe-genre-dropdown");dd.innerHTML="";
+  if(!filtered.length){dd.classList.remove("show");return;}
+  filtered.forEach(g=>{
+    const d=document.createElement("div");d.className="cp-option";d.textContent=g;
+    d.onmousedown=()=>{if(!peGenreTags.includes(g)){peGenreTags.push(g);renderPeGenreTags();}document.getElementById("pe-genre-input").value="";dd.classList.remove("show");};
+    dd.appendChild(d);
+  });
+  dd.classList.add("show");
+}
+function applyPenNameFromEdit(){
+  const n=document.getElementById("pe-penname").value.trim();
+  if(n)localStorage.setItem("archive_penname",n);
+}
+
 /* ── CP 태그 ── */
 let cpTags=[];
 function handleCpKey(e){
@@ -1096,10 +1286,10 @@ function hideCpDropdown(){setTimeout(()=>document.getElementById("cp-dropdown").
 
 /* ── 초기화 ── */
 // v166: 데이터 초기화 (한 번만 실행)
-if(!localStorage.getItem("archive_cleared_v166")){
+if(!localStorage.getItem("archive_cleared_v193")){
   localStorage.removeItem("archive_data");
   localStorage.removeItem("archive_nextid");
-  localStorage.setItem("archive_cleared_v166","1");
+  localStorage.setItem("archive_cleared_v193","1");
 }
 loadStorage();
 renderHome();
