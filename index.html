@@ -257,10 +257,6 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
       <div class="hero-main-title" id="hero-title-btn">POKSHINN Project</div>
       <div class="hero-main-sub1">nainn fanfiction archive</div>
       <div class="hero-main-sub2">2021 - ongoing</div>
-      <div style="margin-top:1rem;display:flex;align-items:center;gap:8px;justify-content:center">
-        <span id="penname-display" style="font-size:13px;color:var(--text2);letter-spacing:-0.03em"></span>
-        <button id="penname-edit-btn" onclick="openPenNameModal()" style="font-size:11px;padding:2px 8px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.4);color:var(--text3);cursor:pointer;display:none">필명 설정</button>
-      </div>
     </div>
     <div class="hero-groups-row" id="hero-groups"></div>
     <div class="hero-bottom-bar">
@@ -384,6 +380,12 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
       <h3 id="form-title" style="font-size:14px;font-weight:500;margin-bottom:1rem;color:var(--text)">새 작품 추가</h3>
       <div class="form-grid">
         <div class="form-field"><label>제목</label><input id="f-title" placeholder="제목"></div>
+        <div class="form-field"><label>필명</label>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input id="f-penname" placeholder="필명" style="flex:1" oninput="previewPenName(this.value)">
+            <button class="btn" onclick="applyPenName()" style="white-space:nowrap;flex-shrink:0">고정</button>
+          </div>
+        </div>
         <div class="form-field"><label>그룹</label>
           <select id="f-group" onchange="updateCpDropdown()">
             <option>ONEUS</option><option>ONF</option><option>VERIVERY</option><option>P1HARMONY</option><option>82MAJOR</option>
@@ -536,7 +538,6 @@ document.getElementById("pw-confirm").onclick=async()=>{
   if(h===target){
     document.getElementById("pw-modal").classList.add("hidden");
     unlocked=true;
-    document.getElementById("penname-edit-btn").style.display="";
     if(pwPurpose==='prose-new'){openProseEditorNew();}
     else if(pwPurpose==='prose-edit'){setProseMode("edit");}
     else{openEditor();}
@@ -545,7 +546,7 @@ document.getElementById("pw-confirm").onclick=async()=>{
   }
 };
 document.getElementById("pw-input").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("pw-confirm").click();});
-function logout(){unlocked=false;document.getElementById("penname-edit-btn").style.display="none";showPage("page-home");}
+function logout(){unlocked=false;showPage("page-home");}
 
 /* ── TXT ── */
 document.getElementById("dl-btn")?.remove();
@@ -730,21 +731,16 @@ function closeSaveModal(){
 
 /* ── 필명 ── */
 function loadPenName(){
-  const n=localStorage.getItem("archive_penname")||"";
-  document.getElementById("penname-display").textContent=n?`✎ ${n}`:"";
-  return n;
+  return localStorage.getItem("archive_penname")||"";
 }
-function openPenNameModal(){
-  document.getElementById("penname-input").value=localStorage.getItem("archive_penname")||"";
-  document.getElementById("penname-modal").classList.remove("hidden");
-}
-function closePenNameModal(){document.getElementById("penname-modal").classList.add("hidden");}
-function savePenName(){
-  const n=document.getElementById("penname-input").value.trim();
+function previewPenName(v){}
+function applyPenName(){
+  const n=document.getElementById("f-penname").value.trim();
   localStorage.setItem("archive_penname",n);
-  document.getElementById("penname-display").textContent=n?`✎ ${n}`:"";
-  closePenNameModal();
 }
+function openPenNameModal(){}
+function closePenNameModal(){}
+function savePenName(){}
 
 /* ── 서체 선택 ── */
 let currentProseFont='BookkMyungjo';
@@ -855,6 +851,7 @@ function insertMd(before,after){
 function openEditor(){
   showPage("page-editor");
   renderEditorWorkSel();
+  document.getElementById("f-penname").value=loadPenName();
 }
 function renderEditorWorkSel(){
   const sel=document.getElementById("editor-work-sel");
@@ -890,6 +887,7 @@ function resetEditorForm(){
   document.getElementById("editor-del-work-btn").style.display="none";
   document.getElementById("editor-work-sel").value="";
   ["f-title","f-cp","f-date","f-collabname"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("f-penname").value=loadPenName();
   document.getElementById("f-group").value="ONEUS";
   document.getElementById("f-adult").checked=false;
   document.getElementById("f-collab").checked=false;
@@ -1052,7 +1050,6 @@ if(!localStorage.getItem("archive_cleared_v166")){
   localStorage.setItem("archive_cleared_v166","1");
 }
 loadStorage();
-loadPenName();
 renderHome();
 </script>
 </body>
