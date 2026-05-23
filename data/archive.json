@@ -125,7 +125,9 @@
       "genre": "일상",
       "adult": true,
       "collab": false,
-      "collabName": ""
+      "collabName": "",
+      "links": [],
+      "penname": "이겨울"
     },
     {
       "id": 113,
