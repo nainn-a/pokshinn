@@ -195,6 +195,19 @@ table{width:100%;min-width:100%;table-layout:fixed}
 <body>
 <canvas id="bg-canvas"></canvas>
 
+<!-- 이미지 URL 삽입 모달 -->
+<div class="modal-bg hidden" id="img-url-modal">
+  <div class="modal">
+    <h2 style="margin-bottom:1rem">이미지 URL 삽입</h2>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:8px">Imgur, giphy 등 외부 이미지 URL (GIF 포함)</p>
+    <input id="img-url-input" placeholder="https://i.imgur.com/..." style="width:100%;padding:8px 12px;border:0.5px solid var(--border2);border-radius:var(--radius);background:rgba(255,255,255,0.8);color:var(--text);font-size:13px;outline:none;margin-bottom:12px">
+    <div class="modal-btns">
+      <button class="btn" onclick="closeImgUrlModal()">취소</button>
+      <button class="btn primary" onclick="confirmInsertImgUrl()">삽입</button>
+    </div>
+  </div>
+</div>
+
 <!-- 저장 완료 모달 -->
 <div class="modal-bg hidden" id="save-modal">
   <div class="modal" style="width:260px;text-align:center">
@@ -411,6 +424,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
         <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
         <button class="prose-tool-btn" onclick="insertImage()" title="이미지 삽입">🖼</button>
         <input type="file" id="img-upload" accept="image/*" style="display:none" onchange="handleImgUpload(event)">
+        <button class="prose-tool-btn" onclick="openImgUrlModal('prose-page-area')" title="이미지 URL 삽입">🔗</button>
         <button class="prose-tool-btn" onclick="insertVideo()" title="동영상 삽입">▶</button>
         <button class="prose-tool-btn" onclick="document.getElementById('prose-txt-upload').click()" title="TXT 파일 불러오기">↑ TXT</button>
         <input type="file" id="prose-txt-upload" accept=".txt,text/plain" style="display:none" onchange="handleProseTxtUpload(event)">
@@ -420,7 +434,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
           <option value="inherit">시스템 고딕</option>
         </select>
       </div>
-      <div class="prose-edit-area" id="prose-page-area" contenteditable="true" spellcheck="false" style="font-family:'BookkMyungjo','Noto Serif KR',serif;font-weight:300;letter-spacing:-0.05em;min-height:400px;padding:1.5rem;line-height:2.1;font-size:16px;background:#faf9f7"></div>
+      <div class="prose-edit-area" id="prose-page-area" contenteditable="true" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" translate="no" style="font-family:'BookkMyungjo','Noto Serif KR',serif;font-weight:300;letter-spacing:-0.05em;min-height:400px;padding:1.5rem;line-height:2.1;font-size:16px;background:#faf9f7;-webkit-user-modify:read-write-plaintext-only" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false"></div>
     </div>
   </div>
 </div>
@@ -528,6 +542,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
         <input type="file" id="txt-upload" accept=".txt,text/plain" style="display:none" onchange="handleTxtUpload(event)">
         <button class="prose-tool-btn" onclick="edInsertImage()" title="이미지 삽입">🖼</button>
         <input type="file" id="ed-img-upload" accept="image/*" style="display:none" onchange="handleEdImgUpload(event)">
+        <button class="prose-tool-btn" onclick="openImgUrlModal('prose-area')" title="이미지 URL 삽입">🔗</button>
         <button class="prose-tool-btn" onclick="edInsertVideo()" title="동영상 삽입">▶</button>
         <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
         <select id="editor-font-sel" onchange="setEditorFont(this.value)" style="font-size:12px;padding:3px 7px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text);outline:none;cursor:pointer">
@@ -535,7 +550,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
           <option value="inherit">시스템 고딕</option>
         </select>
       </div>
-      <div class="prose-area" id="prose-area" contenteditable="true" spellcheck="false" style="font-family:'BookkMyungjo','Noto Serif KR',Georgia,serif;font-weight:300;min-height:400px;line-height:2;font-size:16px;letter-spacing:-0.05em" data-placeholder="본문을 입력하세요..."></div>
+      <div class="prose-area" id="prose-area" contenteditable="true" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" translate="no" style="font-family:'BookkMyungjo','Noto Serif KR',Georgia,serif;font-weight:300;min-height:400px;line-height:2;font-size:16px;letter-spacing:-0.05em" data-placeholder="본문을 입력하세요..." data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false"></div>
       <div class="prose-save-row">
         <button class="btn" id="form-cancel-btn" style="display:none" onclick="resetEditorForm()">새 작품으로</button>
         <button class="btn primary" onclick="submitAll()">저장</button>
@@ -981,17 +996,27 @@ function handleProseTxtUpload(e){
   reader.readAsText(file,"UTF-8");e.target.value="";
 }
 
-/* ── contenteditable 엔터 줄바꿈 ── */
+/* ── contenteditable 성능 최적화 ── */
 function handleEditorKeydown(e){
   if(e.key==="Enter"){
     e.preventDefault();
     document.execCommand("insertHTML",false,"<br><br>");
   }
 }
-// 에디터 영역에 keydown 이벤트 바인딩
+// 히스토리 제한 — 브라우저 undo 스택 과부하 방지
+let _undoStack=[];let _undoPtr=-1;const MAX_UNDO=30;
+function limitHistory(areaId){
+  const area=document.getElementById(areaId);if(!area)return;
+  area.addEventListener("input",function(){
+    if(_undoStack.length>MAX_UNDO)_undoStack.shift();
+  });
+}
 ["prose-area","prose-page-area"].forEach(function(id){
   const el=document.getElementById(id);
-  if(el)el.addEventListener("keydown",handleEditorKeydown);
+  if(el){
+    el.addEventListener("keydown",handleEditorKeydown);
+    limitHistory(id);
+  }
 });
 
 /* ── 커서 위치에 삽입 ── */
@@ -1014,6 +1039,23 @@ function insertAtCursor(areaId,html){
   }
   document.execCommand("insertHTML",false,html);
 }
+
+let _imgUrlTarget='prose-area';
+function openImgUrlModal(areaId){
+  _imgUrlTarget=areaId;
+  document.getElementById("img-url-input").value="";
+  document.getElementById("img-url-modal").classList.remove("hidden");
+  setTimeout(()=>document.getElementById("img-url-input").focus(),50);
+}
+function closeImgUrlModal(){document.getElementById("img-url-modal").classList.add("hidden");}
+function confirmInsertImgUrl(){
+  const url=document.getElementById("img-url-input").value.trim();
+  if(!url){closeImgUrlModal();return;}
+  const html=`<img src="${url}" style="max-width:100%;height:auto;display:block;margin:1em auto;border-radius:4px">`;
+  insertAtCursor(_imgUrlTarget,html);
+  closeImgUrlModal();
+}
+document.getElementById("img-url-input")?.addEventListener("keydown",e=>{if(e.key==="Enter")confirmInsertImgUrl();});
 
 /* ── 이미지 삽입 ── */
 function insertImage(){document.getElementById("img-upload").click();}
@@ -1450,7 +1492,7 @@ function renderPeCpDescSection(){
   });
 }
 
-/*  CP 설명 저장소  */
+/* ── CP 설명 저장소 ── */
 function loadCpDescMap(){
   try{return JSON.parse(localStorage.getItem("archive_cp_desc")||"{}");}catch{return{};}
 }
@@ -1467,7 +1509,7 @@ function saveCpDescParts(cp,m1,m2){
   setCpDesc(cp,desc);
 }
 
-/*  CP 태그  */
+/* ── CP 태그 ── */
 let cpTags=[];
 function handleCpKey(e){
   if(e.key==="Enter"||e.key===","||e.key===";"){
@@ -1521,7 +1563,7 @@ function filterCpDropdown(){renderCpOptions(document.getElementById("cp-tag-inpu
 function showCpDropdown(){renderCpOptions(document.getElementById("cp-tag-input").value);}
 function hideCpDropdown(){setTimeout(()=>document.getElementById("cp-dropdown").classList.remove("show"),150);}
 
-/*  전체글 보기  */
+/* ── 전체글 보기 ── */
 function openAllWorks(){
   const list=[...DATA].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
   document.getElementById("all-count").textContent=`${list.length}편`;
@@ -1537,7 +1579,7 @@ function openAllWorks(){
 }
 document.getElementById("back-from-all").onclick=()=>showPage("page-cards");
 
-/*  브라우저 뒤로가기  */
+/* ── 브라우저 뒤로가기 ── */
 window.addEventListener("popstate",function(e){
   const hash=(e.state&&e.state.hash?e.state.hash:location.hash).replace("#","");
   if(!hash||hash==="page-home"){
