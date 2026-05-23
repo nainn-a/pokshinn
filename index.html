@@ -744,7 +744,7 @@ document.getElementById("sort-toggle-btn").onclick=()=>{
 function openGroup(g){
   currentGroup=g;currentCp=null;currentSort="date-desc";
   localStorage.setItem("archive_last_group",g);
-  showPage("page-group");
+  showPage("page-group","group-"+encodeURIComponent(g));
   document.getElementById("gp-title").textContent=g;
   document.getElementById("sort-label").textContent="최신순";
   document.getElementById("sort-arrow").className="sort-arrow";
@@ -1667,11 +1667,10 @@ window.addEventListener("popstate",function(e){
     document.getElementById("page-cards").classList.add("active");
   } else if(hash==="page-group"){
     const g=localStorage.getItem("archive_last_group");
-    if(g){
-      document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-      document.getElementById("page-group").classList.add("active");
-      openGroup(g);
-    }
+    if(g)openGroup(g);
+  } else if(hash.startsWith("group-")){
+    const g=decodeURIComponent(hash.replace("group-",""));
+    if(g)openGroup(g);
   } else if(hash.startsWith("prose-")){
     const id=parseInt(hash.replace("prose-",""));
     if(id&&DATA.find(x=>x.id===id))openProse(id);
@@ -1684,6 +1683,7 @@ window.addEventListener("popstate",function(e){
   if(!hash)return;
   if(hash==="page-home"||hash==="page-cards"){showPage(hash);}
   else if(hash==="page-group"){const g=localStorage.getItem("archive_last_group");if(g)openGroup(g);}
+  else if(hash.startsWith("group-")){const g=decodeURIComponent(hash.replace("group-",""));if(g)openGroup(g);}
   else if(hash==="page-prose"){const id=parseInt(localStorage.getItem("archive_last_prose"));if(id&&DATA.find(x=>x.id===id))openProse(id);}
   else if(hash.startsWith("prose-")){const id=parseInt(hash.replace("prose-",""));if(id&&DATA.find(x=>x.id===id))openProse(id);}
 })();
