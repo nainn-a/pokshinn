@@ -53,7 +53,9 @@
       "genre": "일상",
       "adult": false,
       "collab": false,
-      "collabName": ""
+      "collabName": "",
+      "links": [],
+      "penname": "이백도"
     },
     {
       "id": 105,
