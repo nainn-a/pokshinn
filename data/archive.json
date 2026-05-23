@@ -322,7 +322,20 @@
       "collabName": "",
       "links": [],
       "penname": "김리베"
+    },
+    {
+      "id": 129,
+      "title": "호기심이 사람을 살림",
+      "group": "82MAJOR",
+      "cp": "멜닙",
+      "date": "2026-02-15",
+      "genre": "일상",
+      "adult": false,
+      "collab": false,
+      "collabName": "",
+      "links": [],
+      "penname": "초"
     }
   ],
-  "nextId": 129
+  "nextId": 130
 }
