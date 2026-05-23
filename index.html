@@ -829,6 +829,8 @@ function setProseMode(mode){
 async function openProse(id){
   const w=DATA.find(x=>x.id===id);if(!w)return;
   currentProseId=id;localStorage.setItem("archive_last_prose",id);
+  _proseFrom=document.getElementById("page-all").classList.contains("active")?"page-all":"page-group";
+  document.getElementById("back-to-group").innerHTML=`<svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>${_proseFrom==='page-all'?'전체 목록으로':'목록으로'}`;
   document.getElementById("prose-page-title").textContent=w.title;
   const cpD=getCpDesc(w.cp);const cpDis=cpD?`${w.cp}(${cpD})`:w.cp;
   document.getElementById("prose-page-meta").textContent=`${w.group} · ${cpDis}`;
@@ -986,7 +988,7 @@ function setProseFont(font){
   document.getElementById("font-btn-bookk").classList.toggle("active",font==="BookkMyungjo");
 }
 
-function edInsertImage(){document.getElementById("ed-img-upload").click();}
+function edInsertImage(){saveRange('prose-area');document.getElementById("ed-img-upload").click();}
 function handleEdImgUpload(e){
   const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
@@ -996,6 +998,7 @@ function handleEdImgUpload(e){
   reader.readAsDataURL(file);e.target.value="";
 }
 function edInsertVideo(){
+  saveRange('prose-area');
   _videoTarget='editor';
   _videoFileData=null;
   document.getElementById("video-url-input").value="";
@@ -1036,33 +1039,69 @@ function limitHistory(areaId){
   const el=document.getElementById(id);
   if(el){
     el.addEventListener("keydown",handleEditorKeydown);
+    el.addEventListener("mouseup",function(){saveRange(id);});
+    el.addEventListener("keyup",function(){saveRange(id);});
+    el.addEventListener("blur",function(){saveRange(id);});
     limitHistory(id);
   }
 });
 
 /* ── 커서 위치에 삽입 ── */
-function insertAtCursor(areaId,html){
-  const area=document.getElementById(areaId);
-  area.focus();
+/* ── 커서 위치 저장/복원 ── */
+let _savedRange=null;
+let _savedAreaId=null;
+function saveRange(areaId){
   const sel=window.getSelection();
   if(sel&&sel.rangeCount){
-    const range=sel.getRangeAt(0);
-    // contenteditable 안에 있을 때만
-    if(area.contains(range.commonAncestorContainer)){
-      range.deleteContents();
-      const frag=range.createContextualFragment(html);
-      range.insertNode(frag);
-      range.collapse(false);
-      sel.removeAllRanges();
-      sel.addRange(range);
-      return;
+    const area=document.getElementById(areaId);
+    if(area&&area.contains(sel.anchorNode)){
+      _savedRange=sel.getRangeAt(0).cloneRange();
+      _savedAreaId=areaId;
     }
   }
-  document.execCommand("insertHTML",false,html);
+}
+function insertAtCursor(areaId,html){
+  const area=document.getElementById(areaId);
+  // 저장된 커서 위치 사용 (같은 에디터인 경우)
+  let range=null;
+  if(_savedRange&&_savedAreaId===areaId){
+    range=_savedRange;
+  } else {
+    // 저장된 게 없으면 현재 선택 사용
+    const sel=window.getSelection();
+    if(sel&&sel.rangeCount&&area.contains(sel.anchorNode)){
+      range=sel.getRangeAt(0);
+    }
+  }
+  if(range){
+    range.deleteContents();
+    // HTML을 DOM 노드로 변환해서 삽입
+    const temp=document.createElement("div");
+    temp.innerHTML=html;
+    const frag=document.createDocumentFragment();
+    while(temp.firstChild)frag.appendChild(temp.firstChild);
+    const lastNode=frag.lastChild;
+    range.insertNode(frag);
+    // 삽입 후 커서를 삽입된 내용 뒤로
+    if(lastNode){
+      const newRange=document.createRange();
+      newRange.setStartAfter(lastNode);
+      newRange.collapse(true);
+      const sel=window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(newRange);
+      _savedRange=newRange.cloneRange();
+    }
+  } else {
+    // 에디터 끝에 추가
+    area.focus();
+    document.execCommand("insertHTML",false,html);
+  }
 }
 
 let _imgUrlTarget='prose-area';
 function openImgUrlModal(areaId){
+  saveRange(areaId);
   _imgUrlTarget=areaId;
   document.getElementById("img-url-input").value="";
   document.getElementById("img-url-modal").classList.remove("hidden");
@@ -1079,7 +1118,7 @@ function confirmInsertImgUrl(){
 document.getElementById("img-url-input")?.addEventListener("keydown",e=>{if(e.key==="Enter")confirmInsertImgUrl();});
 
 /* ── 이미지 삽입 ── */
-function insertImage(){document.getElementById("img-upload").click();}
+function insertImage(){saveRange('prose-page-area');document.getElementById("img-upload").click();}
 function handleImgUpload(e){
   const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
@@ -1093,6 +1132,7 @@ function handleImgUpload(e){
 let _videoFileData=null;
 let _videoTarget='prose'; // 'prose' or 'editor'
 function insertVideo(){
+  saveRange('prose-page-area');
   _videoTarget='prose';
   _videoFileData=null;
   document.getElementById("video-url-input").value="";
@@ -1139,7 +1179,12 @@ document.getElementById("prose-edit-btn").onclick=()=>{
   if(!unlocked){requirePw('prose-edit');return;}
   setProseMode("edit");
 };
-document.getElementById("back-to-group").onclick=()=>showPage("page-group");
+let _proseFrom='page-group'; // 어디서 열었는지 기억
+document.getElementById("back-to-group").onclick=()=>{
+  if(_proseFrom==='page-all')showPage("page-all");
+  else if(currentGroup)openGroup(currentGroup);
+  else showPage("page-cards");
+};
 
 /* ── contenteditable 유틸 ── */
 function execCmd(cmd){document.execCommand(cmd,false,null);}
