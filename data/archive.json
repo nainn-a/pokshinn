@@ -262,7 +262,7 @@
       "cp": "탁테",
       "date": "2025-06-02",
       "genre": "일상",
-      "adult": false,
+      "adult": true,
       "collab": false,
       "collabName": "",
       "links": [],
