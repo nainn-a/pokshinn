@@ -100,9 +100,10 @@ table{width:100%;min-width:100%;table-layout:fixed}
 .genre-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;background:rgba(80,130,200,0.12);border:0.5px solid rgba(80,130,200,0.25);font-size:12px;color:var(--text2);letter-spacing:-0.03em;white-space:nowrap}
 .genre-tag-del{cursor:pointer;font-size:11px;color:var(--text3);line-height:1;padding:0 1px}
 .genre-tag-del:hover{color:var(--red)}
-.cp-desc-input{border:none;outline:none;background:transparent;font-size:11px;color:var(--text3);min-width:60px;max-width:120px;letter-spacing:-0.03em;border-bottom:0.5px dashed var(--border2);padding:0 2px}
+.cp-tag-group{display:inline-flex!important;flex-direction:row!important;align-items:center;gap:3px;margin-right:6px;flex-wrap:nowrap}
+.cp-desc-input{border:none;outline:none;background:transparent;font-size:11px;color:var(--text3);width:52px;letter-spacing:-0.03em;border-bottom:0.5px dashed var(--border2);padding:0 2px;line-height:1.4;text-align:center}
 .cp-desc-input::placeholder{color:var(--border2)}
-.cp-desc-label{font-size:11px;color:var(--text3);letter-spacing:-0.03em;margin-left:2px}
+.cp-desc-x{font-size:10px;color:var(--text3)}
 
 
 /* 모달 */
@@ -357,10 +358,11 @@ table{width:100%;min-width:100%;table-layout:fixed}
             </select>
           </div>
           <div class="form-field"><label>CP</label>
-            <div class="genre-tag-wrap" id="pe-cp-tag-wrap" onclick="document.getElementById('pe-cp-input').focus()" style="position:relative">
+            <div class="genre-tag-wrap" id="pe-cp-tag-wrap" onclick="if(event.target===this)document.getElementById('pe-cp-input').focus()" style="position:relative;flex-wrap:wrap;align-items:center">
               <input class="genre-tag-input" id="pe-cp-input" placeholder="입력 후 엔터" onkeydown="handlePeCpKey(event)" oninput="filterPeCpDropdown()" onfocus="showPeCpDropdown()" onblur="hidePeCpDropdown()" autocomplete="off">
               <div class="cp-dropdown" id="pe-cp-dropdown" style="top:100%;left:0;right:auto;min-width:160px"></div>
             </div>
+            <div id="pe-cp-members-section" style="margin-top:6px;display:flex;flex-direction:column;gap:4px"></div>
           </div>
           <div class="form-field"><label>업로드일</label><input id="pe-date" placeholder="yyyy-mm-dd" maxlength="10" oninput="handleDateInput(this)" autocomplete="off"></div>
           <div class="form-field"><label>장르</label>
@@ -442,10 +444,11 @@ table{width:100%;min-width:100%;table-layout:fixed}
           </select>
         </div>
         <div class="form-field"><label>CP</label>
-          <div class="genre-tag-wrap" id="cp-tag-wrap" onclick="document.getElementById('cp-tag-input').focus()" style="position:relative">
+          <div class="genre-tag-wrap" id="cp-tag-wrap" onclick="if(event.target===this)document.getElementById('cp-tag-input').focus()" style="position:relative;flex-wrap:wrap;align-items:center">
             <input class="genre-tag-input" id="cp-tag-input" placeholder="입력 후 엔터" onkeydown="handleCpKey(event)" oninput="filterCpDropdown()" onfocus="showCpDropdown()" onblur="hideCpDropdown()" autocomplete="off">
             <div class="cp-dropdown" id="cp-dropdown" style="top:100%;left:0;right:auto;min-width:160px"></div>
           </div>
+          <div id="cp-members-section" style="margin-top:6px;display:flex;flex-direction:column;gap:4px"></div>
         </div>
         <div class="form-field"><label>업로드일</label><input id="f-date" placeholder="yyyy-mm-dd" maxlength="10" oninput="handleDateInput(this)" autocomplete="off"></div>
         <div class="form-field"><label>장르</label>
@@ -745,7 +748,9 @@ function openProse(id){
   const w=DATA.find(x=>x.id===id);if(!w)return;
   currentProseId=id;
   document.getElementById("prose-page-title").textContent=w.title;
-  document.getElementById("prose-page-meta").textContent=`${w.group} · ${w.cp}`;
+  const cpDesc=getCpDesc(w.cp);
+  const cpDisplay=cpDesc?`${w.cp}(${cpDesc})`:w.cp;
+  document.getElementById("prose-page-meta").textContent=`${w.group} · ${cpDisplay}`;
   document.getElementById("prose-page-genre").textContent=w.genre||"";
   const stored=localStorage.getItem(getProseKey(id))||"";
   document.getElementById("prose-page-area").innerHTML=stored;
@@ -807,7 +812,9 @@ function saveProseContent(){
   localStorage.setItem(getProseKey(currentProseId)+"_modified",now);
   // 뷰 업데이트
   document.getElementById("prose-page-title").textContent=updated.title;
-  document.getElementById("prose-page-meta").textContent=`${updated.group} · ${updated.cp}`;
+  const cpDesc2=getCpDesc(updated.cp);
+  const cpDisplay2=cpDesc2?`${updated.cp}(${cpDesc2})`:updated.cp;
+  document.getElementById("prose-page-meta").textContent=`${updated.group} · ${cpDisplay2}`;
   document.getElementById("prose-page-genre").textContent=updated.genre||"";
   document.getElementById("prose-modified-display").textContent="최종 수정: "+now;
   document.getElementById("prose-rendered").innerHTML=content||`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
@@ -1201,18 +1208,14 @@ function removePeCpTag(i){peCpTags.splice(i,1);renderPeCpTags();}
 function renderPeCpTags(){
   const wrap=document.getElementById("pe-cp-tag-wrap");
   const input=document.getElementById("pe-cp-input");
-  wrap.querySelectorAll(".genre-tag,.cp-desc-row").forEach(t=>t.remove());
+  wrap.querySelectorAll(".cp-tag-group").forEach(t=>t.remove());
   peCpTags.forEach((t,i)=>{
-    const span=document.createElement("span");span.className="genre-tag";
-    const desc=getCpDesc(t);
-    span.innerHTML=`${t}<span class="genre-tag-del" onmousedown="event.preventDefault();removePeCpTag(${i})">✕</span>`;
-    wrap.insertBefore(span,input);
-    const descWrap=document.createElement("span");
-    descWrap.className="cp-desc-row";
-    descWrap.style.cssText="display:inline-flex;align-items:center;gap:2px;margin-right:4px";
-    descWrap.innerHTML=`<input class="cp-desc-input" data-cp="${t}" value="${desc}" placeholder="멤버 입력" onchange="setCpDesc('${t}',this.value)" title="누가 등장하는 CP인지 입력">`;
-    wrap.insertBefore(descWrap,input);
+    const group=document.createElement("span");
+    group.className="cp-tag-group";
+    group.innerHTML=`<span class="genre-tag">${t}<span class="genre-tag-del" onmousedown="event.preventDefault();removePeCpTag(${i})">✕</span></span>`;
+    wrap.insertBefore(group,input);
   });
+  renderPeCpDescSection();
 }
 function setPeCpFromString(str){
   peCpTags=(str||"").split(/[,×x]/).map(s=>s.trim()).filter(Boolean);
@@ -1282,6 +1285,35 @@ function applyPenNameFromEdit(){
   if(n)localStorage.setItem("archive_penname",n);
 }
 
+function renderCpDescSection(){
+  const sec=document.getElementById("cp-members-section");
+  if(!sec)return;
+  sec.innerHTML="";
+  cpTags.forEach(t=>{
+    const desc=getCpDesc(t);
+    const parts=desc.split("×");
+    const m1=parts[0]||"";const m2=parts[1]||"";
+    const row=document.createElement("div");
+    row.style.cssText="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3)";
+    row.innerHTML=`<span style="min-width:40px;font-size:12px;color:var(--text2)">${t}</span><input style="width:80px;padding:3px 6px;border:0.5px solid var(--border2);border-radius:var(--radius);background:rgba(255,255,255,0.7);font-size:12px;outline:none;color:var(--text)" placeholder="멤버1" value="${m1}" onchange="saveCpDescParts('${t}',this.value,this.parentNode.querySelector('.m2').value)"><span>×</span><input class="m2" style="width:80px;padding:3px 6px;border:0.5px solid var(--border2);border-radius:var(--radius);background:rgba(255,255,255,0.7);font-size:12px;outline:none;color:var(--text)" placeholder="멤버2" value="${m2}" onchange="saveCpDescParts('${t}',this.parentNode.querySelector('input:not(.m2)').value,this.value)">`;
+    sec.appendChild(row);
+  });
+}
+function renderPeCpDescSection(){
+  const sec=document.getElementById("pe-cp-members-section");
+  if(!sec)return;
+  sec.innerHTML="";
+  peCpTags.forEach(t=>{
+    const desc=getCpDesc(t);
+    const parts=desc.split("×");
+    const m1=parts[0]||"";const m2=parts[1]||"";
+    const row=document.createElement("div");
+    row.style.cssText="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3)";
+    row.innerHTML=`<span style="min-width:40px;font-size:12px;color:var(--text2)">${t}</span><input style="width:80px;padding:3px 6px;border:0.5px solid var(--border2);border-radius:var(--radius);background:rgba(255,255,255,0.7);font-size:12px;outline:none;color:var(--text)" placeholder="멤버1" value="${m1}" onchange="saveCpDescParts('${t}',this.value,this.parentNode.querySelector('.pem2').value)"><span>×</span><input class="pem2" style="width:80px;padding:3px 6px;border:0.5px solid var(--border2);border-radius:var(--radius);background:rgba(255,255,255,0.7);font-size:12px;outline:none;color:var(--text)" placeholder="멤버2" value="${m2}" onchange="saveCpDescParts('${t}',this.parentNode.querySelector('input:not(.pem2)').value,this.value)">`;
+    sec.appendChild(row);
+  });
+}
+
 /* ── CP 설명 저장소 ── */
 function loadCpDescMap(){
   try{return JSON.parse(localStorage.getItem("archive_cp_desc")||"{}");}catch{return{};}
@@ -1292,6 +1324,11 @@ function setCpDesc(cp,desc){
   const map=loadCpDescMap();
   if(desc)map[cp]=desc;else delete map[cp];
   saveCpDescMap(map);
+}
+
+function saveCpDescParts(cp,m1,m2){
+  const desc=[m1.trim(),m2.trim()].filter(Boolean).join("×");
+  setCpDesc(cp,desc);
 }
 
 /* ── CP 태그 ── */
@@ -1311,20 +1348,14 @@ function removeCpTag(i){cpTags.splice(i,1);renderCpTags();}
 function renderCpTags(){
   const wrap=document.getElementById("cp-tag-wrap");
   const input=document.getElementById("cp-tag-input");
-  wrap.querySelectorAll(".genre-tag,.cp-desc-row").forEach(t=>t.remove());
+  wrap.querySelectorAll(".cp-tag-group").forEach(t=>t.remove());
   cpTags.forEach((t,i)=>{
-    const span=document.createElement("span");
-    span.className="genre-tag";
-    const desc=getCpDesc(t);
-    span.innerHTML=`${t}<span class="genre-tag-del" onmousedown="event.preventDefault();removeCpTag(${i})">✕</span>`;
-    wrap.insertBefore(span,input);
-    // 설명 인라인 표시/입력
-    const descWrap=document.createElement("span");
-    descWrap.className="cp-desc-row";
-    descWrap.style.cssText="display:inline-flex;align-items:center;gap:2px;margin-right:4px";
-    descWrap.innerHTML=`<input class="cp-desc-input" data-cp="${t}" value="${desc}" placeholder="멤버 입력" onchange="setCpDesc('${t}',this.value)" title="누가 등장하는 CP인지 입력">`;
-    wrap.insertBefore(descWrap,input);
+    const group=document.createElement("span");
+    group.className="cp-tag-group";
+    group.innerHTML=`<span class="genre-tag">${t}<span class="genre-tag-del" onmousedown="event.preventDefault();removeCpTag(${i})">✕</span></span>`;
+    wrap.insertBefore(group,input);
   });
+  renderCpDescSection();
 }
 function setCpFromString(str){
   cpTags=(str||"").split(/[,×x]/).map(s=>s.trim()).filter(Boolean);
