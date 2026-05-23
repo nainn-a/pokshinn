@@ -248,7 +248,9 @@
       "genre": "일상",
       "adult": true,
       "collab": false,
-      "collabName": ""
+      "collabName": "",
+      "links": [],
+      "penname": "란"
     },
     {
       "id": 124,
