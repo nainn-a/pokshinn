@@ -175,7 +175,18 @@
       "adult": false,
       "collab": true,
       "collabName": "묳터디"
+    },
+    {
+      "id": 118,
+      "title": "불장난",
+      "group": "VERIVERY",
+      "cp": "묭깡",
+      "date": "2024-05-26",
+      "genre": "일상",
+      "adult": false,
+      "collab": false,
+      "collabName": ""
     }
   ],
-  "nextId": 118
+  "nextId": 119
 }
