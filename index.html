@@ -300,8 +300,8 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
     </div>
     <div class="table-wrap">
       <table>
-        <colgroup><col class="col-no"><col class="col-date"><col class="col-title"><col class="col-genre"></colgroup>
-        <thead><tr><th>#</th><th class="col-date">업로드일</th><th>제목</th><th>장르</th></tr></thead>
+        <colgroup><col class="col-no"><col class="col-date"><col class="col-title"></colgroup>
+        <thead><tr><th>#</th><th class="col-date">업로드일</th><th>제목</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
@@ -327,6 +327,7 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
       <div>
         <div class="prose-page-title" id="prose-page-title"></div>
         <div class="prose-page-meta" id="prose-page-meta"></div>
+        <div id="prose-page-genre" style="font-size:11px;color:var(--text3);margin-top:4px;letter-spacing:-0.03em"></div>
       </div>
     </div>
     <!-- 보기 -->
@@ -392,9 +393,9 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
           </select>
         </div>
         <div class="form-field"><label>CP</label>
-          <div class="cp-combo">
-            <input id="f-cp" placeholder="직접 입력 또는 선택" autocomplete="off" oninput="filterCpDropdown()" onfocus="showCpDropdown()" onblur="hideCpDropdown()">
-            <div class="cp-dropdown" id="cp-dropdown"></div>
+          <div class="genre-tag-wrap" id="cp-tag-wrap" onclick="document.getElementById('cp-tag-input').focus()" style="position:relative">
+            <input class="genre-tag-input" id="cp-tag-input" placeholder="입력 후 엔터" onkeydown="handleCpKey(event)" oninput="filterCpDropdown()" onfocus="showCpDropdown()" onblur="hideCpDropdown()" autocomplete="off">
+            <div class="cp-dropdown" id="cp-dropdown" style="top:100%;left:0;right:auto;min-width:160px"></div>
           </div>
         </div>
         <div class="form-field"><label>업로드일</label><input id="f-date" type="date"></div>
@@ -429,6 +430,9 @@ col.col-no{width:36px}col.col-date{width:86px}col.col-title{width:auto}col.col-g
         <button class="prose-tool-btn" style="color:#2c5fa8;font-weight:700" onclick="edColor('#2c5fa8')" title="파랑">A</button>
         <button class="prose-tool-btn" style="color:#888;font-weight:700" onclick="edColor('#888888')" title="회색">A</button>
         <input type="color" id="editor-color-pick" value="#e24b4a" title="다른 색" style="width:26px;height:26px;padding:1px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;vertical-align:middle" oninput="edColor(this.value)">
+        <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
+        <label style="font-size:11px;color:var(--text3);margin-right:2px">기본색</label>
+        <input type="color" id="editor-base-color" value="#2d3a4a" title="기본 텍스트 색" style="width:26px;height:26px;padding:1px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;vertical-align:middle" oninput="setEditorBaseColor(this.value)">
         <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
         <button class="prose-tool-btn" onclick="document.getElementById('txt-upload').click()" title="TXT 파일 불러오기">↑ TXT</button>
         <input type="file" id="txt-upload" accept=".txt,text/plain" style="display:none" onchange="handleTxtUpload(event)">
@@ -630,7 +634,7 @@ function renderTable(){
     const tr=document.createElement("tr");
     const collab=w.collab?`<span class="collab-badge" title="${w.collabName}">합작</span>`:"";
     const dot=w.adult?`<span class="adult-dot"></span>`:"";
-    tr.innerHTML=`<td class="no">${i+1}</td><td class="date-cell col-date">${w.date||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${collab}</div></td><td class="genre-cell">${w.genre||""}</td>`;
+    tr.innerHTML=`<td class="no">${i+1}</td><td class="date-cell col-date">${w.date||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${collab}</div></td>`;
     tbody.appendChild(tr);
   });
 }
@@ -678,6 +682,7 @@ function openProse(id){
   currentProseId=id;
   document.getElementById("prose-page-title").textContent=w.title;
   document.getElementById("prose-page-meta").textContent=`${w.group} · ${w.cp}`;
+  document.getElementById("prose-page-genre").textContent=w.genre||"";
   const stored=localStorage.getItem(getProseKey(id))||"";
   document.getElementById("prose-page-area").innerHTML=stored;
   document.getElementById("prose-rendered").innerHTML=stored||`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
@@ -694,11 +699,13 @@ function openProse(id){
 }
 function deleteCurrentProse(){
   if(!currentProseId||!confirm("이 작품을 삭제할까요?"))return;
-  DATA=DATA.filter(w=>w.id!==currentProseId);
+  const w=DATA.find(x=>x.id===currentProseId);
+  const group=w?w.group:null;
+  DATA=DATA.filter(x=>x.id!==currentProseId);
   localStorage.removeItem(getProseKey(currentProseId));
   localStorage.removeItem(getProseKey(currentProseId)+"_modified");
   saveStorage();renderHome();
-  showPage("page-group");
+  if(group){openGroup(group);}else{showPage("page-cards");}
 }
 function openNewProse(){
   if(!unlocked){requirePw('prose-new');return;}
@@ -872,7 +879,7 @@ function onEditorWorkChange(){
   document.getElementById("editor-del-work-btn").style.display="";
   document.getElementById("f-title").value=w.title;
   document.getElementById("f-group").value=w.group;
-  document.getElementById("f-cp").value=w.cp;
+  setCpFromString(w.cp);
   document.getElementById("f-date").value=w.date||"";
   setGenreFromString(w.genre||"");
   document.getElementById("f-collabname").value=w.collabName||"";
@@ -886,13 +893,14 @@ function resetEditorForm(){
   document.getElementById("form-cancel-btn").style.display="none";
   document.getElementById("editor-del-work-btn").style.display="none";
   document.getElementById("editor-work-sel").value="";
-  ["f-title","f-cp","f-date","f-collabname"].forEach(id=>document.getElementById(id).value="");
+  ["f-title","f-date","f-collabname"].forEach(id=>document.getElementById(id).value="");
   document.getElementById("f-penname").value=loadPenName();
   document.getElementById("f-group").value="ONEUS";
   document.getElementById("f-adult").checked=false;
   document.getElementById("f-collab").checked=false;
   document.getElementById("prose-area").innerHTML="";
   setGenreFromString("");
+  setCpFromString("");
 }
 document.getElementById("form-cancel-btn").onclick=resetEditorForm;
 function deleteCurrentWork(){
@@ -902,14 +910,16 @@ function deleteCurrentWork(){
 }
 function submitAll(){
   const title=document.getElementById("f-title").value.trim();
-  const cp=document.getElementById("f-cp").value.trim();
+  const pendingCp=document.getElementById("cp-tag-input").value.trim();
+  if(pendingCp&&!cpTags.includes(pendingCp)){cpTags.push(pendingCp);document.getElementById("cp-tag-input").value="";}
+  const cp=getCpString();
   if(!title||!cp){alert("제목과 CP는 필수입니다.");return;}
   const pending=document.getElementById("genre-tag-input").value.trim();
   if(pending&&!genreTags.includes(pending)){genreTags.push(pending);document.getElementById("genre-tag-input").value="";}
   const id=editingId||nextId++;
   const obj={
     id,title,
-    group:document.getElementById("f-group").value,cp,
+    group:document.getElementById("f-group").value,cp:getCpString(),
     date:document.getElementById("f-date").value,
     genre:getGenreString(),
     adult:document.getElementById("f-adult").checked,
@@ -944,6 +954,10 @@ function setEditorWeight(w){
 function setProseWeight(w){
   const area=document.getElementById("prose-page-area");
   area.style.fontWeight=w;
+}
+
+function setEditorBaseColor(color){
+  document.getElementById("prose-area").style.color=color;
 }
 
 /* ── 에디터 WYSIWYG 명령 ── */
@@ -1027,19 +1041,57 @@ function renderGenreDropdown(q){
   dd.classList.add("show");
 }
 
-/* ── CP 드롭다운 ── */
+/* ── CP 태그 ── */
+let cpTags=[];
+function handleCpKey(e){
+  if(e.key==="Enter"||e.key===","||e.key===";"){
+    e.preventDefault();
+    const v=e.target.value.replace(/,|;/g,"").trim();
+    if(v&&!cpTags.includes(v)){cpTags.push(v);renderCpTags();}
+    e.target.value="";
+    document.getElementById("cp-dropdown").classList.remove("show");
+  } else if(e.key==="Backspace"&&e.target.value===""&&cpTags.length){
+    cpTags.pop();renderCpTags();
+  }
+}
+function removeCpTag(i){cpTags.splice(i,1);renderCpTags();}
+function renderCpTags(){
+  const wrap=document.getElementById("cp-tag-wrap");
+  const input=document.getElementById("cp-tag-input");
+  wrap.querySelectorAll(".genre-tag").forEach(t=>t.remove());
+  cpTags.forEach((t,i)=>{
+    const span=document.createElement("span");
+    span.className="genre-tag";
+    span.innerHTML=`${t}<span class="genre-tag-del" onmousedown="event.preventDefault();removeCpTag(${i})">✕</span>`;
+    wrap.insertBefore(span,input);
+  });
+}
+function setCpFromString(str){
+  cpTags=(str||"").split(/[,×x]/).map(s=>s.trim()).filter(Boolean);
+  renderCpTags();
+}
+function getCpString(){return cpTags.join("×");}
+
 function getCpsForGroup(g){return[...new Set(DATA.filter(w=>w.group===g).map(w=>w.cp))].filter(Boolean);}
-function updateCpDropdown(){document.getElementById("f-cp").value="";renderCpOptions("");}
+function updateCpDropdown(){document.getElementById("cp-tag-input").value="";renderCpOptions("");}
 function renderCpOptions(q){
   const cps=getCpsForGroup(document.getElementById("f-group").value);
   const filtered=q?cps.filter(c=>c.toLowerCase().includes(q.toLowerCase())):cps;
   const dd=document.getElementById("cp-dropdown");dd.innerHTML="";
   if(!filtered.length){dd.classList.remove("show");return;}
-  filtered.forEach(cp=>{const d=document.createElement("div");d.className="cp-option";d.textContent=cp;d.onmousedown=()=>{document.getElementById("f-cp").value=cp;dd.classList.remove("show");};dd.appendChild(d);});
+  filtered.forEach(cp=>{
+    const d=document.createElement("div");d.className="cp-option";d.textContent=cp;
+    d.onmousedown=()=>{
+      if(!cpTags.includes(cp)){cpTags.push(cp);renderCpTags();}
+      document.getElementById("cp-tag-input").value="";
+      dd.classList.remove("show");
+    };
+    dd.appendChild(d);
+  });
   dd.classList.add("show");
 }
-function filterCpDropdown(){renderCpOptions(document.getElementById("f-cp").value);}
-function showCpDropdown(){renderCpOptions(document.getElementById("f-cp").value);}
+function filterCpDropdown(){renderCpOptions(document.getElementById("cp-tag-input").value);}
+function showCpDropdown(){renderCpOptions(document.getElementById("cp-tag-input").value);}
 function hideCpDropdown(){setTimeout(()=>document.getElementById("cp-dropdown").classList.remove("show"),150);}
 
 /* ── 초기화 ── */
