@@ -196,7 +196,9 @@
       "genre": "일상",
       "adult": false,
       "collab": false,
-      "collabName": ""
+      "collabName": "",
+      "links": [],
+      "penname": "모히또"
     },
     {
       "id": 120,
