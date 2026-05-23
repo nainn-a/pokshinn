@@ -251,7 +251,11 @@
       "genre": "일상",
       "adult": false,
       "collab": false,
-      "collabName": ""
+      "collabName": "",
+      "links": [
+        "https://imgur.com/a/KqD4ucn"
+      ],
+      "penname": "란"
     }
   ],
   "nextId": 125
