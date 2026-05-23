@@ -267,7 +267,20 @@
       "collabName": "",
       "links": [],
       "penname": "란"
+    },
+    {
+      "id": 126,
+      "title": "비행운",
+      "group": "P1HARMONY",
+      "cp": "몹텡",
+      "date": "2025-09-03",
+      "genre": "학원",
+      "adult": true,
+      "collab": false,
+      "collabName": "",
+      "links": [],
+      "penname": "란"
     }
   ],
-  "nextId": 126
+  "nextId": 127
 }
