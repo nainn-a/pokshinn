@@ -141,7 +141,9 @@
       "genre": "일상",
       "adult": true,
       "collab": false,
-      "collabName": ""
+      "collabName": "",
+      "links": [],
+      "penname": "김리베"
     },
     {
       "id": 115,
