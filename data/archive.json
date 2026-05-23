@@ -153,7 +153,18 @@
       "adult": false,
       "collab": true,
       "collabName": "묳터디"
+    },
+    {
+      "id": 116,
+      "title": "오늘부터 신령님이 아이돌(1/5)",
+      "group": "VERIVERY",
+      "cp": "묭헌",
+      "date": "2022-08-25",
+      "genre": "일상, 판타지",
+      "adult": false,
+      "collab": true,
+      "collabName": "묳터디"
     }
   ],
-  "nextId": 116
+  "nextId": 117
 }
