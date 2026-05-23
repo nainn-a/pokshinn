@@ -394,6 +394,8 @@ table{width:100%;min-width:100%;table-layout:fixed}
         <button class="prose-tool-btn" onclick="insertImage()" title="이미지 삽입">🖼</button>
         <input type="file" id="img-upload" accept="image/*" style="display:none" onchange="handleImgUpload(event)">
         <button class="prose-tool-btn" onclick="insertVideo()" title="동영상 삽입">▶</button>
+        <button class="prose-tool-btn" onclick="document.getElementById('prose-txt-upload').click()" title="TXT 파일 불러오기">↑ TXT</button>
+        <input type="file" id="prose-txt-upload" accept=".txt,text/plain" style="display:none" onchange="handleProseTxtUpload(event)">
         <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
         <select id="prose-font-sel" onchange="setProseEditFont(this.value)" style="font-size:12px;padding:3px 7px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text);outline:none;cursor:pointer">
           <option value="BookkMyungjo">부크크 명조</option>
@@ -434,7 +436,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
         </div>
         <div class="form-field"><label>그룹</label>
           <select id="f-group" onchange="updateCpDropdown()">
-            <option>ONEUS</option><option>ONF</option><option>VERIVERY</option><option>P1HARMONY</option><option>82MAJOR</option>
+            <option value="">선택</option><option>ONEUS</option><option>ONF</option><option>VERIVERY</option><option>P1HARMONY</option><option>82MAJOR</option>
           </select>
         </div>
         <div class="form-field"><label>CP</label>
@@ -479,6 +481,9 @@ table{width:100%;min-width:100%;table-layout:fixed}
         <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
         <button class="prose-tool-btn" onclick="document.getElementById('txt-upload').click()" title="TXT 파일 불러오기">↑ TXT</button>
         <input type="file" id="txt-upload" accept=".txt,text/plain" style="display:none" onchange="handleTxtUpload(event)">
+        <button class="prose-tool-btn" onclick="edInsertImage()" title="이미지 삽입">🖼</button>
+        <input type="file" id="ed-img-upload" accept="image/*" style="display:none" onchange="handleEdImgUpload(event)">
+        <button class="prose-tool-btn" onclick="edInsertVideo()" title="동영상 삽입">▶</button>
         <span style="width:0.5px;height:18px;background:var(--border2);display:inline-block;margin:0 4px;vertical-align:middle"></span>
         <select id="editor-font-sel" onchange="setEditorFont(this.value)" style="font-size:12px;padding:3px 7px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text);outline:none;cursor:pointer">
           <option value="BookkMyungjo">부크크 명조</option>
@@ -850,6 +855,39 @@ function setProseFont(font){
   document.getElementById("font-btn-bookk").classList.toggle("active",font==="BookkMyungjo");
 }
 
+function edInsertImage(){document.getElementById("ed-img-upload").click();}
+function handleEdImgUpload(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    const img=`<img src="${ev.target.result}" style="max-width:100%;height:auto;display:block;margin:1em auto;border-radius:4px">`;
+    document.getElementById("prose-area").focus();
+    document.execCommand('insertHTML',false,img);
+  };
+  reader.readAsDataURL(file);e.target.value="";
+}
+function edInsertVideo(){
+  _videoTarget='editor';
+  _videoFileData=null;
+  document.getElementById("video-url-input").value="";
+  document.getElementById("video-filename").textContent="";
+  document.getElementById("video-modal").classList.remove("hidden");
+}
+function handleProseTxtUpload(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    const area=document.getElementById("prose-page-area");
+    const html=ev.target.result.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
+    if(area.innerHTML.trim()&&area.innerHTML!=="<br>"){
+      if(!confirm("현재 본문이 있습니다. 파일 내용으로 교체할까요?\n(취소하면 현재 내용 뒤에 이어 붙입니다)"))
+        {area.innerHTML+=`<br><br>${html}`;area.focus();e.target.value="";return;}
+    }
+    area.innerHTML=html;area.focus();
+  };
+  reader.readAsText(file,"UTF-8");e.target.value="";
+}
+
 /* ── 이미지 삽입 ── */
 function insertImage(){
   document.getElementById("img-upload").click();
@@ -868,7 +906,9 @@ function handleImgUpload(e){
 
 /* ── 동영상 삽입 ── */
 let _videoFileData=null;
+let _videoTarget='prose'; // 'prose' or 'editor'
 function insertVideo(){
+  _videoTarget='prose';
   _videoFileData=null;
   document.getElementById("video-url-input").value="";
   document.getElementById("video-filename").textContent="";
@@ -905,7 +945,8 @@ function confirmInsertVideo(){
     }
   }
   if(html){
-    document.getElementById("prose-page-area").focus();
+    const areaId=_videoTarget==='editor'?'prose-area':'prose-page-area';
+    document.getElementById(areaId).focus();
     document.execCommand('insertHTML',false,html);
   }
   closeVideoModal();
@@ -985,7 +1026,7 @@ function resetEditorForm(){
   document.getElementById("editor-work-sel").value="";
   ["f-title","f-date","f-collabname"].forEach(id=>document.getElementById(id).value="");
   document.getElementById("f-penname").value=loadPenName();
-  document.getElementById("f-group").value="ONEUS";
+  document.getElementById("f-group").value="";
   document.getElementById("f-adult").checked=false;
   document.getElementById("f-collab").checked=false;
   document.getElementById("prose-area").innerHTML="";
@@ -1000,10 +1041,11 @@ function deleteCurrentWork(){
 }
 function submitAll(){
   const title=document.getElementById("f-title").value.trim();
+  const group=document.getElementById("f-group").value;
   const pendingCp=document.getElementById("cp-tag-input").value.trim();
   if(pendingCp&&!cpTags.includes(pendingCp)){cpTags.push(pendingCp);document.getElementById("cp-tag-input").value="";}
   const cp=getCpString();
-  if(!title||!cp){alert("제목과 CP는 필수입니다.");return;}
+  if(!title||!group||!cp){alert("제목, 그룹, CP는 필수입니다.");return;}
   const pending=document.getElementById("genre-tag-input").value.trim();
   if(pending&&!genreTags.includes(pending)){genreTags.push(pending);document.getElementById("genre-tag-input").value="";}
   const id=editingId||nextId++;
