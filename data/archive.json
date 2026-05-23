@@ -120,17 +120,6 @@
       "adult": true,
       "collab": false,
       "collabName": ""
-    },
-    {
-      "id": 112,
-      "title": "이게 사랑이 아니면",
-      "group": "VERIVERY",
-      "cp": "묭헌",
-      "date": "2022-06-19",
-      "genre": "일상",
-      "adult": false,
-      "collab": true,
-      "collabName": "묭헌합작"
     }
   ],
   "nextId": 113
