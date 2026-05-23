@@ -254,7 +254,20 @@
       "collabName": "",
       "links": [],
       "penname": "란"
+    },
+    {
+      "id": 125,
+      "title": "get fizzy with it!",
+      "group": "P1HARMONY",
+      "cp": "탁테",
+      "date": "2025-06-02",
+      "genre": "일상",
+      "adult": false,
+      "collab": false,
+      "collabName": "",
+      "links": [],
+      "penname": "란"
     }
   ],
-  "nextId": 125
+  "nextId": 126
 }
