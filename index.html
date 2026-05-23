@@ -169,6 +169,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
 .prose-selector select{font-size:13px;padding:6px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text);outline:none;flex:1;max-width:300px}
 .prose-area{width:100%;min-height:400px;padding:14px;border:0.5px solid var(--border2);border-radius:var(--radius-lg);background:#faf9f7;color:var(--text);font-size:14px;line-height:1.8;outline:none;font-family:inherit;letter-spacing:-0.05em;cursor:text}
 .prose-area:focus{border-color:var(--accent)}
+.prose-area br,.prose-edit-area br{display:block;content:"";margin-top:0}
 .prose-area:empty:before{content:attr(data-placeholder);color:var(--text3);pointer-events:none;font-style:italic}
 .prose-save-row{display:flex;gap:8px;justify-content:flex-end;margin-top:10px;align-items:center}
 .prose-saved{font-size:12px;color:var(--text3)}
@@ -1024,7 +1025,21 @@ function handleProseTxtUpload(e){
 function handleEditorKeydown(e){
   if(e.key==="Enter"){
     e.preventDefault();
-    document.execCommand("insertHTML",false,"<br><br>");
+    const sel=window.getSelection();
+    if(!sel||!sel.rangeCount)return;
+    const range=sel.getRangeAt(0);
+    range.deleteContents();
+    // 빈 줄이 보이도록 <br> 두 개 삽입 후 두 번째 br 뒤에 커서
+    const br1=document.createElement("br");
+    const br2=document.createElement("br");
+    range.insertNode(br2);
+    range.insertNode(br1);
+    // 커서를 br2 뒤로
+    const newRange=document.createRange();
+    newRange.setStartAfter(br2);
+    newRange.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(newRange);
   }
 }
 // 히스토리 제한 — 브라우저 undo 스택 과부하 방지
