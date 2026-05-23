@@ -373,6 +373,9 @@ table{width:100%;min-width:100%;table-layout:fixed}
           data-page-title=""
         ></div>
       </div>
+      <style>
+        #cusdis_thread iframe{width:100%!important;overflow:hidden!important;border:none!important}
+      </style>
     </div>
     <!-- 편집 -->
     <div id="prose-edit-mode" style="display:none">
@@ -1673,6 +1676,14 @@ function openAllWorks(){
   showPage("page-all");
 }
 document.getElementById("back-from-all").onclick=()=>showPage("page-cards");
+
+// Cusdis iframe 자동 높이
+window.addEventListener("message",function(e){
+  if(e.data&&e.data.from==="cusdis"){
+    const iframe=document.querySelector("#cusdis_thread iframe");
+    if(iframe&&e.data.height)iframe.style.height=e.data.height+"px";
+  }
+});
 
 /* ── 브라우저 뒤로가기 ── */
 window.addEventListener("popstate",function(e){
