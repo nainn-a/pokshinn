@@ -86,7 +86,7 @@ th{font-size:11px;font-weight:500;color:var(--text3);padding:10px 12px;text-alig
 td{font-size:13px;padding:10px 12px;border-bottom:0.5px solid var(--border);vertical-align:middle;color:var(--text);letter-spacing:-0.05em}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(255,255,255,0.45)}
-col.col-no{width:32px}col.col-cp{width:80px}col.col-date{width:86px}col.col-title{width:calc(100% - 198px)}
+col.col-no{width:32px}col.col-cp{width:80px}col.col-penname{width:72px}col.col-date{width:86px}col.col-title{width:calc(100% - 270px)}
 table{width:100%;min-width:100%;table-layout:fixed}
 .no{color:var(--text3);font-size:12px}
 .date-cell{font-size:12px;color:var(--text3);white-space:nowrap}
@@ -281,6 +281,9 @@ table{width:100%;min-width:100%;table-layout:fixed}
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>홈으로
     </button>
     <div class="group-grid" id="group-grid"></div>
+    <div style="text-align:center;margin-top:0.5rem">
+      <button class="btn" onclick="openAllWorks()" style="font-size:12px;color:var(--text3)">전체 작품 보기</button>
+    </div>
     <div class="edit-entry"><button onclick="requirePw('editor')">✎ 편집</button></div>
   </div>
 </div>
@@ -309,8 +312,8 @@ table{width:100%;min-width:100%;table-layout:fixed}
     </div>
     <div class="table-wrap">
       <table>
-        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-date"></colgroup>
-        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-date">게시일</th></tr></thead>
+        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col class="col-date"></colgroup>
+        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th class="col-date">게시일</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
@@ -337,6 +340,9 @@ table{width:100%;min-width:100%;table-layout:fixed}
         <div class="prose-page-title" id="prose-page-title"></div>
         <div class="prose-page-meta" id="prose-page-meta"></div>
         <div id="prose-page-genre" style="font-size:11px;color:var(--text3);margin-top:4px;letter-spacing:-0.03em"></div>
+        <div id="prose-page-collab" style="font-size:11px;color:var(--text3);margin-top:2px;letter-spacing:-0.03em"></div>
+        <div id="prose-page-soundcloud" style="font-size:11px;color:var(--text3);margin-top:2px;letter-spacing:-0.03em"></div>
+        <div id="prose-page-twitter" style="font-size:11px;color:var(--text3);margin-top:2px;letter-spacing:-0.03em"></div>
       </div>
     </div>
     <!-- 보기 -->
@@ -377,6 +383,9 @@ table{width:100%;min-width:100%;table-layout:fixed}
             </div>
           </div>
           <div class="form-field"><label>합작 이름</label><input id="pe-collabname" placeholder="합작 프로젝트명"></div>
+          <div class="form-field"><label>합작 링크</label><input id="pe-collaburl" placeholder="https://..."></div>
+          <div class="form-field"><label>사운드클라우드</label><input id="pe-soundcloud" placeholder="https://soundcloud.com/..."></div>
+          <div class="form-field"><label>트위터</label><input id="pe-twitter" placeholder="https://twitter.com/..."></div>
         </div>
         <div class="form-checks">
           <label><input type="checkbox" id="pe-adult"> 성인물</label>
@@ -412,6 +421,28 @@ table{width:100%;min-width:100%;table-layout:fixed}
         </select>
       </div>
       <div class="prose-edit-area" id="prose-page-area" contenteditable="true" spellcheck="false" style="font-family:'BookkMyungjo','Noto Serif KR',serif;font-weight:300;letter-spacing:-0.05em;min-height:400px;padding:1.5rem;line-height:2.1;font-size:16px;background:#faf9f7"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 전체글 보기 -->
+<div class="page" id="page-all">
+  <div class="group-wrap">
+    <button class="back-btn" id="back-from-all">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>목록으로
+    </button>
+    <div class="group-page-header">
+      <div>
+        <span class="group-page-title">전체 작품</span>
+        <span class="group-page-count" id="all-count" style="margin-left:8px"></span>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col class="col-date"></colgroup>
+        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th class="col-date">게시일</th></tr></thead>
+        <tbody id="all-tbody"></tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -464,6 +495,9 @@ table{width:100%;min-width:100%;table-layout:fixed}
           </div>
         </div>
         <div class="form-field"><label>합작 이름</label><input id="f-collabname" placeholder="합작 프로젝트명"></div>
+        <div class="form-field"><label>합작 링크</label><input id="f-collaburl" placeholder="https://..."></div>
+        <div class="form-field"><label>사운드클라우드</label><input id="f-soundcloud" placeholder="https://soundcloud.com/..."></div>
+        <div class="form-field"><label>트위터</label><input id="f-twitter" placeholder="https://twitter.com/..."></div>
       </div>
       <div class="form-checks">
         <label><input type="checkbox" id="f-adult"> 성인물</label>
@@ -720,7 +754,7 @@ function renderTable(){
     const tr=document.createElement("tr");
     const collab=w.collab?`<span class="collab-badge" title="${w.collabName}">합작</span>`:"";
     const dot=w.adult?`<span class="adult-dot"></span>`:"";
-    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${collab}</div></td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
     tbody.appendChild(tr);
   });
 }
@@ -768,6 +802,9 @@ function setProseMode(mode){
       document.getElementById("pe-date").value=w.date||"";
       setPeGenreFromString(w.genre||"");
       document.getElementById("pe-collabname").value=w.collabName||"";
+      document.getElementById("pe-collaburl").value=w.collabUrl||"";
+      document.getElementById("pe-soundcloud").value=w.soundcloud||"";
+      document.getElementById("pe-twitter").value=w.twitter||"";
       document.getElementById("pe-adult").checked=!!w.adult;
       document.getElementById("pe-collab").checked=!!w.collab;
     }
@@ -784,6 +821,19 @@ async function openProse(id){
   const cpD=getCpDesc(w.cp);const cpDis=cpD?`${w.cp}(${cpD})`:w.cp;
   document.getElementById("prose-page-meta").textContent=`${w.group} · ${cpDis}`;
   document.getElementById("prose-page-genre").textContent=w.genre||"";
+  // 합작명+링크
+  const collabEl=document.getElementById("prose-page-collab");
+  if(w.collab&&w.collabName){
+    if(w.collabUrl){collabEl.innerHTML=`합작: <a href="${w.collabUrl}" target="_blank" style="color:var(--accent);text-decoration:underline">${w.collabName}</a>`;}
+    else{collabEl.textContent="합작: "+w.collabName;}
+  } else {collabEl.textContent="";}
+  // 사운드클라우드
+  const scEl=document.getElementById("prose-page-soundcloud");
+  if(w.soundcloud){scEl.innerHTML=`🎵 <a href="${w.soundcloud}" target="_blank" style="color:var(--accent);text-decoration:underline">SoundCloud</a>`;}
+  else{scEl.textContent="";}
+  const twEl=document.getElementById("prose-page-twitter");
+  if(w.twitter){twEl.innerHTML=`𝕏 <a href="${w.twitter}" target="_blank" style="color:var(--accent);text-decoration:underline">Twitter</a>`;}
+  else{twEl.textContent="";}
   document.getElementById("prose-rendered").innerHTML=`<span class="prose-view-empty">열고 있어요...</span>`;
   setProseMode("view");showPage("page-prose","prose-"+id);
   const stored=await loadProseFromGitHub(id);
@@ -832,7 +882,11 @@ async function saveProseContent(){
     genre:peGenreTags.join(", "),
     adult:document.getElementById("pe-adult").checked,
     collab:document.getElementById("pe-collab").checked,
-    collabName:document.getElementById("pe-collabname").value.trim()
+    collabName:document.getElementById("pe-collabname").value.trim(),
+    collabUrl:document.getElementById("pe-collaburl").value.trim(),
+    soundcloud:document.getElementById("pe-soundcloud").value.trim(),
+    twitter:document.getElementById("pe-twitter").value.trim(),
+    penname:document.getElementById("pe-penname").value.trim()
   };
   DATA=DATA.map(w=>w.id===currentProseId?updated:w);
   const content2=document.getElementById("prose-page-area").innerHTML;const now2=new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});localStorage.setItem(getProseKey(currentProseId)+"_modified",now2);showLoading("GitHub에 저장 중...");try{await saveProseToGitHub(currentProseId,content2);await saveArchiveToGitHub();}catch(e){console.warn(e.message);}hideLoading();renderHome();
@@ -901,9 +955,7 @@ function handleEdImgUpload(e){
   const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=function(ev){
-    const img=`<img src="${ev.target.result}" style="max-width:100%;height:auto;display:block;margin:1em auto;border-radius:4px">`;
-    document.getElementById("prose-area").focus();
-    document.execCommand('insertHTML',false,img);
+    insertAtCursor("prose-area",`<img src="${ev.target.result}" style="max-width:100%;height:auto;display:block;margin:1em auto;border-radius:4px">`);
   };
   reader.readAsDataURL(file);e.target.value="";
 }
@@ -929,20 +981,49 @@ function handleProseTxtUpload(e){
   reader.readAsText(file,"UTF-8");e.target.value="";
 }
 
-/* ── 이미지 삽입 ── */
-function insertImage(){
-  document.getElementById("img-upload").click();
+/* ── contenteditable 엔터 줄바꿈 ── */
+function handleEditorKeydown(e){
+  if(e.key==="Enter"){
+    e.preventDefault();
+    document.execCommand("insertHTML",false,"<br><br>");
+  }
 }
+// 에디터 영역에 keydown 이벤트 바인딩
+["prose-area","prose-page-area"].forEach(function(id){
+  const el=document.getElementById(id);
+  if(el)el.addEventListener("keydown",handleEditorKeydown);
+});
+
+/* ── 커서 위치에 삽입 ── */
+function insertAtCursor(areaId,html){
+  const area=document.getElementById(areaId);
+  area.focus();
+  const sel=window.getSelection();
+  if(sel&&sel.rangeCount){
+    const range=sel.getRangeAt(0);
+    // contenteditable 안에 있을 때만
+    if(area.contains(range.commonAncestorContainer)){
+      range.deleteContents();
+      const frag=range.createContextualFragment(html);
+      range.insertNode(frag);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      return;
+    }
+  }
+  document.execCommand("insertHTML",false,html);
+}
+
+/* ── 이미지 삽입 ── */
+function insertImage(){document.getElementById("img-upload").click();}
 function handleImgUpload(e){
   const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=function(ev){
-    const img=`<img src="${ev.target.result}" style="max-width:100%;height:auto;display:block;margin:1em auto;border-radius:4px">`;
-    document.execCommand('insertHTML',false,img);
-    document.getElementById("prose-page-area").focus();
+    insertAtCursor("prose-page-area",`<img src="${ev.target.result}" style="max-width:100%;height:auto;display:block;margin:1em auto;border-radius:4px">`);
   };
-  reader.readAsDataURL(file);
-  e.target.value="";
+  reader.readAsDataURL(file);e.target.value="";
 }
 
 /* ── 동영상 삽입 ── */
@@ -987,8 +1068,7 @@ function confirmInsertVideo(){
   }
   if(html){
     const areaId=_videoTarget==='editor'?'prose-area':'prose-page-area';
-    document.getElementById(areaId).focus();
-    document.execCommand('insertHTML',false,html);
+    insertAtCursor(areaId,html);
   }
   closeVideoModal();
 }
@@ -1056,6 +1136,9 @@ function onEditorWorkChange(){
   document.getElementById("f-date").value=w.date||"";
   setGenreFromString(w.genre||"");
   document.getElementById("f-collabname").value=w.collabName||"";
+  document.getElementById("f-collaburl").value=w.collabUrl||"";
+  document.getElementById("f-soundcloud").value=w.soundcloud||"";
+  document.getElementById("f-twitter").value=w.twitter||"";
   document.getElementById("f-adult").checked=w.adult;
   document.getElementById("f-collab").checked=w.collab;
   document.getElementById("prose-area").innerHTML=localStorage.getItem(getProseKey(w.id))||"";
@@ -1066,7 +1149,7 @@ function resetEditorForm(){
   document.getElementById("form-cancel-btn").style.display="none";
   document.getElementById("editor-del-work-btn").style.display="none";
   document.getElementById("editor-work-sel").value="";
-  ["f-title","f-date","f-collabname"].forEach(id=>document.getElementById(id).value="");
+  ["f-title","f-date","f-collabname","f-collaburl","f-soundcloud","f-twitter"].forEach(id=>document.getElementById(id).value="");
   document.getElementById("f-penname").value=loadPenName();
   document.getElementById("f-group").value="";
   document.getElementById("f-adult").checked=false;
@@ -1100,7 +1183,11 @@ async function submitAll(){
     genre:getGenreString(),
     adult:document.getElementById("f-adult").checked,
     collab:document.getElementById("f-collab").checked,
-    collabName:document.getElementById("f-collabname").value.trim()
+    collabName:document.getElementById("f-collabname").value.trim(),
+    collabUrl:document.getElementById("f-collaburl").value.trim(),
+    soundcloud:document.getElementById("f-soundcloud").value.trim(),
+    twitter:document.getElementById("f-twitter").value.trim(),
+    penname:document.getElementById("f-penname").value.trim()
   };
   if(editingId)DATA=DATA.map(w=>w.id===editingId?obj:w);else DATA.push(obj);
   const proseContent=document.getElementById("prose-area").innerHTML;
@@ -1124,28 +1211,28 @@ function setEditorFont(font){
 }
 
 /* ── 에디터 서체 굵기 ── */
-function setEditorWeight(w){
-  const area=document.getElementById("prose-area");
+function applyWeightToSelection(areaId,w){
+  const area=document.getElementById(areaId);
   const sel=window.getSelection();
   if(sel&&sel.rangeCount&&!sel.isCollapsed&&area.contains(sel.anchorNode)){
-    // 선택 영역에만 적용
-    document.execCommand('styleWithCSS',false,true);
-    document.execCommand('fontWeight',false,w==='700'?'bold':'normal');
-  } else {
-    // 선택 없으면 전체 기본값 변경
-    area.style.fontWeight=w;
-  }
-}
-function setProseWeight(w){
-  const area=document.getElementById("prose-page-area");
-  const sel=window.getSelection();
-  if(sel&&sel.rangeCount&&!sel.isCollapsed&&area.contains(sel.anchorNode)){
-    document.execCommand('styleWithCSS',false,true);
-    document.execCommand('fontWeight',false,w==='700'?'bold':'normal');
+    const range=sel.getRangeAt(0);
+    const span=document.createElement("span");
+    span.style.fontWeight=w==='700'?'700':'300';
+    span.style.fontFamily="'BookkMyungjo','Noto Serif KR',Georgia,serif";
+    try{range.surroundContents(span);}
+    catch(e){
+      // 범위가 여러 요소에 걸쳐있는 경우
+      const frag=range.extractContents();
+      span.appendChild(frag);
+      range.insertNode(span);
+    }
+    sel.removeAllRanges();
   } else {
     area.style.fontWeight=w;
   }
 }
+function setEditorWeight(w){applyWeightToSelection('prose-area',w);}
+function setProseWeight(w){applyWeightToSelection('prose-page-area',w);}
 
 function setEditorBaseColor(color){
   document.getElementById("prose-area").style.color=color;
@@ -1363,7 +1450,7 @@ function renderPeCpDescSection(){
   });
 }
 
-/* ── CP 설명 저장소 ── */
+/*  CP 설명 저장소  */
 function loadCpDescMap(){
   try{return JSON.parse(localStorage.getItem("archive_cp_desc")||"{}");}catch{return{};}
 }
@@ -1380,7 +1467,7 @@ function saveCpDescParts(cp,m1,m2){
   setCpDesc(cp,desc);
 }
 
-/* ── CP 태그 ── */
+/*  CP 태그  */
 let cpTags=[];
 function handleCpKey(e){
   if(e.key==="Enter"||e.key===","||e.key===";"){
@@ -1434,7 +1521,23 @@ function filterCpDropdown(){renderCpOptions(document.getElementById("cp-tag-inpu
 function showCpDropdown(){renderCpOptions(document.getElementById("cp-tag-input").value);}
 function hideCpDropdown(){setTimeout(()=>document.getElementById("cp-dropdown").classList.remove("show"),150);}
 
-/* ── 브라우저 뒤로가기 ── */
+/*  전체글 보기  */
+function openAllWorks(){
+  const list=[...DATA].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  document.getElementById("all-count").textContent=`${list.length}편`;
+  const tbody=document.getElementById("all-tbody");tbody.innerHTML="";
+  list.forEach((w,i)=>{
+    const tr=document.createElement("tr");
+    const dot=w.adult?`<span class="adult-dot"></span>`:"";
+    const collab=w.collab?`<span class="collab-badge">합작</span>`:"";
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
+    tbody.appendChild(tr);
+  });
+  showPage("page-all");
+}
+document.getElementById("back-from-all").onclick=()=>showPage("page-cards");
+
+/*  브라우저 뒤로가기  */
 window.addEventListener("popstate",function(e){
   const hash=(e.state&&e.state.hash?e.state.hash:location.hash).replace("#","");
   if(!hash||hash==="page-home"){
