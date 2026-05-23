@@ -164,7 +164,18 @@
       "adult": false,
       "collab": true,
       "collabName": "묳터디"
+    },
+    {
+      "id": 117,
+      "title": "pop-up!",
+      "group": "VERIVERY",
+      "cp": "묭헌",
+      "date": "2022-09-03",
+      "genre": "일상, 판타지",
+      "adult": false,
+      "collab": true,
+      "collabName": "묳터디"
     }
   ],
-  "nextId": 117
+  "nextId": 118
 }
