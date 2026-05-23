@@ -100,7 +100,9 @@ table{width:100%;min-width:100%;table-layout:fixed}
 .genre-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;background:rgba(80,130,200,0.12);border:0.5px solid rgba(80,130,200,0.25);font-size:12px;color:var(--text2);letter-spacing:-0.03em;white-space:nowrap}
 .genre-tag-del{cursor:pointer;font-size:11px;color:var(--text3);line-height:1;padding:0 1px}
 .genre-tag-del:hover{color:var(--red)}
-.genre-tag-input{border:none;outline:none;background:transparent;font-size:13px;color:var(--text);min-width:80px;flex:1;padding:0;letter-spacing:-0.04em}
+.cp-desc-input{border:none;outline:none;background:transparent;font-size:11px;color:var(--text3);min-width:60px;max-width:120px;letter-spacing:-0.03em;border-bottom:0.5px dashed var(--border2);padding:0 2px}
+.cp-desc-input::placeholder{color:var(--border2)}
+.cp-desc-label{font-size:11px;color:var(--text3);letter-spacing:-0.03em;margin-left:2px}
 
 
 /* 모달 */
@@ -824,6 +826,7 @@ function closeSaveModal(){
     openProse(editingId);
   }
   _saveFrom=null;
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
 /* ── 필명 ── */
@@ -1198,11 +1201,17 @@ function removePeCpTag(i){peCpTags.splice(i,1);renderPeCpTags();}
 function renderPeCpTags(){
   const wrap=document.getElementById("pe-cp-tag-wrap");
   const input=document.getElementById("pe-cp-input");
-  wrap.querySelectorAll(".genre-tag").forEach(t=>t.remove());
+  wrap.querySelectorAll(".genre-tag,.cp-desc-row").forEach(t=>t.remove());
   peCpTags.forEach((t,i)=>{
     const span=document.createElement("span");span.className="genre-tag";
+    const desc=getCpDesc(t);
     span.innerHTML=`${t}<span class="genre-tag-del" onmousedown="event.preventDefault();removePeCpTag(${i})">✕</span>`;
     wrap.insertBefore(span,input);
+    const descWrap=document.createElement("span");
+    descWrap.className="cp-desc-row";
+    descWrap.style.cssText="display:inline-flex;align-items:center;gap:2px;margin-right:4px";
+    descWrap.innerHTML=`<input class="cp-desc-input" data-cp="${t}" value="${desc}" placeholder="멤버 입력" onchange="setCpDesc('${t}',this.value)" title="누가 등장하는 CP인지 입력">`;
+    wrap.insertBefore(descWrap,input);
   });
 }
 function setPeCpFromString(str){
@@ -1273,6 +1282,18 @@ function applyPenNameFromEdit(){
   if(n)localStorage.setItem("archive_penname",n);
 }
 
+/* ── CP 설명 저장소 ── */
+function loadCpDescMap(){
+  try{return JSON.parse(localStorage.getItem("archive_cp_desc")||"{}");}catch{return{};}
+}
+function saveCpDescMap(map){localStorage.setItem("archive_cp_desc",JSON.stringify(map));}
+function getCpDesc(cp){return loadCpDescMap()[cp]||"";}
+function setCpDesc(cp,desc){
+  const map=loadCpDescMap();
+  if(desc)map[cp]=desc;else delete map[cp];
+  saveCpDescMap(map);
+}
+
 /* ── CP 태그 ── */
 let cpTags=[];
 function handleCpKey(e){
@@ -1290,12 +1311,19 @@ function removeCpTag(i){cpTags.splice(i,1);renderCpTags();}
 function renderCpTags(){
   const wrap=document.getElementById("cp-tag-wrap");
   const input=document.getElementById("cp-tag-input");
-  wrap.querySelectorAll(".genre-tag").forEach(t=>t.remove());
+  wrap.querySelectorAll(".genre-tag,.cp-desc-row").forEach(t=>t.remove());
   cpTags.forEach((t,i)=>{
     const span=document.createElement("span");
     span.className="genre-tag";
+    const desc=getCpDesc(t);
     span.innerHTML=`${t}<span class="genre-tag-del" onmousedown="event.preventDefault();removeCpTag(${i})">✕</span>`;
     wrap.insertBefore(span,input);
+    // 설명 인라인 표시/입력
+    const descWrap=document.createElement("span");
+    descWrap.className="cp-desc-row";
+    descWrap.style.cssText="display:inline-flex;align-items:center;gap:2px;margin-right:4px";
+    descWrap.innerHTML=`<input class="cp-desc-input" data-cp="${t}" value="${desc}" placeholder="멤버 입력" onchange="setCpDesc('${t}',this.value)" title="누가 등장하는 CP인지 입력">`;
+    wrap.insertBefore(descWrap,input);
   });
 }
 function setCpFromString(str){
