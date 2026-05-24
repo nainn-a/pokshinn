@@ -86,7 +86,7 @@ th{font-size:11px;font-weight:500;color:var(--text3);padding:10px 12px;text-alig
 td{font-size:13px;padding:10px 12px;border-bottom:0.5px solid var(--border);vertical-align:middle;color:var(--text);letter-spacing:-0.05em}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(255,255,255,0.45)}
-col.col-no{width:32px}col.col-cp{width:80px}col.col-penname{width:72px}col.col-date{width:86px}col.col-title{width:calc(100% - 270px)}
+col.col-no{width:32px}col.col-cp{width:80px}col.col-penname{width:72px}col.col-date{width:86px}col.col-title{width:calc(100% - 306px)}
 table{width:100%;min-width:100%;table-layout:fixed}
 .no{color:var(--text3);font-size:12px}
 .date-cell{font-size:12px;color:var(--text3);white-space:nowrap}
@@ -301,7 +301,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
       <button class="btn" onclick="openAllWorks()" style="font-size:12px;color:var(--text3)">전체 작품 보기</button>
     </div>
     <div style="display:flex;justify-content:center;gap:16px;margin-top:1rem;font-size:11px;color:var(--text3);letter-spacing:-0.03em">
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;border-radius:50%;background:#e24b4a;display:inline-block"></span> 성인물</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;border-radius:50%;background:#e24b4a;display:inline-block"></span> 성인</span>
       <span style="display:flex;align-items:center;gap:4px"><span style="color:#f0b429;font-size:12px">★</span> 추천</span>
     </div>
     <div class="edit-entry"><button onclick="requirePw('editor')">✎ 편집</button></div>
@@ -332,8 +332,8 @@ table{width:100%;min-width:100%;table-layout:fixed}
     </div>
     <div class="table-wrap">
       <table>
-        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col class="col-date"><col id="col-views" style="width:48px;display:none"></colgroup>
-        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th class="col-date">게시일</th><th id="th-views" style="display:none;font-size:11px">조회</th></tr></thead>
+        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col style="width:36px"><col class="col-date"><col id="col-views" style="width:48px;display:none"></colgroup>
+        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th></th><th class="col-date">게시일</th><th id="th-views" style="display:none;font-size:11px">조회</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
@@ -487,8 +487,8 @@ table{width:100%;min-width:100%;table-layout:fixed}
     </div>
     <div class="table-wrap">
       <table>
-        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col class="col-date"></colgroup>
-        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th class="col-date">게시일</th></tr></thead>
+        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col style="width:36px"><col class="col-date"></colgroup>
+        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th></th><th class="col-date">게시일</th></tr></thead>
         <tbody id="all-tbody"></tbody>
       </table>
     </div>
@@ -808,7 +808,8 @@ function renderTable(){
     const tr=document.createElement("tr");
     const collab=w.collab?`<span class="collab-badge" title="${w.collabName}">합작</span>`:"";
     const dot=w.adult?`<span class="adult-dot"></span>`:"";const fav=w.fav?`<span style="color:#f0b429;font-size:11px;line-height:1">★</span>`:"";
-    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${fav}${dot}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
+    const marks=`<td style="text-align:right;white-space:nowrap">${fav}${dot}</td>`;
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td>${marks}<td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
     tbody.appendChild(tr);
   });
 }
@@ -1708,8 +1709,10 @@ function openAllWorks(){
   list.forEach((w,i)=>{
     const tr=document.createElement("tr");
     const dot=w.adult?`<span class="adult-dot"></span>`:"";
+    const fav=w.fav?`<span style="color:#f0b429;font-size:11px;line-height:1">★</span>`:"";
     const collab=w.collab?`<span class="collab-badge">합작</span>`:"";
-    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${fav}${dot}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
+    const marks=`<td style="text-align:right;white-space:nowrap">${fav}${dot}</td>`;
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td>${marks}<td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
     tbody.appendChild(tr);
   });
   showPage("page-all");
