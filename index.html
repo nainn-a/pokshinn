@@ -86,7 +86,7 @@ th{font-size:11px;font-weight:500;color:var(--text3);padding:10px 12px;text-alig
 td{font-size:13px;padding:10px 12px;border-bottom:0.5px solid var(--border);vertical-align:middle;color:var(--text);letter-spacing:-0.05em}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(255,255,255,0.45)}
-col.col-no{width:32px}col.col-cp{width:80px}col.col-penname{width:72px}col.col-date{width:86px}col.col-title{width:calc(100% - 306px)}
+col.col-no{width:32px}col.col-cp{width:80px}col.col-penname{width:72px}col.col-date{width:86px}col.col-title{width:calc(100% - 270px)}
 table{width:100%;min-width:100%;table-layout:fixed}
 .no{color:var(--text3);font-size:12px}
 .date-cell{font-size:12px;color:var(--text3);white-space:nowrap}
@@ -127,6 +127,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
 .prose-page-title{font-family:'BookkMyungjo','Noto Serif KR',Georgia,serif;font-size:20px;font-weight:700;letter-spacing:-0.05em;color:var(--text)}
 .prose-page-meta{font-size:12px;color:var(--text3);margin-top:4px;letter-spacing:-0.03em}
 .prose-view{background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:2rem;min-height:200px;font-size:16px;line-height:2;color:var(--text);font-family:'BookkMyungjo','Noto Serif KR',Georgia,serif;font-weight:300}
+.prose-view br{display:block;content:"";height:1em}
 .prose-view p{margin-bottom:1em}
 .prose-view h1{font-size:1.4em;font-weight:700;margin:1.2em 0 0.5em}
 .prose-view h2{font-size:1.2em;font-weight:700;margin:1em 0 0.4em}
@@ -343,8 +344,8 @@ table{width:100%;min-width:100%;table-layout:fixed}
     </div>
     <div class="table-wrap">
       <table>
-        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col style="width:36px"><col class="col-date"><col id="col-views" style="width:48px;display:none"></colgroup>
-        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th></th><th class="col-date">게시일</th><th id="th-views" style="display:none;font-size:11px">조회</th></tr></thead>
+        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col class="col-date"><col id="col-views" style="width:48px;display:none"></colgroup>
+        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th class="col-date">게시일</th><th id="th-views" style="display:none;font-size:11px">조회</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
@@ -398,6 +399,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
           <div style="display:flex;gap:8px;margin-bottom:8px">
             <input id="comment-nick" placeholder="닉네임" maxlength="20" style="width:120px;padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:rgba(255,255,255,0.7);color:var(--text);font-size:13px;outline:none;letter-spacing:-0.04em">
             <input id="comment-pw" type="password" placeholder="비밀번호 (삭제용)" maxlength="20" style="width:140px;padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:rgba(255,255,255,0.7);color:var(--text);font-size:13px;outline:none;letter-spacing:-0.04em">
+            <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text3);white-space:nowrap;cursor:pointer"><input type="checkbox" id="comment-private"> 비공개</label>
           </div>
           <textarea id="comment-body" placeholder="댓글을 입력하세요..." rows="3" style="width:100%;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:rgba(255,255,255,0.7);color:var(--text);font-size:13px;outline:none;resize:vertical;font-family:inherit;letter-spacing:-0.04em;margin-bottom:8px"></textarea>
           <div style="text-align:right">
@@ -502,8 +504,8 @@ table{width:100%;min-width:100%;table-layout:fixed}
     </div>
     <div class="table-wrap">
       <table>
-        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col style="width:36px"><col class="col-date"></colgroup>
-        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th></th><th class="col-date">게시일</th></tr></thead>
+        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col class="col-date"></colgroup>
+        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th class="col-date">게시일</th></tr></thead>
         <tbody id="all-tbody"></tbody>
       </table>
     </div>
@@ -823,8 +825,8 @@ function renderTable(){
     const tr=document.createElement("tr");
     const collab=w.collab?`<span class="collab-badge" title="${w.collabName}">합작</span>`:"";
     const dot=w.adult?`<span class="adult-dot"></span>`:"";const fav=w.fav?`<span style="width:8px;height:8px;background:#f0b429;display:inline-block;flex-shrink:0;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span>`:"";
-    const marks=`<td style="text-align:right;white-space:nowrap">${fav}${dot}</td>`;
-    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td>${marks}<td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
+    tr.setAttribute("data-prose-id",w.id);
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${fav}${dot}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td><td class="view-count" style="font-size:11px;color:var(--text3);text-align:right;display:none"></td>`;
     tbody.appendChild(tr);
   });
 }
@@ -1138,6 +1140,12 @@ function limitHistory(areaId){
     el.addEventListener("mouseup",function(){saveRange(id);});
     el.addEventListener("keyup",function(){saveRange(id);});
     el.addEventListener("blur",function(){saveRange(id);});
+    el.addEventListener("input",function(){
+      // 빈 video/iframe 컨테이너 정리
+      el.querySelectorAll("div,span").forEach(function(node){
+        if(!node.innerHTML.trim()&&!node.querySelector("img,video,iframe,br"))node.remove();
+      });
+    });
     limitHistory(id);
   }
 });
@@ -1733,8 +1741,7 @@ function openAllWorks(){
     const dot=w.adult?`<span class="adult-dot"></span>`:"";
     const fav=w.fav?`<span style="width:8px;height:8px;background:#f0b429;display:inline-block;flex-shrink:0;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span>`:"";
     const collab=w.collab?`<span class="collab-badge">합작</span>`:"";
-    const marks=`<td style="text-align:right;white-space:nowrap">${fav}${dot}</td>`;
-    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td>${marks}<td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${fav}${dot}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
     tbody.appendChild(tr);
   });
   showPage("page-all");
@@ -1804,7 +1811,7 @@ async function initHeart(id){
 /* ── 댓글 ── */
 async function loadComments(id){
   try{
-    const rows=await sbGet("comments",`prose_id=eq.${id}&order=created_at.asc&select=id,nick,body,created_at`);
+    const rows=await sbGet("comments",`prose_id=eq.${id}&order=created_at.asc&select=id,nick,body,created_at,is_private,pw_hash`);
     return rows||[];
   }catch(e){return[];}
 }
@@ -1813,11 +1820,15 @@ async function submitComment(){
   const nick=document.getElementById("comment-nick").value.trim();
   const body=document.getElementById("comment-body").value.trim();
   const pw=document.getElementById("comment-pw").value.trim();
+  const isPrivate=document.getElementById("comment-private").checked;
   if(!nick||!body){alert("닉네임과 댓글 내용을 입력해주세요.");return;}
-  const ok=await sbInsert("comments",{prose_id:String(id),nick,body,pw_hash:btoa(pw||"")});
+  const ok=await sbInsert("comments",{prose_id:String(id),nick,body,pw_hash:btoa(pw||""),is_private:isPrivate});
   if(!ok){alert("댓글 저장에 실패했습니다.");return;}
   document.getElementById("comment-body").value="";
+  document.getElementById("comment-private").checked=false;
   const comments=await loadComments(id);
+  // 가장 최근 댓글이 내가 쓴 것 — localStorage에 표시
+  if(comments.length){const last=comments[comments.length-1];localStorage.setItem(`my_comment_${last.id}`,"1");}
   renderComments(comments);
   sendNotification("comment",{title:DATA.find(x=>x.id===id)?.title||id,nick,body});
 }
@@ -1847,14 +1858,19 @@ function renderComments(comments){
     const div=document.createElement("div");
     div.style.cssText="padding:12px 0;border-bottom:0.5px solid var(--border);";
     const date=c.created_at?new Date(c.created_at).toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}):"";
+    // 비공개 댓글 처리: 에디터 잠금 해제 or 같은 기기(pw_hash로 확인 불가, localStorage로 본인 확인)
+    const myKey=`my_comment_${c.id}`;
+    const isMine=localStorage.getItem(myKey)==="1";
+    const canSee=!c.is_private||unlocked||isMine;
+    const bodyHtml=canSee?`<div style="font-size:13px;color:var(--text);line-height:1.7;letter-spacing:-0.04em;white-space:pre-wrap">${c.body}</div>`:`<div style="font-size:12px;color:var(--text3);font-style:italic">🔒 비공개 댓글입니다.</div>`;
+    const privateLabel=c.is_private?`<span style="font-size:10px;color:var(--text3);border:0.5px solid var(--border2);border-radius:2px;padding:1px 4px;margin-left:4px">비공개</span>`:"";
     div.innerHTML=`<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px">
-      <span style="font-size:13px;font-weight:500;color:var(--text);letter-spacing:-0.04em">${c.nick}</span>
+      <span style="font-size:13px;font-weight:500;color:var(--text);letter-spacing:-0.04em">${c.nick}${privateLabel}</span>
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:11px;color:var(--text3)">${date}</span>
         <button onclick="deleteComment(${c.id})" style="font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;padding:0">✕</button>
       </div>
-    </div>
-    <div style="font-size:13px;color:var(--text);line-height:1.7;letter-spacing:-0.04em;white-space:pre-wrap">${c.body}</div>`;
+    </div>${bodyHtml}`;
     list.appendChild(div);
   });
 }
