@@ -192,7 +192,8 @@ table{width:100%;min-width:100%;table-layout:fixed}
 @font-face{font-family:"BookkMyungjo";src:url("https://raw.githubusercontent.com/nainn-a/pokshinn/main/BOOKKMYUNGJO_LIGHT.woff2") format("woff2");font-weight:300;font-style:normal}
 @font-face{font-family:"BookkMyungjo";src:url("https://raw.githubusercontent.com/nainn-a/pokshinn/main/BOOKKMYUNGJO_BOLD.woff2") format("woff2");font-weight:700;font-style:normal}
 </style>
-<script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script data-goatcounter="https://pokshinn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
@@ -327,8 +328,8 @@ table{width:100%;min-width:100%;table-layout:fixed}
     </div>
     <div class="table-wrap">
       <table>
-        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col class="col-date"></colgroup>
-        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th class="col-date">게시일</th></tr></thead>
+        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col class="col-date"><col id="col-views" style="width:48px;display:none"></colgroup>
+        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th class="col-date">게시일</th><th id="th-views" style="display:none;font-size:11px">조회</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
@@ -344,6 +345,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
       </button>
       <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
         <span class="prose-saved" id="prose-page-saved"></span>
+        <span id="prose-view-count" style="font-size:12px;color:var(--text3);display:none"></span>
         <button class="btn" onclick="downloadSingleProse()" style="background:rgba(58,90,138,0.12);border-color:rgba(58,90,138,0.45);color:var(--accent);font-weight:500">다운로드</button>
         <button class="btn" id="prose-edit-btn">편집</button>
         <button class="btn danger" id="prose-del-btn" style="display:none" onclick="deleteCurrentProse()">삭제</button>
@@ -364,18 +366,32 @@ table{width:100%;min-width:100%;table-layout:fixed}
       <div id="prose-byline" style="font-size:12px;color:var(--text3);letter-spacing:-0.03em;margin-bottom:0.75rem"></div>
       <div class="prose-view" id="prose-rendered"></div>
       <div id="prose-modified-display" style="font-size:11px;color:var(--text3);text-align:right;margin-top:8px;letter-spacing:-0.03em"></div>
-      <div style="margin-top:2.5rem;padding-top:1.5rem;border-top:0.5px solid var(--border2)">
-        <div id="cusdis_thread"
-          data-host="https://cusdis.com"
-          data-app-id="55833611-bb3b-4c79-b701-dfdc7a3d5b31"
-          data-page-id=""
-          data-page-url=""
-          data-page-title=""
-        ></div>
+
+      <!-- 하트 -->
+      <div style="display:flex;justify-content:center;margin:2rem 0 1rem">
+        <button id="heart-btn" onclick="toggleHeart()" style="background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text3);font-size:12px;letter-spacing:-0.03em">
+          <span id="heart-icon" style="font-size:28px;transition:transform .15s">🤍</span>
+          <span id="heart-count">0</span>
+        </button>
       </div>
-      <style>
-        #cusdis_thread iframe{width:100%!important;overflow:hidden!important;border:none!important}
-      </style>
+
+      <!-- 댓글 -->
+      <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:0.5px solid var(--border2)">
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:1rem;letter-spacing:-0.04em">댓글 <span id="comment-count" style="color:var(--text3);font-weight:400"></span></div>
+        <!-- 댓글 입력 -->
+        <div id="comment-form" style="margin-bottom:1.5rem">
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <input id="comment-nick" placeholder="닉네임" maxlength="20" style="width:120px;padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:rgba(255,255,255,0.7);color:var(--text);font-size:13px;outline:none;letter-spacing:-0.04em">
+            <input id="comment-pw" type="password" placeholder="비밀번호 (삭제용)" maxlength="20" style="width:140px;padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:rgba(255,255,255,0.7);color:var(--text);font-size:13px;outline:none;letter-spacing:-0.04em">
+          </div>
+          <textarea id="comment-body" placeholder="댓글을 입력하세요..." rows="3" style="width:100%;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:rgba(255,255,255,0.7);color:var(--text);font-size:13px;outline:none;resize:vertical;font-family:inherit;letter-spacing:-0.04em;margin-bottom:8px"></textarea>
+          <div style="text-align:right">
+            <button class="btn primary" onclick="submitComment()">등록</button>
+          </div>
+        </div>
+        <!-- 댓글 목록 -->
+        <div id="comment-list"></div>
+      </div>
     </div>
     <!-- 편집 -->
     <div id="prose-edit-mode" style="display:none">
@@ -687,6 +703,10 @@ document.getElementById("pw-confirm").onclick=async()=>{
   if(h===target){
     document.getElementById("pw-modal").classList.add("hidden");
     unlocked=true;
+    // 조회수 열 표시
+    const cv=document.getElementById("col-views");const tv=document.getElementById("th-views");
+    if(cv)cv.style.display="";if(tv)tv.style.display="";
+    showTableViewCounts();
     var tok=document.getElementById("gh-token-input");
     if(tok&&tok.value.trim()){GH_TOKEN=tok.value.trim();tok.value="";}
     if(pwPurpose==='prose-new'){openProseEditorNew();}
@@ -861,19 +881,27 @@ async function openProse(id){
   document.getElementById("prose-page-area").innerHTML=stored;
   document.getElementById("prose-rendered").innerHTML=stored||`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
   document.getElementById("prose-del-btn").style.display=unlocked?"":"none";
+  const vcEl=document.getElementById("prose-view-count");
+  if(vcEl){
+    if(unlocked){vcEl.style.display="";showProseViewCount(id);}
+    else{vcEl.style.display="none";vcEl.textContent="";}
+  }
   const mod=localStorage.getItem(getProseKey(id)+"_modified");
   document.getElementById("prose-modified-display").textContent=mod?"최종 수정: "+mod:"";
   const penname=localStorage.getItem("archive_penname")||"";
   const dateStr=w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):"";
   document.getElementById("prose-byline").textContent=[penname,dateStr].filter(Boolean).join(" · ");
-  // Cusdis 댓글 업데이트
-  const cusdis=document.getElementById("cusdis_thread");
-  if(cusdis){
-    cusdis.dataset.pageId="prose-"+id;
-    cusdis.dataset.pageUrl="https://nainn-a.github.io/pokshinn/#prose-"+id;
-    cusdis.dataset.pageTitle=w.title;
-    if(window.CUSDIS)window.CUSDIS.renderTo(cusdis);
+  // Goatcounter 조회수 기록
+  if(window.goatcounter&&window.goatcounter.count){
+    window.goatcounter.count({
+      path:"prose-"+id,
+      title:w.title,
+      event:false
+    });
   }
+  // 하트·댓글 초기화
+  initHeart(id);
+  initComments(id);
 }
 async function deleteCurrentProse(){
   if(!currentProseId||!confirm("이 작품을 삭제할까요?"))return;
@@ -1677,15 +1705,163 @@ function openAllWorks(){
 }
 document.getElementById("back-from-all").onclick=()=>showPage("page-cards");
 
-// Cusdis iframe 자동 높이
-window.addEventListener("message",function(e){
-  if(e.data&&e.data.from==="cusdis"){
-    const iframe=document.querySelector("#cusdis_thread iframe");
-    if(iframe&&e.data.height)iframe.style.height=e.data.height+"px";
-  }
-});
 
-/* ── 브라우저 뒤로가기 ── */
+/* ── 하트 ── */
+async function loadHeart(id){
+  try{
+    const r=await fetch(`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/${GH_BRANCH}/data/likes/prose-${id}.json?t=`+Date.now());
+    if(r.ok){const j=await r.json();return j.count||0;}
+  }catch(e){}
+  return 0;
+}
+async function saveHeart(id,count){
+  if(!GH_TOKEN)return;
+  const content=JSON.stringify({count},null,2);
+  const ex=await ghGet(`data/likes/prose-${id}.json`);
+  await ghPut(`data/likes/prose-${id}.json`,content,ex?ex.sha:null);
+}
+async function toggleHeart(){
+  const id=currentProseId;if(!id)return;
+  const key=`liked_${id}`;
+  const liked=localStorage.getItem(key);
+  let count=parseInt(document.getElementById("heart-count").textContent)||0;
+  if(liked){
+    count=Math.max(0,count-1);
+    localStorage.removeItem(key);
+    document.getElementById("heart-icon").textContent="🤍";
+  } else {
+    count++;
+    localStorage.setItem(key,"1");
+    document.getElementById("heart-icon").textContent="🩷";
+    document.getElementById("heart-btn").style.transform="scale(1.2)";
+    setTimeout(()=>document.getElementById("heart-btn").style.transform="",150);
+  }
+  document.getElementById("heart-count").textContent=count;
+  await saveHeart(id,count);
+  // 이메일 알림
+  if(!liked)sendNotification("heart",{title:DATA.find(x=>x.id===id)?.title||id});
+}
+async function initHeart(id){
+  const count=await loadHeart(id);
+  document.getElementById("heart-count").textContent=count;
+  const liked=localStorage.getItem(`liked_${id}`);
+  document.getElementById("heart-icon").textContent=liked?"🩷":"🤍";
+}
+
+/* ── 댓글 ── */
+async function loadComments(id){
+  try{
+    const r=await fetch(`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/${GH_BRANCH}/data/comments/prose-${id}.json?t=`+Date.now());
+    if(r.ok)return await r.json();
+  }catch(e){}
+  return [];
+}
+async function saveComments(id,comments){
+  if(!GH_TOKEN)return;
+  const content=JSON.stringify(comments,null,2);
+  const ex=await ghGet(`data/comments/prose-${id}.json`);
+  await ghPut(`data/comments/prose-${id}.json`,content,ex?ex.sha:null);
+}
+async function submitComment(){
+  const id=currentProseId;if(!id)return;
+  const nick=document.getElementById("comment-nick").value.trim();
+  const body=document.getElementById("comment-body").value.trim();
+  const pw=document.getElementById("comment-pw").value.trim();
+  if(!nick||!body){alert("닉네임과 댓글 내용을 입력해주세요.");return;}
+  const comments=await loadComments(id);
+  const now=new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
+  comments.push({id:Date.now(),nick,body,pw:btoa(pw||""),date:now});
+  showLoading("댓글 저장 중...");
+  try{await saveComments(id,comments);}catch(e){hideLoading();alert("저장 실패: "+e.message);return;}
+  hideLoading();
+  document.getElementById("comment-body").value="";
+  renderComments(comments);
+  sendNotification("comment",{title:DATA.find(x=>x.id===id)?.title||id,nick,body});
+}
+async function deleteComment(proseId,commentId){
+  const pw=prompt("댓글 비밀번호를 입력하세요");if(pw===null)return;
+  let comments=await loadComments(proseId);
+  const target=comments.find(c=>c.id===commentId);
+  if(!target)return;
+  if(!unlocked&&target.pw!==btoa(pw||"")){alert("비밀번호가 틀렸습니다.");return;}
+  comments=comments.filter(c=>c.id!==commentId);
+  showLoading("삭제 중...");
+  try{await saveComments(proseId,comments);}catch(e){hideLoading();return;}
+  hideLoading();renderComments(comments);
+}
+function renderComments(comments){
+  const list=document.getElementById("comment-list");
+  const countEl=document.getElementById("comment-count");
+  if(countEl)countEl.textContent=comments.length?`(${comments.length})`:"";
+  if(!list)return;
+  list.innerHTML="";
+  if(!comments.length){list.innerHTML=`<div style="font-size:12px;color:var(--text3);text-align:center;padding:1rem">아직 댓글이 없어요.</div>`;return;}
+  comments.forEach(c=>{
+    const div=document.createElement("div");
+    div.style.cssText="padding:12px 0;border-bottom:0.5px solid var(--border);";
+    div.innerHTML=`<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px">
+      <span style="font-size:13px;font-weight:500;color:var(--text);letter-spacing:-0.04em">${c.nick}</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:11px;color:var(--text3)">${c.date||""}</span>
+        <button onclick="deleteComment(${currentProseId},${c.id})" style="font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;padding:0">✕</button>
+      </div>
+    </div>
+    <div style="font-size:13px;color:var(--text);line-height:1.7;letter-spacing:-0.04em;white-space:pre-wrap">${c.body}</div>`;
+    list.appendChild(div);
+  });
+}
+async function initComments(id){
+  const comments=await loadComments(id);
+  renderComments(comments);
+}
+
+/* ── 이메일 알림 (EmailJS) ── */
+const EMAILJS_SERVICE="service_rbse63y";const EMAILJS_TEMPLATE="template_qsj8tgc";const EMAILJS_KEY="CrL9Br0gJqt0hsQFk";
+function sendNotification(type,data){
+  if(!EMAILJS_SERVICE||!EMAILJS_KEY)return;
+  if(typeof emailjs==="undefined")return;
+  emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
+    type:type==="heart"?"하트":"댓글",
+    title:data.title||"",
+    nick:data.nick||"",
+    body:data.body||"",
+    url:"https://nainn-a.github.io/pokshinn/#prose-"+currentProseId
+  },EMAILJS_KEY).catch(e=>console.warn("email fail",e));
+}
+
+/* ── Goatcounter 조회수 ── */
+const GC_TOKEN="gojj7x88n4e6cb868ksw7muf1cwvfucmxdfq4wjaewefa17r2";
+const GC_BASE="https://pokshinn.goatcounter.com";
+async function fetchPageviews(path){
+  try{
+    const r=await fetch(`${GC_BASE}/api/v0/stats/hits?start=2020-01-01&end=2099-01-01&filter=${encodeURIComponent(path)}`,{
+      headers:{"Authorization":"Bearer "+GC_TOKEN}
+    });
+    if(!r.ok)return null;
+    const j=await r.json();
+    // hits 배열에서 해당 path 찾기
+    const hit=(j.hits||[]).find(h=>h.path===path||h.path==="/"+path);
+    return hit?hit.count:0;
+  }catch(e){return null;}
+}
+async function showProseViewCount(id){
+  const el=document.getElementById("prose-view-count");
+  if(!el)return;
+  el.textContent="조회수 로딩 중...";
+  const count=await fetchPageviews("prose-"+id);
+  el.textContent=count!==null?`조회수 ${count}회`:"";
+}
+async function showTableViewCounts(){
+  const rows=document.querySelectorAll("#tbody tr[data-prose-id]");
+  for(const row of rows){
+    const id=row.dataset.proseId;
+    const el=row.querySelector(".view-count");
+    if(el){
+      const count=await fetchPageviews("prose-"+id);
+      if(count!==null)el.textContent=count;
+    }
+  }
+}
 window.addEventListener("popstate",function(e){
   const hash=(e.state&&e.state.hash?e.state.hash:location.hash).replace("#","");
   if(!hash||hash==="page-home"){
@@ -1706,6 +1882,7 @@ window.addEventListener("popstate",function(e){
   }
 });
 (async function(){
+  if(typeof emailjs!=="undefined")emailjs.init({publicKey:EMAILJS_KEY});
   await loadFromGitHub();
   renderHome();
   const hash=location.hash.replace("#","");
