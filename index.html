@@ -300,6 +300,10 @@ table{width:100%;min-width:100%;table-layout:fixed}
     <div style="text-align:center;margin-top:0.5rem">
       <button class="btn" onclick="openAllWorks()" style="font-size:12px;color:var(--text3)">전체 작품 보기</button>
     </div>
+    <div style="display:flex;justify-content:center;gap:16px;margin-top:1rem;font-size:11px;color:var(--text3);letter-spacing:-0.03em">
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;border-radius:50%;background:#e24b4a;display:inline-block"></span> 성인물</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="color:#f0b429;font-size:12px">★</span> 추천</span>
+    </div>
     <div class="edit-entry"><button onclick="requirePw('editor')">✎ 편집</button></div>
   </div>
 </div>
@@ -432,6 +436,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
         <div class="form-checks">
           <label><input type="checkbox" id="pe-adult"> 성인물</label>
           <label><input type="checkbox" id="pe-collab"> 합작</label>
+          <label><input type="checkbox" id="pe-fav"> ★ 추천</label>
         </div>
       </div>
       <div class="prose-toolbar" id="prose-edit-toolbar">
@@ -545,6 +550,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
       <div class="form-checks">
         <label><input type="checkbox" id="f-adult"> 성인물</label>
         <label><input type="checkbox" id="f-collab"> 합작</label>
+        <label><input type="checkbox" id="f-fav"> ★ 추천</label>
       </div>
     </div>
 
@@ -801,8 +807,8 @@ function renderTable(){
   list.forEach((w,i)=>{
     const tr=document.createElement("tr");
     const collab=w.collab?`<span class="collab-badge" title="${w.collabName}">합작</span>`:"";
-    const dot=w.adult?`<span class="adult-dot"></span>`:"";
-    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
+    const dot=w.adult?`<span class="adult-dot"></span>`:"";const fav=w.fav?`<span style="color:#f0b429;font-size:11px;line-height:1">★</span>`:"";
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${fav}${dot}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
     tbody.appendChild(tr);
   });
 }
@@ -853,6 +859,7 @@ function setProseMode(mode){
       document.getElementById("pe-links").value=(w.links||[]).join("\n");
       document.getElementById("pe-adult").checked=!!w.adult;
       document.getElementById("pe-collab").checked=!!w.collab;
+      document.getElementById("pe-fav").checked=!!w.fav;
     }
   } else {
     editBtn.style.background="";editBtn.style.color="";editBtn.style.borderColor="";
@@ -866,6 +873,11 @@ async function openProse(id){
   _proseFrom=document.getElementById("page-all").classList.contains("active")?"page-all":"page-group";
   document.getElementById("back-to-group").innerHTML=`<svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>${_proseFrom==='page-all'?'전체 목록으로':'목록으로'}`;
   document.getElementById("prose-page-title").textContent=w.title;
+  if(w.fav){
+    const star=document.createElement("span");
+    star.textContent=" ★";star.style.cssText="color:#f0b429;font-size:16px";
+    document.getElementById("prose-page-title").appendChild(star);
+  }
   const cpD=getCpDesc(w.cp);const cpDis=cpD?`${w.cp}(${cpD})`:w.cp;
   document.getElementById("prose-page-meta").textContent=`${w.group} · ${cpDis}`;
   document.getElementById("prose-page-genre").textContent=w.genre||"";
@@ -939,6 +951,7 @@ async function saveProseContent(){
     genre:peGenreTags.join(", "),
     adult:document.getElementById("pe-adult").checked,
     collab:document.getElementById("pe-collab").checked,
+    fav:document.getElementById("pe-fav").checked,
     collabName:document.getElementById("pe-collabname").value.trim(),
     links:(document.getElementById("pe-links").value||"").split("\n").map(s=>s.trim()).filter(Boolean),
     penname:document.getElementById("pe-penname").value.trim()
@@ -1078,14 +1091,10 @@ function handleEditorKeydown(e){
     if(!sel||!sel.rangeCount)return;
     const range=sel.getRangeAt(0);
     range.deleteContents();
-    // 빈 줄이 보이도록 <br> 두 개 삽입 후 두 번째 br 뒤에 커서
-    const br1=document.createElement("br");
-    const br2=document.createElement("br");
-    range.insertNode(br2);
-    range.insertNode(br1);
-    // 커서를 br2 뒤로
+    const br=document.createElement("br");
+    range.insertNode(br);
     const newRange=document.createRange();
-    newRange.setStartAfter(br2);
+    newRange.setStartAfter(br);
     newRange.collapse(true);
     sel.removeAllRanges();
     sel.addRange(newRange);
@@ -1311,6 +1320,7 @@ function onEditorWorkChange(){
   document.getElementById("f-links").value=(w.links||[]).join("\n");
   document.getElementById("f-adult").checked=w.adult;
   document.getElementById("f-collab").checked=w.collab;
+  document.getElementById("f-fav").checked=!!w.fav;
   document.getElementById("prose-area").innerHTML=localStorage.getItem(getProseKey(w.id))||"";
 }
 function resetEditorForm(){
@@ -1324,6 +1334,7 @@ function resetEditorForm(){
   document.getElementById("f-group").value="";
   document.getElementById("f-adult").checked=false;
   document.getElementById("f-collab").checked=false;
+  document.getElementById("f-fav").checked=false;
   document.getElementById("prose-area").innerHTML="";
   setGenreFromString("");
   setCpFromString("");
@@ -1698,7 +1709,7 @@ function openAllWorks(){
     const tr=document.createElement("tr");
     const dot=w.adult?`<span class="adult-dot"></span>`:"";
     const collab=w.collab?`<span class="collab-badge">합작</span>`:"";
-    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${fav}${dot}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
     tbody.appendChild(tr);
   });
   showPage("page-all");
