@@ -812,7 +812,7 @@ function renderTable(){
     const tr=document.createElement("tr");
     const collab=w.collab?`<span class="collab-badge" title="${w.collabName}">합작</span>`:"";
 const dot=w.adult?`<span class="adult-dot"></span>`:"";const fav=w.fav?`<span style="width:10px;height:10px;background:#f0b429;display:inline-block;flex-shrink:0;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span>`:"";
-    const marks=`<td style="text-align:right;white-space:nowrap">${fav}${dot}</td>`;
+    const marks=`<td></td>`;
     tr.innerHTML=`...<td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${fav}${collab}</div></td>...`
     tbody.appendChild(tr);
   });
@@ -1715,7 +1715,7 @@ function openAllWorks(){
     const dot=w.adult?`<span class="adult-dot"></span>`:"";
     const fav=w.fav?`<span style="width:10px;height:10px;background:#f0b429;display:inline-block;flex-shrink:0;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span>`:"";
     const collab=w.collab?`<span class="collab-badge">합작</span>`:"";
-    const marks=`<td style="text-align:right;white-space:nowrap">${fav}${dot}</td>`;
+    const marks=`<td></td>`;
     tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${fav}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td>${marks}<td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
     tbody.appendChild(tr);
   });
