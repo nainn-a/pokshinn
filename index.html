@@ -501,8 +501,8 @@ table{width:100%;min-width:100%;table-layout:fixed}
     </div>
     <div class="table-wrap">
       <table>
-        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col class="col-date"></colgroup>
-        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th class="col-date">게시일</th></tr></thead>
+        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col class="col-date"><col id="col-views-all" style="width:48px;display:none"></colgroup>
+        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th class="col-date">게시일</th><th id="th-views-all" style="display:none;font-size:11px">조회</th></tr></thead>
         <tbody id="all-tbody"></tbody>
       </table>
     </div>
@@ -726,6 +726,8 @@ document.getElementById("pw-confirm").onclick=async()=>{
     // 조회수 열 표시
     const cv=document.getElementById("col-views");const tv=document.getElementById("th-views");
     if(cv)cv.style.display="";if(tv)tv.style.display="";
+    const cva=document.getElementById("col-views-all");const tva=document.getElementById("th-views-all");
+    if(cva)cva.style.display="";if(tva)tva.style.display="";
     showTableViewCounts();
     var tok=document.getElementById("gh-token-input");
     if(tok&&tok.value.trim()){GH_TOKEN=tok.value.trim();tok.value="";}
@@ -1745,7 +1747,8 @@ function openAllWorks(){
     const dot=w.adult?`<span class="adult-dot"></span>`:"";
     const fav=w.fav?`<span style="width:7px;height:7px;border-radius:50%;background:#f0b429;display:inline-block;flex-shrink:0"></span>`:"";
     const collab=w.collab?`<span class="collab-badge">합작</span>`:"";
-    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${fav}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
+    tr.setAttribute("data-prose-id",w.id);
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${fav}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td><td class="view-count" style="font-size:11px;color:var(--text3);text-align:right;display:none"></td>`;
     tbody.appendChild(tr);
   });
   showPage("page-all");
@@ -1920,11 +1923,12 @@ async function showProseViewCount(id){
   el.textContent=count!==null?`조회수 ${count}회`:"";
 }
 async function showTableViewCounts(){
-  const rows=document.querySelectorAll("#tbody tr[data-prose-id]");
+  const rows=document.querySelectorAll("#tbody tr[data-prose-id], #all-tbody tr[data-prose-id]");
   for(const row of rows){
     const id=row.dataset.proseId;
     const el=row.querySelector(".view-count");
     if(el){
+      el.style.display="";
       const count=await fetchPageviews("prose-"+id);
       if(count!==null)el.textContent=count;
     }
