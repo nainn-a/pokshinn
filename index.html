@@ -1910,10 +1910,11 @@ async function fetchAllPageviews(){
   const now=Date.now();
   if(_gcCache&&now-_gcCacheTime<120000)return _gcCache;
   try{
-    const r=await fetch(`${GC_BASE}/api/v0/stats/hits?start=2020-01-01T00:00:00Z&end=2099-01-01T00:00:00Z&limit=200`,{
+    const today=new Date().toISOString().slice(0,10);
+    const r=await fetch(`${GC_BASE}/api/v0/stats/hits?start=2024-01-01T00:00:00Z&end=${today}T23:59:59Z&limit=200`,{
       headers:{"Authorization":"Bearer "+GC_TOKEN}
     });
-    if(!r.ok){console.warn("GC hits fail",r.status,await r.text());return null;}
+    if(!r.ok){console.warn("GC hits fail",r.status);return null;}
     const j=await r.json();
     _gcCache=j.hits||[];
     _gcCacheTime=now;
@@ -1924,12 +1925,8 @@ async function fetchPageviews(path){
   try{
     const all=await fetchAllPageviews();
     if(!all)return null;
-    const hit=all.find(h=>
-      h.path===path||
-      h.path==="/"+path||
-      h.path==="/#"+path||
-      h.path===path.replace(/^prose-/,"prose-")
-    );
+    // Goatcounter는 /prose-100 형식으로 저장
+    const hit=all.find(h=>h.path==="/"+path||h.path===path);
     return hit?hit.count||0:0;
   }catch(e){return null;}
 }
