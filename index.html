@@ -166,8 +166,6 @@ table{width:100%;min-width:100%;table-layout:fixed}
 .form-checks{display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap}
 .form-checks label{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer}
 .form-actions{display:flex;gap:8px;justify-content:flex-end}
-.prose-selector{display:flex;gap:8px;margin-bottom:0.75rem;align-items:center;flex-wrap:wrap}
-.prose-selector select{font-size:13px;padding:6px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:rgba(255,255,255,0.6);color:var(--text);outline:none;flex:1;max-width:300px}
 .prose-area{width:100%;min-height:400px;padding:14px;border:0.5px solid var(--border2);border-radius:var(--radius-lg);background:#faf9f7;color:var(--text);font-size:14px;line-height:1.8;outline:none;font-family:inherit;letter-spacing:-0.05em;cursor:text}
 .prose-area:focus{border-color:var(--accent)}
 .prose-area br,.prose-edit-area br{display:block;content:"";margin-top:0}
@@ -246,18 +244,6 @@ table{width:100%;min-width:100%;table-layout:fixed}
     <div class="modal-btns">
       <button class="btn" onclick="closeVideoModal()">취소</button>
       <button class="btn primary" onclick="confirmInsertVideo()">삽입</button>
-    </div>
-  </div>
-</div>
-
-<!-- 필명 모달 -->
-<div class="modal-bg hidden" id="penname-modal">
-  <div class="modal" style="width:280px">
-    <h2 style="margin-bottom:1rem">필명 설정</h2>
-    <input id="penname-input" placeholder="필명 입력" style="width:100%;padding:8px 12px;border:0.5px solid var(--border2);border-radius:var(--radius);background:rgba(255,255,255,0.8);color:var(--text);font-size:13px;outline:none;margin-bottom:1rem">
-    <div class="modal-btns">
-      <button class="btn" onclick="closePenNameModal()">취소</button>
-      <button class="btn primary" onclick="savePenName()">저장</button>
     </div>
   </div>
 </div>
@@ -709,14 +695,6 @@ document.getElementById("pw-cancel").onclick=()=>document.getElementById("pw-mod
 document.getElementById("pw-confirm").onclick=async()=>{
   const val=document.getElementById("pw-input").value;
   const h=await sha256(val);
-  if(pwPurpose==='dl'){
-    const stored=localStorage.getItem("archive_dlhash");
-    const target=stored||(await sha256("theo71"));
-    if(!stored)localStorage.setItem("archive_dlhash",target);
-    if(h===target){document.getElementById("pw-modal").classList.add("hidden");downloadTxt();}
-    else document.getElementById("pw-err").textContent="비밀번호가 틀렸습니다.";
-    return;
-  }
   const stored=localStorage.getItem("archive_pwhash");
   const target=stored||(await sha256("7690"));
   if(!stored)localStorage.setItem("archive_pwhash",target);
@@ -742,7 +720,6 @@ document.getElementById("pw-input").addEventListener("keydown",e=>{if(e.key==="E
 function logout(){unlocked=false;showPage("page-home");}
 
 /* ── TXT ── */
-document.getElementById("dl-btn")?.remove();
 document.getElementById("back-from-editor").onclick=()=>{
   if(currentGroup)showPage("page-group");
   else showPage("page-cards");
@@ -755,21 +732,6 @@ function downloadSingleProse(){
   const blob=new Blob([lines.join("\n")],{type:"text/plain;charset=utf-8"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`${w.title}.txt`;a.click();URL.revokeObjectURL(a.href);
 }
-function downloadTxt(){
-  const lines=["POKSHINN Project","=".repeat(50),`총 ${DATA.length}편`,""];
-  GROUPS.forEach(g=>{
-    const works=DATA.filter(w=>w.group===g);if(!works.length)return;
-    lines.push(`▶ ${g} (${works.length}편)`);lines.push("-".repeat(40));
-    [...works].sort((a,b)=>(b.date||"").localeCompare(a.date||"")).forEach((w,i)=>{
-      lines.push(`${i+1}. [${w.cp}] ${w.title}${w.adult?" ●":""}`);
-      lines.push(`   게시일: ${w.date||"미정"}  장르: ${w.genre||"미정"}${w.collab?`  합작: ${w.collabName}`:""}`);
-    });lines.push("");
-  });
-  DATA.forEach(w=>{const p=localStorage.getItem(getProseKey(w.id));if(p){lines.push("");lines.push(`■ ${w.title}`);lines.push("=".repeat(40));lines.push(p);}});
-  const blob=new Blob([lines.join("\n")],{type:"text/plain;charset=utf-8"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`pokshinn_${new Date().toISOString().slice(0,10)}.txt`;a.click();URL.revokeObjectURL(a.href);
-}
-
 /* ── 홈 렌더 ── */
 function renderHome(){
   const grid=document.getElementById("group-grid");grid.innerHTML="";
@@ -825,7 +787,7 @@ function renderTable(){
     const collab=w.collab?`<span class="collab-badge" title="${w.collabName}">합작</span>`:"";
     const dot=w.adult?`<span class="adult-dot"></span>`:"";const fav=w.fav?`<span style="width:7px;height:7px;border-radius:50%;background:#f0b429;display:inline-block;flex-shrink:0"></span>`:"";
     tr.setAttribute("data-prose-id",w.id);
-    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${fav}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td><td class="view-count" style="font-size:11px;color:var(--text3);text-align:right;${unlocked?"":"display:none"}"></td>`;
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${fav}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td><td class="view-count" style="font-size:11px;color:var(--text3);text-align:center;${unlocked?"":"display:none"}"></td>`;
     tbody.appendChild(tr);
   });
   if(unlocked)showTableViewCounts();
@@ -833,29 +795,6 @@ function renderTable(){
 document.getElementById("back-btn").onclick=()=>showPage("page-cards");
 
 /* ── 본문 뷰어 ── */
-function renderMarkdown(md){
-  if(!md||!md.trim()){
-    document.getElementById("prose-rendered").innerHTML=`<span class="prose-view-empty">아직 작성된 본문이 없어요.</span>`;
-    return;
-  }
-  // span 태그 보존을 위해 먼저 추출
-  const spans=[];
-  let safe=md.replace(/<span([^>]*)>([\s\S]*?)<\/span>/g,(m)=>{spans.push(m);return`\x00${spans.length-1}\x00`;});
-  let h=safe
-    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
-    .replace(/^### (.+)$/gm,"<h3>$1</h3>")
-    .replace(/^## (.+)$/gm,"<h2>$1</h2>")
-    .replace(/^# (.+)$/gm,"<h1>$1</h1>")
-    .replace(/^> (.+)$/gm,"<blockquote>$1</blockquote>")
-    .replace(/^---$/gm,"<hr>")
-    .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g,"<em>$1</em>")
-    .replace(/\n\n/g,"</p><p>")
-    .replace(/\n/g,"<br>");
-  // span 복원
-  h=h.replace(/\x00(\d+)\x00/g,(_,i)=>spans[+i]);
-  document.getElementById("prose-rendered").innerHTML=`<p>${h}</p>`;
-}
 function setProseMode(mode){
   const isEdit=mode==="edit";
   document.getElementById("prose-view-mode").style.display=isEdit?"none":"block";
@@ -1051,29 +990,14 @@ function renderLinks(links,containerId){
 function loadPenName(){
   return localStorage.getItem("archive_penname")||"";
 }
-function previewPenName(v){}
 function applyPenName(){
   const n=document.getElementById("f-penname").value.trim();
   localStorage.setItem("archive_penname",n);
 }
-function openPenNameModal(){}
-function closePenNameModal(){}
-function savePenName(){}
 
 function setProseEditFont(font){
   const area=document.getElementById("prose-page-area");
   area.style.fontFamily=font==="inherit"?"inherit":`'${font}','Noto Serif KR',serif`;
-}
-
-/* ── 서체 선택 ── */
-let currentProseFont='BookkMyungjo';
-function setProseFont(font){
-  currentProseFont=font;
-  const rendered=document.getElementById("prose-rendered");
-  const editArea=document.getElementById("prose-page-area");
-  rendered.style.fontFamily=`'${font}','Noto Serif KR',Georgia,serif`;
-  editArea.style.fontFamily=`'${font}','Noto Serif KR',serif`;
-  document.getElementById("font-btn-bookk").classList.toggle("active",font==="BookkMyungjo");
 }
 
 function edInsertImage(){saveRange('prose-area');document.getElementById("ed-img-upload").click();}
@@ -1299,31 +1223,8 @@ document.getElementById("back-to-group").onclick=()=>{
 
 /* ── contenteditable 유틸 ── */
 function execCmd(cmd){document.execCommand(cmd,false,null);}
-function execEditorCmd(cmd){document.execCommand(cmd,false,null);}
 function applyColorCE(color){document.execCommand('foreColor',false,color);}
-function applyEditorColor(color){document.execCommand('foreColor',false,color);}
 function insertHr(){document.execCommand('insertHTML',false,'<hr>');}
-function insertEditorHr(){document.execCommand('insertHTML',false,'<hr>');}
-
-function getProseHTML(id){return document.getElementById(id).innerHTML;}
-function setProseHTML(id,html){document.getElementById(id).innerHTML=html||'';}
-
-function applyColor(taId,color){
-  const ta=document.getElementById(taId);
-  const s=ta.selectionStart,e=ta.selectionEnd;
-  const sel=ta.value.substring(s,e);if(!sel)return;
-  const tag=`<span style="color:${color}">${sel}</span>`;
-  ta.value=ta.value.substring(0,s)+tag+ta.value.substring(e);
-  ta.focus();
-}
-
-function insertMd(before,after){
-  const ta=document.getElementById("prose-page-area");
-  const s=ta.selectionStart,e=ta.selectionEnd;
-  const sel=ta.value.substring(s,e);
-  ta.value=ta.value.substring(0,s)+before+sel+after+ta.value.substring(e);
-  ta.focus();ta.selectionStart=s+before.length;ta.selectionEnd=s+before.length+sel.length;
-}
 
 /* ── 에디터 ── */
 function openEditor(){
@@ -1749,7 +1650,7 @@ function openAllWorks(){
     const fav=w.fav?`<span style="width:7px;height:7px;border-radius:50%;background:#f0b429;display:inline-block;flex-shrink:0"></span>`:"";
     const collab=w.collab?`<span class="collab-badge">합작</span>`:"";
     tr.setAttribute("data-prose-id",w.id);
-    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${fav}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td><td class="view-count" style="font-size:11px;color:var(--text3);text-align:right;${unlocked?"":"display:none"}"></td>`;
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${fav}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td><td class="view-count" style="font-size:11px;color:var(--text3);text-align:center;${unlocked?"":"display:none"}"></td>`;
     tbody.appendChild(tr);
   });
   showPage("page-all");
