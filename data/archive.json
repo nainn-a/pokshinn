@@ -166,8 +166,11 @@
       "adult": true,
       "collab": false,
       "collabName": "",
-      "links": [],
-      "penname": "김리베"
+      "links": [
+        "https://soundcloud.com/verivery/verivery-x-strong-dragon-velocity?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
+      ],
+      "penname": "이백도",
+      "fav": false
     },
     {
       "id": 115,
