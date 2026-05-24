@@ -1706,19 +1706,36 @@ function openAllWorks(){
 document.getElementById("back-from-all").onclick=()=>showPage("page-cards");
 
 
+/* ── Supabase 설정 ── */
+const SB_URL="https://gyqdrigbvofdceseqori.supabase.co";
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5cWRyaWdidm9mZGNlc2Vxb3JpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NTQ2ODcsImV4cCI6MjA5NTEzMDY4N30.OB-LFk_zjsuH6xr_fhp-GDoBhlj-MHFm9JRZXevE2yk";
+function sbHeaders(){return{"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY};}
+async function sbGet(table,filter){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}?${filter}`,{headers:sbHeaders()});
+  if(!r.ok)return null;return await r.json();
+}
+async function sbUpsert(table,data){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}`,{method:"POST",headers:{...sbHeaders(),"Prefer":"resolution=merge-duplicates"},body:JSON.stringify(data)});
+  return r.ok;
+}
+async function sbInsert(table,data){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}`,{method:"POST",headers:sbHeaders(),body:JSON.stringify(data)});
+  return r.ok;
+}
+async function sbDelete(table,filter){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}?${filter}`,{method:"DELETE",headers:sbHeaders()});
+  return r.ok;
+}
+
 /* ── 하트 ── */
 async function loadHeart(id){
   try{
-    const r=await fetch(`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/${GH_BRANCH}/data/likes/prose-${id}.json?t=`+Date.now());
-    if(r.ok){const j=await r.json();return j.count||0;}
-  }catch(e){}
-  return 0;
+    const rows=await sbGet("likes",`prose_id=eq.${id}&select=count`);
+    return rows&&rows.length?rows[0].count:0;
+  }catch(e){return 0;}
 }
 async function saveHeart(id,count){
-  if(!GH_TOKEN)return;
-  const content=JSON.stringify({count},null,2);
-  const ex=await ghGet(`data/likes/prose-${id}.json`);
-  await ghPut(`data/likes/prose-${id}.json`,content,ex?ex.sha:null);
+  await sbUpsert("likes",{prose_id:String(id),count});
 }
 async function toggleHeart(){
   const id=currentProseId;if(!id)return;
@@ -1733,13 +1750,13 @@ async function toggleHeart(){
     count++;
     localStorage.setItem(key,"1");
     document.getElementById("heart-icon").textContent="🩷";
-    document.getElementById("heart-btn").style.transform="scale(1.2)";
-    setTimeout(()=>document.getElementById("heart-btn").style.transform="",150);
+    const btn=document.getElementById("heart-btn");
+    btn.style.transform="scale(1.2)";
+    setTimeout(()=>{btn.style.transform="";},150);
+    sendNotification("heart",{title:DATA.find(x=>x.id===id)?.title||id});
   }
   document.getElementById("heart-count").textContent=count;
   await saveHeart(id,count);
-  // 이메일 알림
-  if(!liked)sendNotification("heart",{title:DATA.find(x=>x.id===id)?.title||id});
 }
 async function initHeart(id){
   const count=await loadHeart(id);
@@ -1751,16 +1768,9 @@ async function initHeart(id){
 /* ── 댓글 ── */
 async function loadComments(id){
   try{
-    const r=await fetch(`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/${GH_BRANCH}/data/comments/prose-${id}.json?t=`+Date.now());
-    if(r.ok)return await r.json();
-  }catch(e){}
-  return [];
-}
-async function saveComments(id,comments){
-  if(!GH_TOKEN)return;
-  const content=JSON.stringify(comments,null,2);
-  const ex=await ghGet(`data/comments/prose-${id}.json`);
-  await ghPut(`data/comments/prose-${id}.json`,content,ex?ex.sha:null);
+    const rows=await sbGet("comments",`prose_id=eq.${id}&order=created_at.asc&select=id,nick,body,created_at`);
+    return rows||[];
+  }catch(e){return[];}
 }
 async function submitComment(){
   const id=currentProseId;if(!id)return;
@@ -1768,26 +1778,24 @@ async function submitComment(){
   const body=document.getElementById("comment-body").value.trim();
   const pw=document.getElementById("comment-pw").value.trim();
   if(!nick||!body){alert("닉네임과 댓글 내용을 입력해주세요.");return;}
-  const comments=await loadComments(id);
-  const now=new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
-  comments.push({id:Date.now(),nick,body,pw:btoa(pw||""),date:now});
-  showLoading("댓글 저장 중...");
-  try{await saveComments(id,comments);}catch(e){hideLoading();alert("저장 실패: "+e.message);return;}
-  hideLoading();
+  const ok=await sbInsert("comments",{prose_id:String(id),nick,body,pw_hash:btoa(pw||"")});
+  if(!ok){alert("댓글 저장에 실패했습니다.");return;}
   document.getElementById("comment-body").value="";
+  const comments=await loadComments(id);
   renderComments(comments);
   sendNotification("comment",{title:DATA.find(x=>x.id===id)?.title||id,nick,body});
 }
-async function deleteComment(proseId,commentId){
-  const pw=prompt("댓글 비밀번호를 입력하세요");if(pw===null)return;
-  let comments=await loadComments(proseId);
-  const target=comments.find(c=>c.id===commentId);
-  if(!target)return;
-  if(!unlocked&&target.pw!==btoa(pw||"")){alert("비밀번호가 틀렸습니다.");return;}
-  comments=comments.filter(c=>c.id!==commentId);
-  showLoading("삭제 중...");
-  try{await saveComments(proseId,comments);}catch(e){hideLoading();return;}
-  hideLoading();renderComments(comments);
+async function deleteComment(commentId){
+  if(!unlocked){
+    const pw=prompt("댓글 비밀번호를 입력하세요");if(pw===null)return;
+    // pw 검증: 해당 댓글 pw_hash 가져와서 비교
+    const rows=await sbGet("comments",`id=eq.${commentId}&select=pw_hash`);
+    if(!rows||!rows.length){alert("댓글을 찾을 수 없습니다.");return;}
+    if(rows[0].pw_hash!==btoa(pw||"")){alert("비밀번호가 틀렸습니다.");return;}
+  }
+  await sbDelete("comments",`id=eq.${commentId}`);
+  const comments=await loadComments(currentProseId);
+  renderComments(comments);
 }
 function renderComments(comments){
   const list=document.getElementById("comment-list");
@@ -1795,15 +1803,19 @@ function renderComments(comments){
   if(countEl)countEl.textContent=comments.length?`(${comments.length})`:"";
   if(!list)return;
   list.innerHTML="";
-  if(!comments.length){list.innerHTML=`<div style="font-size:12px;color:var(--text3);text-align:center;padding:1rem">아직 댓글이 없어요.</div>`;return;}
+  if(!comments.length){
+    list.innerHTML=`<div style="font-size:12px;color:var(--text3);text-align:center;padding:1rem">아직 댓글이 없어요.</div>`;
+    return;
+  }
   comments.forEach(c=>{
     const div=document.createElement("div");
     div.style.cssText="padding:12px 0;border-bottom:0.5px solid var(--border);";
+    const date=c.created_at?new Date(c.created_at).toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}):"";
     div.innerHTML=`<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px">
       <span style="font-size:13px;font-weight:500;color:var(--text);letter-spacing:-0.04em">${c.nick}</span>
       <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:11px;color:var(--text3)">${c.date||""}</span>
-        <button onclick="deleteComment(${currentProseId},${c.id})" style="font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;padding:0">✕</button>
+        <span style="font-size:11px;color:var(--text3)">${date}</span>
+        <button onclick="deleteComment(${c.id})" style="font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;padding:0">✕</button>
       </div>
     </div>
     <div style="font-size:13px;color:var(--text);line-height:1.7;letter-spacing:-0.04em;white-space:pre-wrap">${c.body}</div>`;
