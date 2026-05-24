@@ -86,7 +86,7 @@ th{font-size:11px;font-weight:500;color:var(--text3);padding:10px 12px;text-alig
 td{font-size:13px;padding:10px 12px;border-bottom:0.5px solid var(--border);vertical-align:middle;color:var(--text);letter-spacing:-0.05em}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(255,255,255,0.45)}
-col.col-no{width:32px}col.col-cp{width:64px}col.col-penname{width:64px}col.col-date{width:70px}col.col-title{width:calc(100% - 230px)}
+col.col-no{width:32px}col.col-cp{width:80px}col.col-penname{width:72px}col.col-date{width:86px}col.col-title{width:calc(100% - 306px)}
 table{width:100%;min-width:100%;table-layout:fixed}
 .no{color:var(--text3);font-size:12px}
 .date-cell{font-size:12px;color:var(--text3);white-space:nowrap}
@@ -307,6 +307,10 @@ table{width:100%;min-width:100%;table-layout:fixed}
     <div style="text-align:center;margin-top:0.5rem">
       <button class="btn" onclick="openAllWorks()" style="font-size:12px;color:var(--text3)">전체 작품 보기</button>
     </div>
+    <div style="display:flex;justify-content:center;gap:16px;margin-top:1rem;font-size:11px;color:var(--text3);letter-spacing:-0.03em">
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;border-radius:50%;background:#e24b4a;display:inline-block"></span> 성인</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;background:#f0b429;display:inline-block;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span> 추천</span>
+    </div>
     <div class="edit-entry"><button onclick="requirePw('editor')">✎ 편집</button></div>
   </div>
 </div>
@@ -317,7 +321,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
     <button class="back-btn" id="back-btn">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>목록으로
     </button>
-        <div class="group-page-header">
+    <div class="group-page-header">
       <div>
         <span class="group-page-title" id="gp-title"></span>
         <span class="group-page-count" id="gp-count" style="margin-left:8px"></span>
@@ -332,15 +336,15 @@ table{width:100%;min-width:100%;table-layout:fixed}
         </button>
       </div>
       <div class="toolbar-row" id="cp-tags"></div>
-            <div class="toolbar-row" style="justify-content:flex-end;gap:12px">
+      <div class="toolbar-row" style="justify-content:flex-end;gap:12px">
         <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3);letter-spacing:-0.03em"><span style="width:7px;height:7px;border-radius:50%;background:#e24b4a;display:inline-block"></span> 성인</span>
-        <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3);letter-spacing:-0.03em"><span style="width:10px;height:10px;background:#f0b429;display:inline-block;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span> 추천</span>
+        <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3);letter-spacing:-0.03em"><span style="width:8px;height:8px;background:#f0b429;display:inline-block;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span> 추천</span>
       </div>
     </div>
     <div class="table-wrap">
       <table>
-        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col class="col-date"></colgroup>
-        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th></th><th class="col-date">게시일</th></tr></thead>
+        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col style="width:36px"><col class="col-date"><col id="col-views" style="width:48px;display:none"></colgroup>
+        <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th></th><th class="col-date">게시일</th><th id="th-views" style="display:none;font-size:11px">조회</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
@@ -493,12 +497,12 @@ table{width:100%;min-width:100%;table-layout:fixed}
       </div>
       <div style="display:flex;gap:12px;font-size:11px;color:var(--text3);letter-spacing:-0.03em;align-items:center">
         <span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;border-radius:50%;background:#e24b4a;display:inline-block"></span> 성인</span>
-        <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:#f0b429;display:inline-block;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span> 추천</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;background:#f0b429;display:inline-block;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span> 추천</span>
       </div>
     </div>
     <div class="table-wrap">
       <table>
-        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col class="col-date"></colgroup>
+        <colgroup><col class="col-no"><col class="col-cp"><col class="col-title"><col class="col-penname"><col style="width:36px"><col class="col-date"></colgroup>
         <thead><tr><th>#</th><th>CP</th><th>제목</th><th class="col-penname">필명</th><th></th><th class="col-date">게시일</th></tr></thead>
         <tbody id="all-tbody"></tbody>
       </table>
@@ -818,8 +822,9 @@ function renderTable(){
   list.forEach((w,i)=>{
     const tr=document.createElement("tr");
     const collab=w.collab?`<span class="collab-badge" title="${w.collabName}">합작</span>`:"";
-const dot=w.adult?`<span class="adult-dot"></span>`:"";const fav=w.fav?`<span style="width:10px;height:10px;background:#f0b429;display:inline-block;flex-shrink:0;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span>`:"";
-tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${fav}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}<td></td></td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
+    const dot=w.adult?`<span class="adult-dot"></span>`:"";const fav=w.fav?`<span style="width:8px;height:8px;background:#f0b429;display:inline-block;flex-shrink:0;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span>`:"";
+    const marks=`<td style="text-align:right;white-space:nowrap">${fav}${dot}</td>`;
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td>${marks}<td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
     tbody.appendChild(tr);
   });
 }
@@ -1008,6 +1013,7 @@ function classifyUrl(url){
   const u=url.trim().toLowerCase();
   if(/\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/.test(u)||/i\.imgur\.com|giphy\.com|gfycat\.com/.test(u))
     return{type:'image'};
+  if(/\.(mp4|webm|ogg|mov)(\?.*)?$/.test(u))return{type:'video'};
   if(/soundcloud\.com/.test(u))return{type:'link',icon:'🎵',label:'SoundCloud'};
   if(/twitter\.com|x\.com/.test(u))return{type:'link',icon:'𝕏',label:'Twitter'};
   if(/youtube\.com|youtu\.be|vimeo\.com/.test(u))return{type:'link',icon:'🎬',label:'영상'};
@@ -1023,6 +1029,12 @@ function renderLinks(links,containerId){
       const img=document.createElement("img");
       img.src=url;img.style.cssText="max-width:100%;height:auto;display:block;margin:0.5em 0;border-radius:4px";
       el.appendChild(img);
+    } else if(c.type==='video'){
+      const video=document.createElement("video");
+      video.controls=true;video.style.cssText="max-width:100%;display:block;margin:0.5em 0;border-radius:4px";
+      const src=document.createElement("source");src.src=url;
+      video.appendChild(src);
+      el.appendChild(video);
     } else {
       const a=document.createElement("a");
       a.href=url;a.target="_blank";
@@ -1719,10 +1731,10 @@ function openAllWorks(){
   list.forEach((w,i)=>{
     const tr=document.createElement("tr");
     const dot=w.adult?`<span class="adult-dot"></span>`:"";
-    const fav=w.fav?`<span style="width:10px;height:10px;background:#f0b429;display:inline-block;flex-shrink:0;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span>`:"";
+    const fav=w.fav?`<span style="width:8px;height:8px;background:#f0b429;display:inline-block;flex-shrink:0;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span>`:"";
     const collab=w.collab?`<span class="collab-badge">합작</span>`:"";
-
-    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${fav}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}<td></td></td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
+    const marks=`<td style="text-align:right;white-space:nowrap">${fav}${dot}</td>`;
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td>${marks}<td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
     tbody.appendChild(tr);
   });
   showPage("page-all");
