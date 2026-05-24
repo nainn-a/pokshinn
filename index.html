@@ -309,10 +309,6 @@ table{width:100%;min-width:100%;table-layout:fixed}
     <div style="text-align:center;margin-top:0.5rem">
       <button class="btn" onclick="openAllWorks()" style="font-size:12px;color:var(--text3)">전체 작품 보기</button>
     </div>
-    <div style="display:flex;justify-content:center;gap:16px;margin-top:1rem;font-size:11px;color:var(--text3);letter-spacing:-0.03em">
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;border-radius:50%;background:#e24b4a;display:inline-block"></span> 성인</span>
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;background:#f0b429;display:inline-block;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span> 추천</span>
-    </div>
     <div class="edit-entry"><button onclick="requirePw('editor')">✎ 편집</button></div>
   </div>
 </div>
@@ -340,7 +336,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
       <div class="toolbar-row" id="cp-tags"></div>
       <div class="toolbar-row" style="justify-content:flex-end;gap:12px">
         <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3);letter-spacing:-0.03em"><span style="width:7px;height:7px;border-radius:50%;background:#e24b4a;display:inline-block"></span> 성인</span>
-        <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3);letter-spacing:-0.03em"><span style="width:8px;height:8px;background:#f0b429;display:inline-block;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span> 추천</span>
+        <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3);letter-spacing:-0.03em"><span style="width:7px;height:7px;border-radius:50%;background:#f0b429;display:inline-block"></span> 추천</span>
       </div>
     </div>
     <div class="table-wrap">
@@ -500,7 +496,7 @@ table{width:100%;min-width:100%;table-layout:fixed}
       </div>
       <div style="display:flex;gap:12px;font-size:11px;color:var(--text3);letter-spacing:-0.03em;align-items:center">
         <span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;border-radius:50%;background:#e24b4a;display:inline-block"></span> 성인</span>
-        <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;background:#f0b429;display:inline-block;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span> 추천</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;border-radius:50%;background:#f0b429;display:inline-block"></span> 추천</span>
       </div>
     </div>
     <div class="table-wrap">
@@ -825,7 +821,7 @@ function renderTable(){
   list.forEach((w,i)=>{
     const tr=document.createElement("tr");
     const collab=w.collab?`<span class="collab-badge" title="${w.collabName}">합작</span>`:"";
-    const dot=w.adult?`<span class="adult-dot"></span>`:"";const fav=w.fav?`<span style="width:8px;height:8px;background:#f0b429;display:inline-block;flex-shrink:0;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span>`:"";
+    const dot=w.adult?`<span class="adult-dot"></span>`:"";const fav=w.fav?`<span style="width:7px;height:7px;border-radius:50%;background:#f0b429;display:inline-block;flex-shrink:0"></span>`:"";
     tr.setAttribute("data-prose-id",w.id);
     tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${fav}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td><td class="view-count" style="font-size:11px;color:var(--text3);text-align:right;display:none"></td>`;
     tbody.appendChild(tr);
@@ -894,7 +890,7 @@ async function openProse(id){
   document.getElementById("prose-page-title").textContent=w.title;
   if(w.fav){
     const star=document.createElement("span");
-    star.textContent=" ★";star.style.cssText="color:#f0b429;font-size:16px";
+    star.style.cssText="width:8px;height:8px;border-radius:50%;background:#f0b429;display:inline-block;margin-left:6px;vertical-align:middle;flex-shrink:0";
     document.getElementById("prose-page-title").appendChild(star);
   }
   const cpD=getCpDesc(w.cp);const cpDis=cpD?`${w.cp}(${cpD})`:w.cp;
@@ -1740,7 +1736,7 @@ function openAllWorks(){
   list.forEach((w,i)=>{
     const tr=document.createElement("tr");
     const dot=w.adult?`<span class="adult-dot"></span>`:"";
-    const fav=w.fav?`<span style="width:8px;height:8px;background:#f0b429;display:inline-block;flex-shrink:0;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></span>`:"";
+    const fav=w.fav?`<span style="width:7px;height:7px;border-radius:50%;background:#f0b429;display:inline-block;flex-shrink:0"></span>`:"";
     const collab=w.collab?`<span class="collab-badge">합작</span>`:"";
     tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${fav}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td>`;
     tbody.appendChild(tr);
