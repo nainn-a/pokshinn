@@ -377,7 +377,22 @@
       "links": [],
       "penname": "이백도",
       "fav": false
+    },
+    {
+      "id": 131,
+      "title": "다정도 병인 양하여",
+      "group": "ONEUS",
+      "cp": "섷숀",
+      "date": "2022-04-05",
+      "genre": "고전",
+      "adult": false,
+      "collab": true,
+      "collabName": "",
+      "links": [
+        "https://posty.pe/arjf6t"
+      ],
+      "penname": "이백도"
     }
   ],
-  "nextId": 131
+  "nextId": 132
 }
