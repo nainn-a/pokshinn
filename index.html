@@ -819,18 +819,18 @@ function renderTable(){
   if(currentCp)list=list.filter(w=>w.cp===currentCp);
   list=currentSort==="date-desc"?list.sort((a,b)=>(b.date||"").localeCompare(a.date||"")):list.sort((a,b)=>(a.date||"").localeCompare(b.date||""));
   document.getElementById("gp-count").textContent=`${list.length}편`;
-  tbody.innerHTML="";
-  list.forEach((w,i)=>{
+  const tbody=document.getElementById("tbody");tbody.innerHTML="";
   list.forEach((w,i)=>{
     const tr=document.createElement("tr");
     const collab=w.collab?`<span class="collab-badge" title="${w.collabName}">합작</span>`:"";
     const dot=w.adult?`<span class="adult-dot"></span>`:"";const fav=w.fav?`<span style="width:7px;height:7px;border-radius:50%;background:#f0b429;display:inline-block;flex-shrink:0"></span>`:"";
     tr.setAttribute("data-prose-id",w.id);
-    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${fav}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td><td class="view-count" style="font-size:11px;color:var(--text3);text-align:right;${unlocked?'':`display:none`}"></td>`;
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${fav}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td><td class="view-count" style="font-size:11px;color:var(--text3);text-align:right;${unlocked?"":"display:none"}"></td>`;
     tbody.appendChild(tr);
   });
   if(unlocked)showTableViewCounts();
-}.onclick=()=>showPage("page-cards");
+}
+document.getElementById("back-btn").onclick=()=>showPage("page-cards");
 
 /* ── 본문 뷰어 ── */
 function renderMarkdown(md){
@@ -1749,7 +1749,7 @@ function openAllWorks(){
     const fav=w.fav?`<span style="width:7px;height:7px;border-radius:50%;background:#f0b429;display:inline-block;flex-shrink:0"></span>`:"";
     const collab=w.collab?`<span class="collab-badge">합작</span>`:"";
     tr.setAttribute("data-prose-id",w.id);
-    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${fav}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td><td class="view-count" style="font-size:11px;color:var(--text3);text-align:right;${unlocked?'':`display:none`}"></td>`;
+    tr.innerHTML=`<td class="no">${i+1}</td><td style="font-size:12px;color:var(--text2)">${w.cp||""}</td><td><div class="title-cell"><span class="title-text" onclick="openProse(${w.id})">${w.title}</span>${dot}${fav}${collab}</div></td><td class="col-penname" style="font-size:11px;color:var(--text3)">${w.penname||""}</td><td class="date-cell col-date">${w.date?w.date.replace(/^(\d{4})-0?(\d+)-0?(\d+)$/,"$1. $2. $3."):""}</td><td class="view-count" style="font-size:11px;color:var(--text3);text-align:right;${unlocked?"":"display:none"}"></td>`;
     tbody.appendChild(tr);
   });
   showPage("page-all");
@@ -1911,11 +1911,10 @@ async function fetchAllPageviews(){
   const now=Date.now();
   if(_gcCache&&now-_gcCacheTime<120000)return _gcCache;
   try{
-    const today=new Date().toISOString().slice(0,10);
-    const r=await fetch(`${GC_BASE}/api/v0/stats/hits?start=2024-01-01T00:00:00Z&end=${today}T23:59:59Z&limit=200`,{
+    const r=await fetch(`${GC_BASE}/api/v0/stats/hits?start=2020-01-01T00:00:00Z&end=2099-01-01T00:00:00Z&limit=200`,{
       headers:{"Authorization":"Bearer "+GC_TOKEN}
     });
-    if(!r.ok){console.warn("GC hits fail",r.status);return null;}
+    if(!r.ok){console.warn("GC hits fail",r.status,await r.text());return null;}
     const j=await r.json();
     _gcCache=j.hits||[];
     _gcCacheTime=now;
@@ -1926,8 +1925,12 @@ async function fetchPageviews(path){
   try{
     const all=await fetchAllPageviews();
     if(!all)return null;
-    // Goatcounter는 /prose-100 형식으로 저장
-    const hit=all.find(h=>h.path==="/"+path||h.path===path);
+    const hit=all.find(h=>
+      h.path===path||
+      h.path==="/"+path||
+      h.path==="/#"+path||
+      h.path===path.replace(/^prose-/,"prose-")
+    );
     return hit?hit.count||0:0;
   }catch(e){return null;}
 }
