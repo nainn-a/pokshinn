@@ -73,10 +73,11 @@
       "date": "2021-09-26",
       "genre": "일상",
       "adult": false,
-      "collab": true,
+      "collab": false,
       "collabName": "",
       "links": [],
-      "penname": "이백도"
+      "penname": "이백도",
+      "fav": false
     },
     {
       "id": 106,
