@@ -1903,16 +1903,50 @@ function sendNotification(type,data){
 /* ── Goatcounter 조회수 ── */
 const GC_TOKEN="gojj7x88n4e6cb868ksw7muf1cwvfucmxdfq4wjaewefa17r2";
 const GC_BASE="https://pokshinn.goatcounter.com";
-async function fetchPageviews(path){
+// 전체 hits 캐시 (API 호출 최소화)
+let _gcCache=null;
+let _gcCacheTime=0;
+async function fetchAllPageviews(){
+  const now=Date.now();
+  if(_gcCache&&now-_gcCacheTime<60000)return _gcCache;
   try{
-    const r=await fetch(`${GC_BASE}/api/v0/stats/hits?start=2020-01-01&end=2099-01-01&filter=${encodeURIComponent(path)}`,{
+    const r=await fetch(`${GC_BASE}/api/v0/stats/hits?start=2020-01-01&end=2099-01-01&daily=false&limit=200`,{
       headers:{"Authorization":"Bearer "+GC_TOKEN}
     });
-    if(!r.ok)return null;
+    if(!r.ok){
+      // hits 엔드포인트 안되면 pages 엔드포인트 시도
+      const r2=await fetch(`${GC_BASE}/api/v0/stats/pages?start=2020-01-01&end=2099-01-01`,{
+        headers:{"Authorization":"Bearer "+GC_TOKEN}
+      });
+      if(!r2.ok)return null;
+      const j2=await r2.json();
+      _gcCache=j2.pages||j2.hits||[];
+      _gcCacheTime=now;
+      return _gcCache;
+    }
     const j=await r.json();
-    // hits 배열에서 해당 path 찾기
-    const hit=(j.hits||[]).find(h=>h.path===path||h.path==="/"+path);
-    return hit?hit.count:0;
+    _gcCache=j.hits||[];
+    _gcCacheTime=now;
+    return _gcCache;
+  }catch(e){return null;}
+}
+async function fetchPageviews(path){
+  try{
+    // 개별 path 직접 조회
+    const r=await fetch(`${GC_BASE}/api/v0/stats/hits?start=2020-01-01&end=2099-01-01&path=${encodeURIComponent("/"+path)}`,{
+      headers:{"Authorization":"Bearer "+GC_TOKEN}
+    });
+    if(r.ok){
+      const j=await r.json();
+      const hits=j.hits||[];
+      const total=hits.reduce((sum,h)=>sum+(h.count||0),0);
+      return total;
+    }
+    // 실패 시 전체 목록에서 찾기
+    const all=await fetchAllPageviews();
+    if(!all)return null;
+    const hit=all.find(h=>h.path===path||h.path==="/"+path||h.path===path.replace(/^prose-/,"/#prose-"));
+    return hit?hit.count||hit.total||0:0;
   }catch(e){return null;}
 }
 async function showProseViewCount(id){
