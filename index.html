@@ -176,10 +176,14 @@ table{width:100%;min-width:100%;table-layout:fixed}
 
 @media(max-width:600px){
   .form-grid{grid-template-columns:1fr}
-  col.col-date,th.col-date,td.col-date{display:none}
-  col.col-penname,th.col-penname,td.col-penname{display:none}
-col.col-title{width:calc(100% - 96px)}
-.title-text{white-space:normal;overflow:visible;text-overflow:unset;display:inline}
+  col.col-no{width:28px}
+  col.col-cp{width:52px}
+  col.col-title{width:auto}
+  col.col-penname{width:44px}
+  col.col-date{width:58px}
+  .title-text{white-space:normal;overflow:visible;text-overflow:unset;display:inline;line-height:1.35}
+  .title-cell{flex-wrap:wrap;gap:4px;align-items:center}
+  th:nth-child(4),td:nth-child(4),th:nth-child(5),td:nth-child(5){font-size:11px;color:var(--text3);white-space:nowrap}
   .group-grid{flex-direction:column;align-items:center;flex-wrap:wrap}
   .group-card{width:100%;max-width:380px;height:auto;min-height:64px;flex-direction:row;gap:0;justify-content:flex-start;padding:10px 12px;align-items:center;position:relative}
   .group-card-top{flex-direction:row;align-items:baseline;gap:2px;position:absolute;top:8px;left:10px}
