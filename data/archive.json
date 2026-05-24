@@ -107,6 +107,22 @@
       "fav": true
     },
     {
+      "id": 108,
+      "title": "다정도 병인 양하여",
+      "group": "ONEUS",
+      "cp": "섷숀",
+      "date": "2022-04-05",
+      "genre": "고전",
+      "adult": false,
+      "collab": true,
+      "collabName": "계간섷숀 봄호",
+      "links": [
+        "https://posty.pe/arjf6t"
+      ],
+      "penname": "이백도",
+      "fav": false
+    },
+    {
       "id": 109,
       "title": "단 하루의 휴가",
       "group": "ONF",
@@ -377,7 +393,22 @@
       "links": [],
       "penname": "이백도",
       "fav": false
+    },
+    {
+      "id": 131,
+      "title": "다정도 병인 양하여",
+      "group": "ONEUS",
+      "cp": "섷숀",
+      "date": "2022-04-05",
+      "genre": "고전",
+      "adult": false,
+      "collab": false,
+      "collabName": "계간섷숀 봄호",
+      "links": [
+        "https://posty.pe/arjf6t"
+      ],
+      "penname": "이백도"
     }
   ],
-  "nextId": 131
+  "nextId": 132
 }
